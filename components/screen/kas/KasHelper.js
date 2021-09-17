@@ -19,6 +19,9 @@ const KasHelper = (navigation) => {
   const [belumBayar, setBelumBayar] = useState([]);
   const [loadBelumBayar, setLoadBelumBayar] = useState(true);
   const [dataUsers, setDataUsers] = useState([]);
+  const [dataArusKas, setDataArusKas] = useState([]);
+  const [pemasukan, setPemasukan] = useState(0);
+  const [pengeluaran, setPengeluaran] = useState(0);
   const [keyword, setKeyword] = useState("");
 
   const getListKas = async () => {
@@ -246,6 +249,34 @@ const KasHelper = (navigation) => {
     setLoadBelumBayar(false);
   };
 
+  const getArusKasBulanIni = async (event_id) => {
+    await axios({
+      method: "get",
+      url: `${TEST_URL}/arus-kas/event/${event_id}/list-and-month`,
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+    })
+      .then((response) => {
+        const result = response.data.result;
+        setDataArusKas(result);
+
+        let dataPemasukan = 0;
+        let dataPengeluaran = 0;
+        result.map(data => {
+          if(parseInt(data.jenis)) dataPemasukan += parseInt(data.nominal);
+          else dataPengeluaran += parseInt(data.nominal);
+        });
+        setPemasukan(dataPemasukan);
+        setPengeluaran(dataPengeluaran);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+
   const filter = (keyword) => {
     let val = detailKasCadangan.per_user;
 
@@ -285,6 +316,12 @@ const KasHelper = (navigation) => {
     setLoadBelumBayar,
     dataUsers,
     setDataUsers,
+    dataArusKas,
+    setDataArusKas,
+    pemasukan,
+    setPemasukan,
+    pengeluaran,
+    setPengeluaran,
     keyword,
     setKeyword,
     getListKas,
@@ -297,6 +334,7 @@ const KasHelper = (navigation) => {
     hapusData,
     getLogPenyetoran,
     getBelumBayarKas,
+    getArusKasBulanIni
   };
 };
 

@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import { Alert, PermissionsAndroid } from "react-native";
 import { useFocusEffect } from "@react-navigation/core";
 import {
   Avatar,
@@ -15,13 +16,14 @@ import {
 } from "native-base";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { StyleSheet } from "react-native";
+import { Portal, Provider } from "react-native-paper";
+import RNHTMLtoPDF from "react-native-html-to-pdf";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import "moment/locale/id";
 import moment from "moment";
 import Header from "../../../reusable/Header";
 import DataUsmanHelper from "./DataUsmanHelper";
 import FloatingButton from "../../../reusable/FloatingButton";
-import { Portal, Provider } from "react-native-paper";
 
 const DataUsman = ({ navigation }) => {
   const {
@@ -30,7 +32,69 @@ const DataUsman = ({ navigation }) => {
     loadDataUsman,
     setLoadDataUsman,
     getDataUsman,
+    keyword,
+    setKeyword,
+    filterData
   } = DataUsmanHelper(navigation);
+
+  const buatPdf = async () => {
+    const options = {
+      html: `
+        <div style="text-align: center;"><h3>Data Usman Sidomulyo</h3></div>
+        <table style="border-collapse: collapse; width: 100%;">
+          <thead>
+            <tr style="background-color: #04aa6d; color: white;">
+              <th style="border: 1px solid #ddd; padding: 8px;">#</th>
+              <th style="border: 1px solid #ddd; padding: 8px;">Nama</th>
+              <th style="border: 1px solid #ddd; padding: 8px;">Jenis Kelamin</th>
+              <th style="border: 1px solid #ddd; padding: 8px;">Ayah</th>
+              <th style="border: 1px solid #ddd; padding: 8px;">Ibu</th>
+              <th style="border: 1px solid #ddd; padding: 8px;">TTL</th>
+              <th style="border: 1px solid #ddd; padding: 8px;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${dataUsman.map(
+              (usman, i) => `
+              <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">${i + 1}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">${
+                  usman.name
+                }</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">${
+                  parseInt(usman.jenis_kelamin) ? "Laki-laki" : "Perempuan"
+                }</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">${
+                  usman.nama_ayah
+                }</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">${
+                  usman.nama_ibu
+                }</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">${
+                  usman.tempat_lahir
+                }, ${moment(parseInt(usman.tgl_lahir)).format("LL")}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">${
+                  usman.status
+                }</td>
+              </tr>
+            `
+            )}
+          </tbody>
+        </table>
+      `,
+      fileName: `Data_Usman_${Date.now()}`,
+      directory: "Download",
+    };
+
+    const file = await RNHTMLtoPDF.convert(options);
+
+    Alert.alert(
+      "Berhasil",
+      `Berhasil download file, file tersimpan di ${file.filePath}`,
+      [{ text: "Oke deh", style: "cancel" }],
+      { cancelable: true }
+    );
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -76,10 +140,10 @@ const DataUsman = ({ navigation }) => {
                         style={{ marginRight: 10 }}
                       />
                     }
-                    // value={keyword}
+                    value={keyword}
                     onChangeText={(text) => {
                       setKeyword(text);
-                      filter(text);
+                      filterData(text);
                     }}
                   />
                 </View>
@@ -102,9 +166,9 @@ const DataUsman = ({ navigation }) => {
                     small: false,
                   },
                   {
-                    icon: "file",
-                    label: "Lihat PDF",
-                    onPress: () => console.log("lihat pdf"),
+                    icon: "download",
+                    label: "Unduh PDF",
+                    onPress: buatPdf,
                     small: false,
                   },
                 ]}

@@ -7,7 +7,9 @@ const DataUsmanHelper = (navigation) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const [dataUsman, setDataUsman] = useState([]);
+  const [dataUsmanCadangan, setDataUsmanCadangan] = useState([]);
   const [loadDataUsman, setLoadDataUsman] = useState(true);
+  const [keyword, setKeyword] = useState("");
 
   const getDataUsman = async () => {
     await axios({
@@ -19,7 +21,9 @@ const DataUsmanHelper = (navigation) => {
       },
     })
       .then((response) => {
-        setDataUsman(response.data.result);
+        const result = response.data.result;
+        setDataUsman(result);
+        setDataUsmanCadangan(result);
       })
       .catch((error) => {
         console.log(error);
@@ -111,6 +115,17 @@ const DataUsmanHelper = (navigation) => {
     });
   };
 
+  const filterData = (keyword) => {
+    let val = dataUsmanCadangan;
+    if (keyword) {
+      val = val.filter((item) =>
+        item.name.toLowerCase().match(keyword.toLowerCase())
+      );
+    }
+
+    setDataUsman(val);
+  };
+
   return {
     dataUsman,
     setDataUsman,
@@ -120,6 +135,9 @@ const DataUsmanHelper = (navigation) => {
     postDataUsman,
     updateDataUsman,
     hapusData,
+    keyword,
+    setKeyword,
+    filterData
   };
 };
 

@@ -30,6 +30,7 @@
 		433D83F96AC94DE089E66E50 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E0630F940EB54B68AFE48F20 /* Octicons.ttf */; };
 		CA570F5E2D9D4D3C8C06E717 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E5C139B7CB7A48C59573424A /* SimpleLineIcons.ttf */; };
 		8EFC48FDAC984592B292750C /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 354CCE684F30462D8C5D7A03 /* Zocial.ttf */; };
+		9DA18B943D364472A65FEDA6 /* libRNPDFView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43319E9FD512401DAF79331A /* libRNPDFView.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +65,8 @@
 		E0630F940EB54B68AFE48F20 /* Octicons.ttf */ = {isa = PBXFileReference; name = "Octicons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		E5C139B7CB7A48C59573424A /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		354CCE684F30462D8C5D7A03 /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D10CA78360EB48119E579CA6 /* RNPDFView.xcodeproj */ = {isa = PBXFileReference; name = "RNPDFView.xcodeproj"; path = "../node_modules/react-native-pdf-view/RNPDFView.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		43319E9FD512401DAF79331A /* libRNPDFView.a */ = {isa = PBXFileReference; name = "libRNPDFView.a"; path = "libRNPDFView.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +75,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				96905EF65AED1B983A6B3ABC /* libPods-usmansidomulyo.a in Frameworks */,
+				9DA18B943D364472A65FEDA6 /* libRNPDFView.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -107,6 +111,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				D10CA78360EB48119E579CA6 /* RNPDFView.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -387,6 +392,14 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/usmansidomulyo\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-pdf-view/RNPDFView",
+				);
 			};
 			name = Debug;
 		};
@@ -409,6 +422,14 @@
 				PRODUCT_NAME = usmansidomulyo;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/usmansidomulyo\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-pdf-view/RNPDFView",
+				);
 			};
 			name = Release;
 		};

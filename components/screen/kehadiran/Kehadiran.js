@@ -1,51 +1,57 @@
+import { NativeBaseProvider } from "native-base";
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import Header from "../../reusable/Header";
 
 const Kehadiran = ({ navigation }) => {
   return (
-    <View style={styles.container}>
-      <View style={styles.taskWrapper}>
-        <View style={{ width: "86%" }}>
-          <Text style={styles.sectionTitle}>Buat Absen Baru</Text>
-          <Text>Buat absen baru dan lihat perkembangan nya!</Text>
-        </View>
-        <View style={{ width: "14%" }}>
-          <TouchableOpacity
-            style={{
-              padding: 11,
-              marginTop: 5,
-              backgroundColor: "tomato",
-              borderRadius: 16,
-            }}
-            onPress={() => navigation.navigate("BuatAbsenBaru")}
-          >
-            <Ionicons name="ios-add-circle-outline" size={30} color="#fff" />
-          </TouchableOpacity>
-        </View>
-      </View>
+    <NativeBaseProvider>
+      <Header title="Kehadiran" navigation={navigation} />
 
-      <View style={styles.taskWrapper}>
-        <View style={{ width: "86%" }}>
-          <Text style={styles.sectionTitle}>Update Event Terakhir</Text>
-          <Text>Materi Kelas Lambatan Hal 22</Text>
+      <View style={styles.container}>
+        <View style={styles.taskWrapper}>
+          <View style={{ width: "86%" }}>
+            <Text style={styles.sectionTitle}>Buat Absen Baru</Text>
+            <Text>Buat absen baru dan lihat perkembangan nya!</Text>
+          </View>
+          <View style={{ width: "14%" }}>
+            <TouchableOpacity
+              style={{
+                padding: 11,
+                marginTop: 5,
+                backgroundColor: "tomato",
+                borderRadius: 16,
+              }}
+              onPress={() => navigation.navigate("BuatAbsenBaru")}
+            >
+              <Ionicons name="ios-add-circle-outline" size={30} color="#fff" />
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={{ width: "14%" }}>
-          <TouchableOpacity
-            style={{
-              padding: 11,
-              marginTop: 5,
-              backgroundColor: "tomato",
-              borderRadius: 16,
-            }}
-            onPress={() => navigation.navigate("UpdateEventTerakhir")}
-          >
-            <Ionicons name="pencil-outline" size={30} color="#fff" />
-          </TouchableOpacity>
+
+        <View style={styles.taskWrapper}>
+          <View style={{ width: "86%" }}>
+            <Text style={styles.sectionTitle}>Update Event Terakhir</Text>
+            <Text>Materi Kelas Lambatan Hal 22</Text>
+          </View>
+          <View style={{ width: "14%" }}>
+            <TouchableOpacity
+              style={{
+                padding: 11,
+                marginTop: 5,
+                backgroundColor: "tomato",
+                borderRadius: 16,
+              }}
+              onPress={() => navigation.navigate("UpdateEventTerakhir")}
+            >
+              <Ionicons name="pencil-outline" size={30} color="#fff" />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
+    </NativeBaseProvider>
   );
 };
 

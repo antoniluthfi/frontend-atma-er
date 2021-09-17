@@ -9,10 +9,10 @@ import {
   Select,
   Button,
   Text,
-  Fab,
   Input,
 } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import Header from "../../reusable/Header";
 
 const inputValidationSchema = yup.object().shape({
   event_pengajian_id: yup
@@ -20,7 +20,7 @@ const inputValidationSchema = yup.object().shape({
     .required("Event pengajian masih kosong tuh, isi dulu yaa"),
 });
 
-const UpdateEventTerakhir = () => {
+const UpdateEventTerakhir = ({ navigation }) => {
   const [open, setOpen] = useState(false);
   const [pengajar, setPengajar] = useState([
     {
@@ -30,7 +30,9 @@ const UpdateEventTerakhir = () => {
   ]);
 
   return (
-    <>
+    <NativeBaseProvider>
+      <Header title="Update Event Terakhir" navigation={navigation} />
+
       <Formik
         initialValues={{
           event_pengajian_id: "",
@@ -39,120 +41,110 @@ const UpdateEventTerakhir = () => {
         onSubmit={(values) => console.log(values)}
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
-          <NativeBaseProvider>
-            <View style={styles.container}>
-              <View style={styles.taskWrapper}>
-                <View
-                  style={{
-                    paddingVertical: 10,
-                  }}
-                >
-                  <Text fontSize="3xl" style={{ fontWeight: "bold" }}>
-                    Update Event Terakhir
-                  </Text>
-                  <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Pengajian</FormControl.Label>
-                    <Select
-                      onValueChange={handleChange("event_pengajian_id")}
-                      onBlur={handleBlur("event_pengajian_id")}
-                      selectedValue={values.event_pengajian_id}
-                      minWidth={200}
-                      accessibilityLabel="Pengajian"
-                      placeholder="Pengajian"
-                      _selectedItem={{
-                        bg: "teal.600",
-                        endIcon: (
-                          <Ionicons
-                            name="ios-checkmark"
-                            size={30}
-                            color="black"
-                            style={{ marginLeft: 5 }}
-                          />
-                        ),
-                      }}
-                      mt={1}
-                    >
-                      <Select.Item
-                        label="Usman, Sabtu 14 Agustus 2021"
-                        value="1"
-                      />
-                    </Select>
-                  </FormControl>
-
-                  {pengajar.map((item, i) => (
-                    <React.Fragment key={i}>
-                      <FormControl style={{ marginVertical: 10 }}>
-                        <FormControl.Label>Pengajar</FormControl.Label>
-                        <Input
-                          onChange={(e) => {
-                            const val = [...pengajar];
-                            val[i].nama = e.target.value;
-                            setPengajar(val);
-                          }}
-                          value={values.keterangan}
-                          _light={{
-                            placeholderTextColor: "blueGray.400",
-                          }}
-                          _dark={{
-                            placeholderTextColor: "blueGray.50",
-                          }}
+          <View style={styles.container}>
+            <View style={styles.taskWrapper}>
+              <View
+                style={{
+                  paddingVertical: 10,
+                }}
+              >
+                <FormControl isRequired style={{ marginVertical: 10 }}>
+                  <FormControl.Label>Pengajian</FormControl.Label>
+                  <Select
+                    onValueChange={handleChange("event_pengajian_id")}
+                    onBlur={handleBlur("event_pengajian_id")}
+                    selectedValue={values.event_pengajian_id}
+                    minWidth={200}
+                    accessibilityLabel="Pengajian"
+                    placeholder="Pengajian"
+                    _selectedItem={{
+                      bg: "teal.600",
+                      endIcon: (
+                        <Ionicons
+                          name="ios-checkmark"
+                          size={30}
+                          color="black"
+                          style={{ marginLeft: 5 }}
                         />
-                      </FormControl>
-
-                      <FormControl style={{ marginVertical: 10 }}>
-                        <FormControl.Label>Materi</FormControl.Label>
-                        <Input
-                          onChange={(e) => {
-                            const val = [...pengajar];
-                            val[i].materi = e.target.value;
-                            setPengajar(val);
-                          }}
-                          value={values.keterangan}
-                          _light={{
-                            placeholderTextColor: "blueGray.400",
-                          }}
-                          _dark={{
-                            placeholderTextColor: "blueGray.50",
-                          }}
-                        />
-                      </FormControl>
-                    </React.Fragment>
-                  ))}
-
-                  <FormControl style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Keterangan</FormControl.Label>
-                    <TextArea
-                      onChangeText={handleChange("keterangan")}
-                      onBlur={handleBlur("keterangan")}
-                      value={values.keterangan}
-                      _light={{
-                        placeholderTextColor: "blueGray.400",
-                      }}
-                      _dark={{
-                        placeholderTextColor: "blueGray.50",
-                      }}
+                      ),
+                    }}
+                    mt={1}
+                  >
+                    <Select.Item
+                      label="Usman, Sabtu 14 Agustus 2021"
+                      value="1"
                     />
-                  </FormControl>
-                </View>
-                <Button
-                  onPress={handleSubmit}
-                  size="md"
-                  colorScheme="orange"
-                  _text={{ color: "#fff", fontWeight: "bold" }}
-                >
-                  Submit
-                </Button>
+                  </Select>
+                </FormControl>
 
-                <Fab
-                  colorScheme="orange"
-                  icon={<Ionicons name="person-add" size={30} color="white" />}
-                />
+                {pengajar.map((item, i) => (
+                  <React.Fragment key={i}>
+                    <FormControl style={{ marginVertical: 10 }}>
+                      <FormControl.Label>Pengajar</FormControl.Label>
+                      <Input
+                        onChange={(e) => {
+                          const val = [...pengajar];
+                          val[i].nama = e.target.value;
+                          setPengajar(val);
+                        }}
+                        value={values.keterangan}
+                        _light={{
+                          placeholderTextColor: "blueGray.400",
+                        }}
+                        _dark={{
+                          placeholderTextColor: "blueGray.50",
+                        }}
+                      />
+                    </FormControl>
+
+                    <FormControl style={{ marginVertical: 10 }}>
+                      <FormControl.Label>Materi</FormControl.Label>
+                      <Input
+                        onChange={(e) => {
+                          const val = [...pengajar];
+                          val[i].materi = e.target.value;
+                          setPengajar(val);
+                        }}
+                        value={values.keterangan}
+                        _light={{
+                          placeholderTextColor: "blueGray.400",
+                        }}
+                        _dark={{
+                          placeholderTextColor: "blueGray.50",
+                        }}
+                      />
+                    </FormControl>
+                  </React.Fragment>
+                ))}
+
+                <FormControl style={{ marginVertical: 10 }}>
+                  <FormControl.Label>Keterangan</FormControl.Label>
+                  <TextArea
+                    onChangeText={handleChange("keterangan")}
+                    onBlur={handleBlur("keterangan")}
+                    value={values.keterangan}
+                    _light={{
+                      placeholderTextColor: "blueGray.400",
+                    }}
+                    _dark={{
+                      placeholderTextColor: "blueGray.50",
+                    }}
+                  />
+                </FormControl>
               </View>
+              <Button
+                onPress={handleSubmit}
+                size="md"
+                colorScheme="orange"
+                _text={{ color: "#fff", fontWeight: "bold" }}
+              >
+                Submit
+              </Button>
             </View>
-          </NativeBaseProvider>
+          </View>
         )}
       </Formik>
-    </>
+    </NativeBaseProvider>
   );
 };
 
