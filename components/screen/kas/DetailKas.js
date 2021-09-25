@@ -14,9 +14,6 @@ import {
   Spinner,
   VStack,
   Input,
-  Icon,
-  Fab,
-  Flex,
 } from "native-base";
 import NumberFormat from "react-number-format";
 import { Portal, Provider } from "react-native-paper";
@@ -45,7 +42,7 @@ const DetailKas = ({ navigation, route }) => {
     setKeyword,
     getDetailKas,
     getArusKasBulanIni,
-    filter,
+    filterUser,
   } = KasHelper();
 
   const buatPdf = async () => {
@@ -76,7 +73,9 @@ const DetailKas = ({ navigation, route }) => {
                 <td style="border: 1px solid #ddd; padding: 8px;">${
                   parseInt(kas.jenis) ? "Masuk" : "Keluar"
                 }</td>
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">Rp. ${kas.nominal}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">Rp. ${
+                  kas.nominal
+                }</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">${
                   kas.keterangan ? kas.keterangan : "Tanpa keterangan"
                 }</td>
@@ -215,7 +214,7 @@ const DetailKas = ({ navigation, route }) => {
                     value={keyword}
                     onChangeText={(text) => {
                       setKeyword(text);
-                      filter(text);
+                      filterUser(text);
                     }}
                   />
                 </View>
@@ -232,8 +231,18 @@ const DetailKas = ({ navigation, route }) => {
                 id={id}
                 actions={[
                   {
-                    icon: "plus",
-                    label: "Buat baru",
+                    icon: "cash-plus",
+                    label: "Setor Kas",
+                    onPress: () =>
+                      navigation.navigate("FormPenyetoran", {
+                        method: "post",
+                        event_kas_id: id,
+                      }),
+                    small: false,
+                  },
+                  {
+                    icon: "cash-minus",
+                    label: "Buat Pengeluaran",
                     onPress: () =>
                       navigation.navigate("FormPenyetoran", {
                         method: "post",
@@ -301,7 +310,9 @@ const Basic = ({ navigation, loadDetailKas, detailKas }) => {
                   displayType={"text"}
                   thousandSeparator={true}
                   prefix={"Rp. "}
-                  renderText={(value, props) => <Text>{value}</Text>}
+                  renderText={(value, props) => (
+                    <Text style={{ fontSize: 13, color: "gray" }}>{value}</Text>
+                  )}
                 />
               </Text>
             </VStack>

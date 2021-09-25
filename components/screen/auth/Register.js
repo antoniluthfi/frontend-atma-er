@@ -164,7 +164,7 @@ const Login = ({ navigation }) => {
                 </View>
                 <Text
                   onPress={() => navigation.navigate("Login")}
-                  style={{ marginBottom: 15, color: "tomato" }}
+                  style={{ marginBottom: 15, fontSize: 13, color: "tomato" }}
                 >
                   Kalo udah punya akun, langsung login aja disini!
                 </Text>

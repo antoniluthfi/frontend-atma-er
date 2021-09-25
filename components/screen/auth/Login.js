@@ -109,7 +109,7 @@ const Login = ({ navigation }) => {
                 </View>
                 <Text
                   onPress={() => navigation.navigate("Register")}
-                  style={{ marginBottom: 15, color: "tomato" }}
+                  style={{ marginBottom: 15, fontSize: 13, color: "tomato" }}
                 >
                   Belum pernah daftar? coba daftar dulu deh
                 </Text>

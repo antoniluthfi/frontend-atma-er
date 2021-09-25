@@ -83,11 +83,12 @@ const HistoryKasKeseluruhan = (props) => {
               flex={1}
               alignItems="center"
               pb={2}
-              style={{ paddingVertical: 10 }}
+              style={{
+                paddingVertical: 10,
+              }}
             >
               <Pressable
                 onPress={() => {
-                  console.log(i);
                   setIndex(i);
                 }}
               >

@@ -60,6 +60,7 @@ const TabNavigator = () => {
         },
         tabBarActiveTintColor: "tomato",
         tabBarInactiveTintColor: "gray",
+        tabBarHideOnKeyboard: true
       })}
     >
       <Tab.Screen name="Beranda" component={Home} />

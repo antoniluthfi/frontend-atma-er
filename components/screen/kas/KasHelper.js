@@ -8,6 +8,7 @@ const KasHelper = (navigation) => {
   const dispatch = useDispatch();
 
   const [dataEvent, setDataEvent] = useState([]);
+  const [dataEventCadangan, setDataEventCadangan] = useState([]);
   const [loadDataEvent, setLoadDataEvent] = useState(true);
   const [detailKas, setDetailKas] = useState({});
   const [detailKasCadangan, setDetailKasCadangan] = useState({});
@@ -23,6 +24,11 @@ const KasHelper = (navigation) => {
   const [pemasukan, setPemasukan] = useState(0);
   const [pengeluaran, setPengeluaran] = useState(0);
   const [keyword, setKeyword] = useState("");
+  const [rincianEvent, setRincianEvent] = useState({
+    pemasukan: 0,
+    pengeluaran: 0,
+    total: 0,
+  });
 
   const getListKas = async () => {
     console.log("list kas");
@@ -35,7 +41,14 @@ const KasHelper = (navigation) => {
       },
     })
       .then((response) => {
-        setDataEvent(response.data.result);
+        const result = response.data.result;
+        setDataEvent(result.event);
+        setDataEventCadangan(result.event);
+        setRincianEvent({
+          pemasukan: result.pemasukan,
+          pengeluaran: result.pengeluaran,
+          total: result.total,
+        });
       })
       .catch((error) => {
         console.log(error.message);
@@ -149,7 +162,7 @@ const KasHelper = (navigation) => {
       data: {
         event_kas_id: values.event_kas_id,
         users_id: values.users_id,
-        jenis: 1,
+        jenis: values.jenis,
         nominal: values.nominal,
         keterangan: values.keterangan,
         id_pj: user.data.id,
@@ -264,8 +277,8 @@ const KasHelper = (navigation) => {
 
         let dataPemasukan = 0;
         let dataPengeluaran = 0;
-        result.map(data => {
-          if(parseInt(data.jenis)) dataPemasukan += parseInt(data.nominal);
+        result.map((data) => {
+          if (parseInt(data.jenis)) dataPemasukan += parseInt(data.nominal);
           else dataPengeluaran += parseInt(data.nominal);
         });
         setPemasukan(dataPemasukan);
@@ -276,8 +289,19 @@ const KasHelper = (navigation) => {
       });
   };
 
+  const filterKas = (keyword) => {
+    let val = dataEventCadangan;
 
-  const filter = (keyword) => {
+    if (keyword) {
+      val = val.filter((item) => {
+        return item.nama.toLowerCase().match(keyword.toLowerCase());
+      });
+    }
+
+    setDataEvent(val);
+  };
+
+  const filterUser = (keyword) => {
     let val = detailKasCadangan.per_user;
 
     if (keyword) {
@@ -324,17 +348,20 @@ const KasHelper = (navigation) => {
     setPengeluaran,
     keyword,
     setKeyword,
+    rincianEvent,
+    setRincianEvent,
     getListKas,
     getDetailKas,
     getDetailPerUser,
-    filter,
+    filterUser,
+    filterKas,
     getDataUsers,
     setorKas,
     updateKas,
     hapusData,
     getLogPenyetoran,
     getBelumBayarKas,
-    getArusKasBulanIni
+    getArusKasBulanIni,
   };
 };
 
