@@ -2,11 +2,12 @@ import React, { useState, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/core";
 import { Dimensions, Animated, Pressable } from "react-native";
 import { TabView, SceneMap } from "react-native-tab-view";
-import { NativeBaseProvider, Box, Text, Center, Spinner } from "native-base";
+import { NativeBaseProvider, Box } from "native-base";
 import Header from "../../reusable/Header";
 import KasHelper from "./KasHelper";
 import FirstRoute from "./history-kas-keseluruhan/FirstRoute";
 import SecondRoute from "./history-kas-keseluruhan/SecondRoute";
+import Loading from "../../reusable/Loading";
 
 const initialLayout = { width: Dimensions.get("window").width };
 
@@ -16,18 +17,17 @@ const HistoryKasKeseluruhan = (props) => {
     setLogPenyetoran,
     loadLogPenyetoran,
     setLoadLogPenyetoran,
-    belumBayar,
-    setBelumBayar,
-    loadBelumBayar,
-    setLoadBelumBayar,
-    getLogPenyetoran,
-    getBelumBayarKas,
+    logPengeluaran,
+    setLogPengeluaran,
+    loadLogPengeluaran,
+    setLoadLogPengeluaran,
+    getLogKas,
   } = KasHelper();
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "first", title: "Log Penyetoran" },
-    { key: "second", title: "Belum Bayar Kas" },
+    { key: "second", title: "Log Pengeluaran" },
   ]);
 
   const renderScene = SceneMap({
@@ -41,8 +41,8 @@ const HistoryKasKeseluruhan = (props) => {
     second: () => (
       <SecondRoute
         navigation={props.navigation}
-        belumBayar={belumBayar}
-        loadBelumBayar={loadBelumBayar}
+        logPengeluaran={logPengeluaran}
+        loadLogPengeluaran={loadLogPengeluaran}
       />
     ),
   });
@@ -50,8 +50,7 @@ const HistoryKasKeseluruhan = (props) => {
   useFocusEffect(
     useCallback(() => {
       const fetchData = async () => {
-        await getLogPenyetoran(props.route.params.id);
-        await getBelumBayarKas(props.route.params.id);
+        await getLogKas(props.route.params.id);
       };
 
       fetchData();
@@ -59,8 +58,8 @@ const HistoryKasKeseluruhan = (props) => {
       return () => {
         setLogPenyetoran([]);
         setLoadLogPenyetoran(true);
-        setBelumBayar([]);
-        setLoadBelumBayar(true);
+        setLogPengeluaran([]);
+        setLoadLogPengeluaran(true);
       };
     }, [])
   );
@@ -107,12 +106,21 @@ const HistoryKasKeseluruhan = (props) => {
 
   return (
     <NativeBaseProvider>
-      <Header title="History Penyetoran" navigation={props.navigation} />
-      {loadLogPenyetoran && loadBelumBayar ? (
-        <Center flex={1}>
-          <Spinner size="lg" color="warning.500" />
-          <Text>Tunggu yaa ...</Text>
-        </Center>
+      <Header
+        title="History Kas"
+        navigation={props.navigation}
+        refresh={true}
+        _refresh={async () => {
+          setLogPenyetoran([]);
+          setLoadLogPenyetoran(true);
+          setLogPengeluaran([]);
+          setLoadLogPengeluaran(true);
+          await getLogKas(props.route.params.id);
+        }}
+      />
+      
+      {loadLogPenyetoran && loadLogPengeluaran ? (
+        <Loading />
       ) : (
         <TabView
           navigationState={{ index, routes }}

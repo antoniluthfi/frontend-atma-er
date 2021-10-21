@@ -5,6 +5,7 @@ import DetailKas from "../screen/kas/DetailKas";
 import HistoryKasPerAnggota from "../screen/kas/HistoryKasPerAnggota";
 import DetailHistory from "../screen/kas/DetailHistory";
 import FormPenyetoran from "../screen/kas/FormPenyetoran";
+import FormPengeluaran from "../screen/kas/FormPengeluaran";
 import HistoryKasKeseluruhan from "../screen/kas/HistoryKasKeseluruhan";
 
 const Stack = createNativeStackNavigator();
@@ -19,6 +20,7 @@ const KasStack = () => {
       <Stack.Screen name="ListKas" component={ListKas} />
       <Stack.Screen name="DetailKas" component={DetailKas} />
       <Stack.Screen name="FormPenyetoran" component={FormPenyetoran} />
+      <Stack.Screen name="FormPengeluaran" component={FormPengeluaran} />
       <Stack.Screen
         name="HistoryKasPerAnggota"
         component={HistoryKasPerAnggota}

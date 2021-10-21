@@ -6,11 +6,6 @@ import {
   Pressable,
   HStack,
   // Avatar,
-  Fab,
-  Icon,
-  Spinner,
-  Center,
-  Heading,
   View,
   Input,
   Avatar,
@@ -28,6 +23,7 @@ import Header from "../../reusable/Header";
 import NumberFormat from "react-number-format";
 import FloatingButton from "../../reusable/FloatingButton";
 import { Portal, Provider } from "react-native-paper";
+import Loading from "../../reusable/Loading";
 
 const ListKas = ({ navigation }) => {
   const {
@@ -135,13 +131,27 @@ const ListKas = ({ navigation }) => {
 
   return (
     <NativeBaseProvider>
-      <Header title="Event Kas" navigation={navigation} />
+      <Header
+        title="Event Kas"
+        navigation={navigation}
+        refresh={true}
+        _refresh={async () => {
+          setDataEvent([]);
+          setLoadDataEvent(true);
+          setDetailKas([]);
+          setRincianEvent({
+            pemasukan: 0,
+            pengeluaran: 0,
+            total: 0,
+          });
+
+          await getListKas();
+          await getDetailKas(0);
+        }}
+      />
 
       {loadDataEvent ? (
-        <Center flex={1}>
-          <Spinner size="lg" color="warning.500" />
-          <Text>Tunggu yaa ...</Text>
-        </Center>
+        <Loading />
       ) : (
         <View style={styles.container}>
           <Provider>
@@ -152,24 +162,46 @@ const ListKas = ({ navigation }) => {
                     <FontAwesome5 name="money-check" size={60} />
                   </View>
                   <View style={{ marginLeft: 15 }}>
-                    <Text>
+                    <Text style={{ fontWeight: "bold" }}>
                       Total Pemasukan :{" "}
                       <NumberFormat
                         value={rincianEvent.pemasukan}
                         displayType={"text"}
                         thousandSeparator={true}
                         prefix={"Rp. "}
-                        renderText={(value, props) => <Text>{value}</Text>}
+                        renderText={(value, props) => (
+                          <Text style={{ fontWeight: "bold", color: "blue" }}>
+                            {value}
+                          </Text>
+                        )}
                       />
                     </Text>
-                    <Text>
+                    <Text style={{ fontWeight: "bold" }}>
                       Total Pengeluaran :{" "}
                       <NumberFormat
                         value={rincianEvent.pengeluaran}
                         displayType={"text"}
                         thousandSeparator={true}
                         prefix={"Rp. "}
-                        renderText={(value, props) => <Text>{value}</Text>}
+                        renderText={(value, props) => (
+                          <Text style={{ fontWeight: "bold", color: "red" }}>
+                            {value}
+                          </Text>
+                        )}
+                      />
+                    </Text>
+                    <Text style={{ fontWeight: "bold" }}>
+                      Total Kas :{" "}
+                      <NumberFormat
+                        value={rincianEvent.total}
+                        displayType={"text"}
+                        thousandSeparator={true}
+                        prefix={"Rp. "}
+                        renderText={(value, props) => (
+                          <Text style={{ fontWeight: "bold", color: "green" }}>
+                            {value}
+                          </Text>
+                        )}
                       />
                     </Text>
                     <Text>{moment().format("dddd, Do MMMM YYYY")}</Text>

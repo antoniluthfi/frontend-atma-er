@@ -30,7 +30,7 @@ const chartConfig = {
 const Home = ({ navigation }) => {
   return (
     <NativeBaseProvider>
-      <Header title="Usman Sidomulyo" navigation={navigation} />
+      <Header title="Beranda" navigation={navigation} />
       <View style={styles.container}>
         <View style={[styles.taskWrapper, styles.item]}>
           <Text style={styles.sectionTitle}>Persentase Kehadiran Usman</Text>

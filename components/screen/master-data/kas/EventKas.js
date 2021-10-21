@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useFocusEffect } from "@react-navigation/core";
 import {
   NativeBaseProvider,
@@ -9,16 +9,13 @@ import {
   // Avatar,
   Fab,
   Icon,
-  Spinner,
-  Center,
-  Heading,
-  View,
 } from "native-base";
 import { SwipeListView } from "react-native-swipe-list-view";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import EventKasHelper from "./EventKasHelper";
 import Header from "../../../reusable/Header";
+import Loading from "../../../reusable/Loading";
 
 const EventKas = ({ navigation }) => {
   const {
@@ -65,10 +62,7 @@ const EventKas = ({ navigation }) => {
           />
         </>
       ) : (
-        <Center flex={1}>
-          <Spinner size="lg" color="warning.500" />
-          <Text>Tunggu yaa ...</Text>
-        </Center>
+        <Loading />
       )}
     </NativeBaseProvider>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -16,7 +16,6 @@ import { Formik } from "formik";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { StyleSheet } from "react-native";
 import AuthHelper from "./AuthHelper";
-import { useSelector, useDispatch } from "react-redux";
 
 const inputValidationSchema = yup.object().shape({
   email: yup.string().required("Email nya masih kosong tuh, isi dulu yaa"),
@@ -24,9 +23,9 @@ const inputValidationSchema = yup.object().shape({
 });
 
 const Login = ({ navigation }) => {
-  const dispatch = useDispatch();
-  const loading = useSelector((state) => state.loading);
   const { login } = AuthHelper(navigation);
+  const [type, setType] = useState("password");
+  const [icon, setIcon] = useState("eye");
 
   return (
     <NativeBaseProvider>
@@ -87,13 +86,20 @@ const Login = ({ navigation }) => {
                       _dark={{
                         placeholderTextColor: "blueGray.50",
                       }}
+                      InputLeftElement={
+                        <Ionicons
+                          name="mail"
+                          size={30}
+                          style={{ marginLeft: 8 }}
+                        />
+                      }
                     />
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
                     <FormControl.Label>Password</FormControl.Label>
                     <Input
-                      type="password"
+                      type={type}
                       onChangeText={handleChange("password")}
                       onBlur={handleBlur("password")}
                       value={values.password}
@@ -104,6 +110,29 @@ const Login = ({ navigation }) => {
                       _dark={{
                         placeholderTextColor: "blueGray.50",
                       }}
+                      InputLeftElement={
+                        <Ionicons
+                          name="key"
+                          size={30}
+                          style={{ marginLeft: 8 }}
+                        />
+                      }
+                      InputRightElement={
+                        <Ionicons
+                          name={icon}
+                          size={30}
+                          style={{ marginRight: 8 }}
+                          onPress={() => {
+                            if (type === "password") {
+                              setType("text");
+                              setIcon("eye-off");
+                            } else {
+                              setType("password");
+                              setIcon("eye");
+                            }
+                          }}
+                        />
+                      }
                     />
                   </FormControl>
                 </View>

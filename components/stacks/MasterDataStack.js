@@ -1,31 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import MasterData from "../screen/master-data/MasterData";
+import { useSelector } from "react-redux";
+import Loading from "../reusable/Loading";
 
-// kas
-import EventKas from "../screen/master-data/kas/EventKas";
-import FormEventKas from "../screen/master-data/kas/FormEventKas";
-
-// data usman
-import DataUsman from "../screen/master-data/data-usman/DataUsman";
-import FormUsman from "../screen/master-data/data-usman/FormUsman";
-import DetailUsman from '../screen/master-data/data-usman/DetailUsman';
+// import stack
+import administratorStack from "../../routes/master-data-stack/administrator";
 
 const Stack = createNativeStackNavigator();
 
 const MasterDataStack = () => {
+  const user = useSelector((state) => state.user);
+  const administrator = user && user.data.hak_akses === "administrator";
+
+  const [routes, setRoutes] = useState([]);
+
+  useEffect(() => {
+    const getRoutes = () => {
+      if (administrator) {
+        setRoutes(administratorStack);
+      }
+    };
+
+    getRoutes();
+
+    return () => {
+      setRoutes([]);
+    };
+  }, []);
+
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
       }}
     >
-      <Stack.Screen name="MasterDataList" component={MasterData} />
-      <Stack.Screen name="EventKas" component={EventKas} />
-      <Stack.Screen name="FormEventKas" component={FormEventKas} />
-      <Stack.Screen name="DataUsman" component={DataUsman} />
-      <Stack.Screen name="FormUsman" component={FormUsman} />
-      <Stack.Screen name="DetailUsman" component={DetailUsman} />
+      {routes.length > 0 ? (
+        routes.map((item, i) => (
+          <Stack.Screen
+            key={i.toString()}
+            name={item.name}
+            component={item.component}
+          />
+        ))
+      ) : (
+        <Stack.Screen name="LoadingStack" component={Loading} />
+      )}
     </Stack.Navigator>
   );
 };

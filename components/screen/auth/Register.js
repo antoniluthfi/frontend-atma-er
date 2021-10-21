@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -13,8 +13,9 @@ import {
 } from "native-base";
 import * as yup from "yup";
 import { Formik } from "formik";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import { StyleSheet } from "react-native";
+import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import AuthHelper from "./AuthHelper";
 
 const inputValidationSchema = yup.object().shape({
@@ -29,6 +30,14 @@ const inputValidationSchema = yup.object().shape({
 
 const Login = ({ navigation }) => {
   const { register } = AuthHelper(navigation);
+  const [type, setType] = useState({
+    type1: "password",
+    type2: "password",
+  });
+  const [icon, setIcon] = useState({
+    icon1: "eye",
+    icon2: "eye",
+  });
 
   return (
     <NativeBaseProvider>
@@ -78,6 +87,36 @@ const Login = ({ navigation }) => {
                   }}
                 >
                   <FormControl isRequired style={{ marginVertical: 10 }}>
+                    <FormControl.Label>Foto Profil</FormControl.Label>
+                    <Input
+                      type="text"
+                      isDisabled
+                      onChangeText={handleChange("name")}
+                      onBlur={handleBlur("name")}
+                      value={values.name}
+                      placeholder="Foto Profil" // mx={4}
+                      _light={{
+                        placeholderTextColor: "blueGray.400",
+                      }}
+                      _dark={{
+                        placeholderTextColor: "blueGray.50",
+                      }}
+                      InputRightElement={
+                        <Ionicons
+                          name="image"
+                          size={30}
+                          style={{ marginRight: 8 }}
+                          onPress={() => {
+                            launchImageLibrary({}, (response) => {
+                              console.log(response);
+                            });
+                          }}
+                        />
+                      }
+                    />
+                  </FormControl>
+
+                  <FormControl isRequired style={{ marginVertical: 10 }}>
                     <FormControl.Label>Nama Lengkap</FormControl.Label>
                     <Input
                       type="text"
@@ -98,6 +137,7 @@ const Login = ({ navigation }) => {
                     <FormControl.Label>Nomor HP / WhatsApp</FormControl.Label>
                     <Input
                       type="number"
+                      keyboardType="numeric"
                       onChangeText={handleChange("nomorhp")}
                       onBlur={handleBlur("nomorhp")}
                       value={values.nomorhp}
@@ -115,6 +155,7 @@ const Login = ({ navigation }) => {
                     <FormControl.Label>Email</FormControl.Label>
                     <Input
                       type="email"
+                      keyboardType="email-address"
                       onChangeText={handleChange("email")}
                       onBlur={handleBlur("email")}
                       value={values.email}
@@ -131,7 +172,7 @@ const Login = ({ navigation }) => {
                   <FormControl isRequired style={{ marginVertical: 10 }}>
                     <FormControl.Label>Password</FormControl.Label>
                     <Input
-                      type="password"
+                      type={type.type1}
                       onChangeText={handleChange("password")}
                       onBlur={handleBlur("password")}
                       value={values.password}
@@ -142,13 +183,29 @@ const Login = ({ navigation }) => {
                       _dark={{
                         placeholderTextColor: "blueGray.50",
                       }}
+                      InputRightElement={
+                        <Ionicons
+                          name={icon.icon1}
+                          size={30}
+                          style={{ marginRight: 8 }}
+                          onPress={() => {
+                            if (type.type1 === "password") {
+                              setType({ ...type, type1: "text" });
+                              setIcon({ ...icon, icon1: "eye-off" });
+                            } else {
+                              setType({ ...type, type1: "password" });
+                              setIcon({ ...icon, icon1: "eye" });
+                            }
+                          }}
+                        />
+                      }
                     />
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
                     <FormControl.Label>Konfirmasi Password</FormControl.Label>
                     <Input
-                      type="password"
+                      type={type.type2}
                       onChangeText={handleChange("c_password")}
                       onBlur={handleBlur("c_password")}
                       value={values.c_password}
@@ -159,6 +216,22 @@ const Login = ({ navigation }) => {
                       _dark={{
                         placeholderTextColor: "blueGray.50",
                       }}
+                      InputRightElement={
+                        <Ionicons
+                          name={icon.icon2}
+                          size={30}
+                          style={{ marginRight: 8 }}
+                          onPress={() => {
+                            if (type.type2 === "password") {
+                              setType({ ...type, type2: "text" });
+                              setIcon({ ...icon, icon2: "eye-off" });
+                            } else {
+                              setType({ ...type, type2: "password" });
+                              setIcon({ ...icon, icon2: "eye" });
+                            }
+                          }}
+                        />
+                      }
                     />
                   </FormControl>
                 </View>
@@ -194,8 +267,7 @@ const styles = StyleSheet.create({
   taskWrapper: {
     paddingBottom: 10,
     paddingHorizontal: 8,
-    marginTop: 10,
-    marginHorizontal: 10,
+    margin: 10,
     backgroundColor: "white",
     borderRadius: 8,
     width: "95%",

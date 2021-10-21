@@ -2,7 +2,7 @@ import React from "react";
 import { Avatar, Box, HStack, Pressable, Text, VStack } from "native-base";
 import NumberFormat from "react-number-format";
 import { SwipeListView } from "react-native-swipe-list-view";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FAB } from "react-native-paper";
 import Share from "react-native-share";
 
@@ -20,7 +20,7 @@ const FirstRoute = ({ navigation, loadLogPenyetoran, logPenyetoran }) => {
 
       await Share.open({
         title: "Log penyetoran kas",
-        message: `List usman yang sudah bayar kas bulan ini. \n ${data}`,
+        message: `List pemasukan usman bulan ini. \n ${data}`,
         subject: "tes",
       });
     } catch (error) {
@@ -48,7 +48,7 @@ const FirstRoute = ({ navigation, loadLogPenyetoran, logPenyetoran }) => {
         <HStack width="100%" px={4}>
           <HStack space={2} alignItems="center">
             <Avatar color="white" bg={"warning.500"}>
-              <Ionicons name="person" size={30} color="white" />
+              <MaterialCommunityIcons name="cash-plus" size={30} color="white" />
             </Avatar>
             <VStack>
               <Text>{item.users.name}</Text>
@@ -70,25 +70,34 @@ const FirstRoute = ({ navigation, loadLogPenyetoran, logPenyetoran }) => {
 
   return (
     <Box bg="white" safeArea flex={1}>
-      <SwipeListView
-        data={loadLogPenyetoran ? [] : logPenyetoran}
-        renderItem={renderItem}
-        previewRowKey={"0"}
-        onRowDidOpen={onRowDidOpen}
-      />
+      {loadLogPenyetoran ? (
+        <Center flex={1}>
+          <Spinner size="lg" color="warning.500" />
+          <Text>Tunggu yaa ...</Text>
+        </Center>
+      ) : (
+        <>
+          <SwipeListView
+            data={logPenyetoran}
+            renderItem={renderItem}
+            previewRowKey={"0"}
+            onRowDidOpen={onRowDidOpen}
+          />
 
-      <FAB
-        style={{
-          position: "absolute",
-          right: 20,
-          bottom: 130,
-          backgroundColor: "tomato",
-        }}
-        small={false}
-        icon="share"
-        onPress={() => console.log("tes")}
-        onPress={shareKas}
-      />
+          <FAB
+            style={{
+              position: "absolute",
+              right: 20,
+              bottom: 130,
+              backgroundColor: "tomato",
+            }}
+            small={false}
+            icon="share"
+            onPress={() => console.log("tes")}
+            onPress={shareKas}
+          />
+        </>
+      )}
     </Box>
   );
 };

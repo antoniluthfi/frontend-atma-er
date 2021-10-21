@@ -34,7 +34,17 @@ const HostoryKasPerAnggota = ({ navigation, route }) => {
 
   return (
     <NativeBaseProvider>
-      <Header title="History Penyetoran" navigation={navigation} />
+      <Header
+        title="History Penyetoran"
+        navigation={navigation}
+        refresh={true}
+        _refresh={async () => {
+          setDetailPerUser([]);
+          setLoadDetailPerUser(true);
+          await getDetailPerUser(event_id, user.id);
+        }}
+      />
+      
       <View style={styles.container}>
         <View style={styles.taskWrapper}>
           <View style={styles.card}>

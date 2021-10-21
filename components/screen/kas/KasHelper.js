@@ -17,8 +17,8 @@ const KasHelper = (navigation) => {
   const [loadDetailPerUser, setLoadDetailPerUser] = useState(true);
   const [logPenyetoran, setLogPenyetoran] = useState([]);
   const [loadLogPenyetoran, setLoadLogPenyetoran] = useState(true);
-  const [belumBayar, setBelumBayar] = useState([]);
-  const [loadBelumBayar, setLoadBelumBayar] = useState(true);
+  const [logPengeluaran, setLogPengeluaran] = useState([]);
+  const [loadLogPengeluaran, setLoadLogPengeluaran] = useState(true);
   const [dataUsers, setDataUsers] = useState([]);
   const [dataArusKas, setDataArusKas] = useState([]);
   const [pemasukan, setPemasukan] = useState(0);
@@ -72,7 +72,7 @@ const KasHelper = (navigation) => {
         setDetailKasCadangan(result);
       })
       .catch((error) => {
-        alert(error.message);
+        console.log(error.message);
       });
 
     setLoadDetailKas(false);
@@ -126,7 +126,7 @@ const KasHelper = (navigation) => {
       data: {
         event_kas_id: values.event_kas_id,
         users_id: values.users_id,
-        jenis: 1,
+        jenis: values.jenis,
         nominal: values.nominal,
         keterangan: values.keterangan,
         id_pj: user.data.id,
@@ -217,7 +217,7 @@ const KasHelper = (navigation) => {
     });
   };
 
-  const getLogPenyetoran = async (event_id) => {
+  const getLogKas = async (event_id) => {
     await axios({
       method: "get",
       url: `${TEST_URL}/arus-kas/event/${event_id}/list`,
@@ -227,39 +227,16 @@ const KasHelper = (navigation) => {
       },
     })
       .then((response) => {
-        setLogPenyetoran(response.data.result);
+        const result = response.data.result;
+        setLogPenyetoran(result.pemasukan);
+        setLogPengeluaran(result.pengeluaran);
       })
       .catch((error) => {
         console.log(error);
       });
 
     setLoadLogPenyetoran(false);
-  };
-
-  const getBelumBayarKas = async (event_id) => {
-    await axios({
-      method: "get",
-      url: `${TEST_URL}/arus-kas/list/belum-bayar/${event_id}`,
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${user.token}`,
-      },
-    })
-      .then((response) => {
-        const result = response.data.result;
-        const data = result.users.filter((item) => {
-          for (let i = 0; i < result.length; i++) {
-            return item.id != result[i].users_id;
-          }
-        });
-
-        setBelumBayar(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    setLoadBelumBayar(false);
+    setLoadLogPengeluaran(false);
   };
 
   const getArusKasBulanIni = async (event_id) => {
@@ -334,10 +311,10 @@ const KasHelper = (navigation) => {
     setLogPenyetoran,
     loadLogPenyetoran,
     setLoadLogPenyetoran,
-    belumBayar,
-    setBelumBayar,
-    loadBelumBayar,
-    setLoadBelumBayar,
+    logPengeluaran,
+    setLogPengeluaran,
+    loadLogPengeluaran,
+    setLoadLogPengeluaran,
     dataUsers,
     setDataUsers,
     dataArusKas,
@@ -359,8 +336,7 @@ const KasHelper = (navigation) => {
     setorKas,
     updateKas,
     hapusData,
-    getLogPenyetoran,
-    getBelumBayarKas,
+    getLogKas,
     getArusKasBulanIni,
   };
 };

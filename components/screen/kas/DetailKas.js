@@ -10,10 +10,10 @@ import {
   Pressable,
   HStack,
   Avatar,
-  Center,
-  Spinner,
   VStack,
   Input,
+  Menu,
+  IconButton,
 } from "native-base";
 import NumberFormat from "react-number-format";
 import { Portal, Provider } from "react-native-paper";
@@ -24,6 +24,7 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Header from "../../reusable/Header";
 import FloatingButton from "../../reusable/FloatingButton";
 import KasHelper from "./KasHelper";
+import Loading from "../../reusable/Loading";
 
 const DetailKas = ({ navigation, route }) => {
   const { title, id } = route.params;
@@ -123,13 +124,24 @@ const DetailKas = ({ navigation, route }) => {
 
   return (
     <NativeBaseProvider>
-      <Header title={`Detail ${title}`} navigation={navigation} />
+      <Header
+        title={title}
+        navigation={navigation}
+        refresh={true}
+        _refresh={async () => {
+          setDetailKas({});
+          setLoadDetailKas(true);
+          setDataArusKas([]);
+          setPemasukan(0);
+          setPengeluaran(0);
+
+          await getDetailKas(id);
+          await getArusKasBulanIni(id);
+        }}
+      />
 
       {loadDetailKas ? (
-        <Center flex={1}>
-          <Spinner size="lg" color="warning.500" />
-          <Text>Tunggu yaa ...</Text>
-        </Center>
+        <Loading />
       ) : (
         <View style={styles.container}>
           <Provider>
@@ -140,47 +152,55 @@ const DetailKas = ({ navigation, route }) => {
                     <FontAwesome5 name="money-check" size={60} />
                   </View>
                   <View style={{ marginLeft: 15 }}>
-                    <Text>
+                    <Text style={{ fontWeight: "bold" }}>
                       Total Pemasukan :{" "}
-                      {detailKas &&
-                        detailKas.total &&
-                        detailKas.total.map((val, i) =>
-                          val.jenis ? (
-                            <NumberFormat
-                              key={i}
-                              value={val.total}
-                              displayType={"text"}
-                              thousandSeparator={true}
-                              prefix={"Rp. "}
-                              renderText={(value, props) => (
-                                <Text>{value}</Text>
-                              )}
-                            />
-                          ) : (
-                            `Rp. 0`
-                          )
-                        )}
+                      {detailKas && (
+                        <NumberFormat
+                          value={detailKas.total.total_pemasukan}
+                          displayType={"text"}
+                          thousandSeparator={true}
+                          prefix={"Rp. "}
+                          renderText={(value, props) => (
+                            <Text style={{ fontWeight: "bold", color: "blue" }}>
+                              {value}
+                            </Text>
+                          )}
+                        />
+                      )}
                     </Text>
-                    <Text>
+                    <Text style={{ fontWeight: "bold" }}>
                       Total Pengeluaran :{" "}
-                      {detailKas &&
-                        detailKas.total &&
-                        detailKas.total.map((val, i) =>
-                          !val.jenis ? (
-                            <NumberFormat
-                              key={i}
-                              value={val.total}
-                              displayType={"text"}
-                              thousandSeparator={true}
-                              prefix={"Rp. "}
-                              renderText={(value, props) => (
-                                <Text>{value}</Text>
-                              )}
-                            />
-                          ) : (
-                            `Rp. 0`
-                          )
-                        )}
+                      {detailKas && (
+                        <NumberFormat
+                          value={detailKas.total.total_pengeluaran}
+                          displayType={"text"}
+                          thousandSeparator={true}
+                          prefix={"Rp. "}
+                          renderText={(value, props) => (
+                            <Text style={{ fontWeight: "bold", color: "red" }}>
+                              {value}
+                            </Text>
+                          )}
+                        />
+                      )}
+                    </Text>
+                    <Text style={{ fontWeight: "bold" }}>
+                      Total Kas :{" "}
+                      {detailKas && (
+                        <NumberFormat
+                          value={detailKas.total.total_kas}
+                          displayType={"text"}
+                          thousandSeparator={true}
+                          prefix={"Rp. "}
+                          renderText={(value, props) => (
+                            <Text
+                              style={{ fontWeight: "bold", color: "green" }}
+                            >
+                              {value}
+                            </Text>
+                          )}
+                        />
+                      )}
                     </Text>
                     <Text>{moment().format("dddd, Do MMMM YYYY")}</Text>
                   </View>
@@ -199,7 +219,7 @@ const DetailKas = ({ navigation, route }) => {
                 }}
               >
                 <View
-                  style={{ marginVertical: 15, paddingLeft: 15, width: "97%" }}
+                  style={{ marginVertical: 15, paddingLeft: 15, width: "83%" }}
                 >
                   <Input
                     type="text"
@@ -217,6 +237,27 @@ const DetailKas = ({ navigation, route }) => {
                       filterUser(text);
                     }}
                   />
+                </View>
+                <View
+                  style={{ marginVertical: 15, paddingLeft: 5, width: "14%" }}
+                >
+                  <Menu
+                    onOpen={() => console.log("open option")}
+                    onClose={() => console.log("close option")}
+                    trigger={(triggerProps) => (
+                      <IconButton
+                        {...triggerProps}
+                        variant="outline"
+                        colorScheme="gray"
+                        icon={<Ionicons name="ellipsis-vertical" size={34} />}
+                        style={{
+                          borderRadius: 7,
+                        }}
+                      />
+                    )}
+                  >
+                    <Menu.Item>Belum Bayar</Menu.Item>
+                  </Menu>
                 </View>
               </View>
 
@@ -244,7 +285,7 @@ const DetailKas = ({ navigation, route }) => {
                     icon: "cash-minus",
                     label: "Buat Pengeluaran",
                     onPress: () =>
-                      navigation.navigate("FormPenyetoran", {
+                      navigation.navigate("FormPengeluaran", {
                         method: "post",
                         event_kas_id: id,
                       }),
@@ -252,7 +293,7 @@ const DetailKas = ({ navigation, route }) => {
                   },
                   {
                     icon: "file",
-                    label: "History Penyetoran",
+                    label: "History Kas",
                     onPress: () =>
                       navigation.navigate("HistoryKasKeseluruhan", {
                         id: id,

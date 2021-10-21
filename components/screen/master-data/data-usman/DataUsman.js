@@ -34,7 +34,7 @@ const DataUsman = ({ navigation }) => {
     getDataUsman,
     keyword,
     setKeyword,
-    filterData
+    filterData,
   } = DataUsmanHelper(navigation);
 
   const buatPdf = async () => {
@@ -109,7 +109,16 @@ const DataUsman = ({ navigation }) => {
 
   return (
     <NativeBaseProvider>
-      <Header title="Data Usman" navigation={navigation} />
+      <Header
+        title="Data Usman"
+        navigation={navigation}
+        refresh={true}
+        _refresh={async () => {
+          setDataUsman([]);
+          setLoadDataUsman(true);
+          await getDataUsman();
+        }}
+      />
 
       {loadDataUsman ? (
         <Center flex={1}>

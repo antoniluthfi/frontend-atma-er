@@ -1,12 +1,20 @@
 import React from "react";
-import { Avatar, Box, HStack, Pressable, Text, VStack } from "native-base";
+import {
+  Avatar,
+  Box,
+  HStack,
+  Pressable,
+  Text,
+  VStack,
+} from "native-base";
 import NumberFormat from "react-number-format";
 import { SwipeListView } from "react-native-swipe-list-view";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FAB } from "react-native-paper";
 import Share from "react-native-share";
+import Loading from "../../../reusable/Loading";
 
-const SecondRoute = ({ navigation, loadBelumBayar, belumBayar }) => {
+const SecondRoute = ({ navigation, loadLogPengeluaran, logPengeluaran }) => {
   const onRowDidOpen = (rowKey) => {
     console.log("This row opened", rowKey);
   };
@@ -14,13 +22,13 @@ const SecondRoute = ({ navigation, loadBelumBayar, belumBayar }) => {
   const shareKas = async () => {
     try {
       let data = "";
-      belumBayar.map((item, i) => {
+      logPengeluaran.map((item, i) => {
         data += `${i + 1}. ${item.users.name} \n`;
       });
 
       await Share.open({
-        title: "Log penyetoran kas",
-        message: `List usman yang belum bayar kas bulan ini. \n ${data}`,
+        title: "Log pengeluaran kas",
+        message: `List pengeluaran usman bulan ini. \n ${data}`,
         subject: "tes",
       });
     } catch (error) {
@@ -48,10 +56,14 @@ const SecondRoute = ({ navigation, loadBelumBayar, belumBayar }) => {
         <HStack width="100%" px={4}>
           <HStack space={2} alignItems="center">
             <Avatar color="white" bg={"warning.500"}>
-              <Ionicons name="person" size={30} color="white" />
+              <MaterialCommunityIcons
+                name="cash-minus"
+                size={30}
+                color="white"
+              />
             </Avatar>
             <VStack>
-              <Text>{item.users.name}</Text>
+              <Text>{item.keterangan}</Text>
               <Text>
                 <NumberFormat
                   value={item.nominal}
@@ -70,25 +82,30 @@ const SecondRoute = ({ navigation, loadBelumBayar, belumBayar }) => {
 
   return (
     <Box bg="white" safeArea flex={1}>
-      <SwipeListView
-        data={loadBelumBayar ? [] : belumBayar}
-        renderItem={renderItem}
-        previewRowKey={"0"}
-        onRowDidOpen={onRowDidOpen}
-      />
-
-      <FAB
-        style={{
-          position: "absolute",
-          right: 20,
-          bottom: 130,
-          backgroundColor: "tomato",
-        }}
-        small={false}
-        icon="share"
-        onPress={() => console.log("tes")}
-        onPress={shareKas}
-      />
+      {loadLogPengeluaran ? (
+        <Loading />
+      ) : (
+        <>
+          <SwipeListView
+            data={logPengeluaran}
+            renderItem={renderItem}
+            previewRowKey={"0"}
+            onRowDidOpen={onRowDidOpen}
+          />
+          <FAB
+            style={{
+              position: "absolute",
+              right: 20,
+              bottom: 130,
+              backgroundColor: "tomato",
+            }}
+            small={false}
+            icon="share"
+            onPress={() => console.log("tes")}
+            onPress={shareKas}
+          />
+        </>
+      )}
     </Box>
   );
 };
