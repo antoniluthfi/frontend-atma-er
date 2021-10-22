@@ -22,6 +22,7 @@ const AuthHelper = (navigation) => {
         payload: true,
       });
 
+      console.log("login");
       await axios({
         method: "post",
         url: `${TEST_URL}/login`,

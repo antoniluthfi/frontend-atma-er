@@ -12,6 +12,7 @@ const DataUsmanHelper = (navigation) => {
   const [keyword, setKeyword] = useState("");
 
   const getDataUsman = async () => {
+    console.log('get data usman');
     await axios({
       method: "GET",
       url: `${TEST_URL}/user`,

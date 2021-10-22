@@ -48,6 +48,9 @@ const EventKas = ({ navigation }) => {
           </Box>
           <Fab
             position="absolute"
+            style={{
+              bottom: 130
+            }}
             size="sm"
             onPress={() =>
               navigation.navigate("FormEventKas", {

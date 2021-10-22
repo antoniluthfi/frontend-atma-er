@@ -263,7 +263,11 @@ const FormUsman = ({ navigation, route }) => {
                     <Select
                       onValueChange={handleChange("jenis_kelamin")}
                       onBlur={handleBlur("jenis_kelamin")}
-                      selectedValue={values.jenis_kelamin.toString()}
+                      selectedValue={
+                        values.jenis_kelamin
+                          ? values.jenis_kelamin.toString()
+                          : ""
+                      }
                       minWidth={200}
                       accessibilityLabel="Jenis Kelamin"
                       placeholder="Jenis Kelamin"

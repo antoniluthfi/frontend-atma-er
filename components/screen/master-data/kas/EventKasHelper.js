@@ -9,7 +9,7 @@ const EventKasHelper = (navigation) => {
   const [loadDataEvent, setLoadDataEvent] = useState(true);
 
   const getEventKas = async () => {
-    console.log("event kas");
+    console.log("get event kas");
     await axios({
       method: "GET",
       url: `${TEST_URL}/event-kas`,
