@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as yup from "yup";
 import { Formik } from "formik";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Alert } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import "moment/locale/id";
 import moment from "moment";
@@ -16,8 +16,9 @@ import {
   Input,
 } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Header from "../../../reusable/Header";
-import DataUsmanHelper from "./DataUsmanHelper";
+import Header from "../../reusable/Header";
+import { useSelector } from "react-redux";
+import DataDiriHelper from "./DataDiriHelper";
 
 const inputValidationSchema = yup.object().shape({
   name: yup.string().required("Nama nya masih kosong tuh, isi dulu yaa"),
@@ -43,41 +44,55 @@ const inputValidationSchema = yup.object().shape({
   hak_akses: yup.string().required("Hak akses nya diisi dulu yaa"),
 });
 
-const FormUsman = ({ navigation, route }) => {
-  const { judul, method, payload } = route.params;
-  const { postDataUsman, updateDataUsman } = DataUsmanHelper(navigation);
-
+const DataDiri = ({ navigation }) => {
+  const user = useSelector((state) => state.user.data);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [tglLahir, setTglLahir] = useState(
-    method === "put"
-      ? payload.tgl_lahir
-        ? parseInt(payload.tgl_lahir)
-        : Date.now()
-      : Date.now()
-  );
+  const [tglLahir, setTglLahir] = useState(Date.now());
+
+  const { postDataDiri } = DataDiriHelper(navigation);
+
+  useEffect(() => {
+    Alert.alert(
+      "Pemberitahuan",
+      "Silahkan lengkapi data diri untuk bisa menikmati fitur dari aplikasi ini",
+      [{ text: "Oke", style: "cancel", onPress: () => console.log("oke") }]
+    );
+  }, []);
 
   return (
     <Formik
       initialValues={{
-        name: method === "put" ? payload.name : "",
-        email: method === "put" ? payload.email : "",
-        alamat: method === "put" ? payload.alamat : "",
-        nomorhp:
-          method === "put" ? payload.nomorhp && payload.nomorhp.toString() : "",
-        nama_ayah: method === "put" ? payload.nama_ayah : "",
-        nama_ibu: method === "put" ? payload.nama_ibu : "",
-        tempat_lahir: method === "put" ? payload.tempat_lahir : "",
-        jenis_kelamin: method === "put" ? payload.jenis_kelamin : "",
-        status: method === "put" ? payload.status : "",
-        hak_akses: method === "put" ? payload.hak_akses : "",
+        name: user.name || "",
+        email: user.email || "",
+        alamat: "",
+        nomorhp: "",
+        nama_ayah: "",
+        nama_ibu: "",
+        tempat_lahir: "",
+        jenis_kelamin: "",
+        status: "",
       }}
       onSubmit={(values) => {
         values.tgl_lahir = tglLahir;
 
-        if (method === "put") {
-          updateDataUsman(values, payload.id);
-        } else if (method === "post") {
-          postDataUsman(values);
+        let message;
+        if (!values.name) message = "Nama harus diisi!";
+        else if (!values.email) message = "Email harus diisi!";
+        else if (!values.alamat) message = "Alamat harus diisi!";
+        else if (!values.nomorhp) message = "Nomor hp harus diisi!";
+        else if (!values.nama_ayah) message = "Nama ayah harus diisi!";
+        else if (!values.nama_ibu) message = "Nama ibu harus diisi!";
+        else if (!values.tempat_lahir) message = "Tempat lahir harus diisi!";
+        else if (!values.tgl_lahir) message = "Tanggal lahir harus diisi!";
+        else if (!values.jenis_kelamin) message = "Jenis kelamin harus diisi!";
+        else if (!values.status) message = "Status harus diisi!";
+
+        if (message) {
+          Alert.alert("Gagal", message, [
+            { text: "Oke", style: "cancel", onPress: () => console.log("oke") },
+          ]);
+        } else {
+          postDataDiri(values);
         }
       }}
     >
@@ -91,7 +106,11 @@ const FormUsman = ({ navigation, route }) => {
         isValid,
       }) => (
         <NativeBaseProvider>
-          <Header title={judul} navigation={navigation} />
+          <Header
+            title="Lengkapi Data Diri"
+            navigation={navigation}
+            menu={false}
+          />
           <ScrollView>
             <View style={styles.container}>
               <View style={styles.taskWrapper}>
@@ -332,52 +351,15 @@ const FormUsman = ({ navigation, route }) => {
                       </Text>
                     )}
                   </FormControl>
-
-                  <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Hak Akses</FormControl.Label>
-                    <Select
-                      onValueChange={handleChange("hak_akses")}
-                      onBlur={handleBlur("hak_akses")}
-                      selectedValue={values.hak_akses}
-                      minWidth={200}
-                      accessibilityLabel="Hak Akses"
-                      placeholder="Hak Akses"
-                      _selectedItem={{
-                        bg: "teal.600",
-                        endIcon: (
-                          <Ionicons
-                            name="ios-checkmark"
-                            size={30}
-                            color="black"
-                            style={{ marginLeft: 5 }}
-                          />
-                        ),
-                      }}
-                      mt={1}
-                    >
-                      <Select.Item
-                        label="Administrator"
-                        value="administrator"
-                      />
-                      <Select.Item label="Sekretaris" value="sekretaris" />
-                      <Select.Item label="Bendahara" value="bendahara" />
-                      <Select.Item label="Anggota" value="user" />
-                    </Select>
-
-                    {errors.jenis_kelamin && touched.jenis_kelamin && (
-                      <Text style={{ fontSize: 11, color: "red" }}>
-                        {errors.jenis_kelamin}
-                      </Text>
-                    )}
-                  </FormControl>
                 </View>
+
                 <Button
                   onPress={handleSubmit}
                   size="md"
                   colorScheme="orange"
                   _text={{ color: "#fff", fontWeight: "bold" }}
                 >
-                  {method === "put" ? "Update" : "Submit"}
+                  Submit
                 </Button>
               </View>
             </View>
@@ -405,4 +387,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FormUsman;
+export default DataDiri;

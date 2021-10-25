@@ -101,7 +101,7 @@ const HostoryKasPerAnggota = ({ navigation, route }) => {
                     onPress={() => {
                       navigation.navigate("DetailHistory", {
                         id: detail.id,
-                        users_id: detail.users_id,
+                        user_id: detail.user_id,
                         name: detail.users.name,
                         event_kas_id: detail.event_kas_id,
                         event_name: detail.event_kas.nama,

@@ -4,7 +4,7 @@ import AuthStack from "../stacks/AuthStack";
 
 const Stack = createNativeStackNavigator();
 
-const StackNavigator = () => {
+const MainStackNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={() => ({
@@ -16,4 +16,4 @@ const StackNavigator = () => {
   );
 };
 
-export default StackNavigator;
+export default MainStackNavigator;

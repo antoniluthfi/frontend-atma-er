@@ -125,7 +125,7 @@ const KasHelper = (navigation) => {
       url: `${TEST_URL}/arus-kas`,
       data: {
         event_kas_id: values.event_kas_id,
-        users_id: values.users_id,
+        user_id: values.user_id,
         jenis: values.jenis,
         nominal: values.nominal,
         keterangan: values.keterangan,
@@ -161,7 +161,7 @@ const KasHelper = (navigation) => {
       url: `${TEST_URL}/arus-kas/${id}`,
       data: {
         event_kas_id: values.event_kas_id,
-        users_id: values.users_id,
+        user_id: values.user_id,
         jenis: values.jenis,
         nominal: values.nominal,
         keterangan: values.keterangan,

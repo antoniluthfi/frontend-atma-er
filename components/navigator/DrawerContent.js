@@ -4,13 +4,52 @@ import {
   DrawerItem,
   DrawerItemList,
 } from "@react-navigation/drawer";
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Heading, HStack, Text, View } from "native-base";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
+import { TEST_URL } from "@env";
 
 const DrawerContent = ({ progress, ...props }) => {
-  const user = useSelector((state) => state.user.data);
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  const logout = async () => {
+    dispatch({
+      type: "SET_LOADING",
+      payload: true,
+    });
+
+    await axios({
+      method: "POST",
+      url: `${TEST_URL}/logout`,
+      data: {},
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+    })
+      .then(() => {
+        dispatch({
+          type: "LOGIN",
+          payload: {
+            data: null,
+            token: null,
+          },
+        });
+      })
+      .catch((err) => {
+        Alert.alert("Gagal Logout", "Maaf, silahkan coba lagi", [
+          { text: "Oke", style: "cancel", onPress: () => console.log("oke") },
+        ]);
+      });
+
+    dispatch({
+      type: "SET_LOADING",
+      payload: false,
+    });
+  };
 
   return (
     <DrawerContentScrollView {...props}>
@@ -21,9 +60,11 @@ const DrawerContent = ({ progress, ...props }) => {
           </View>
           <View justifyContent="center">
             <Text style={{ fontWeight: "bold", color: "white" }}>
-              {user.name}
+              {user.data.name}
             </Text>
-            <Text style={{ fontSize: 13, color: "white" }}>{user.email}</Text>
+            <Text style={{ fontSize: 13, color: "white" }}>
+              {user.data.email}
+            </Text>
           </View>
         </HStack>
       </Heading>
@@ -46,10 +87,11 @@ const DrawerContent = ({ progress, ...props }) => {
         }}
       />
       <DrawerItem
-        label="Rate us"
+        label="Logout"
         icon={({ color, size }) => (
-          <Ionicons name="star" size={size} color={color} />
+          <Ionicons name="log-out" size={size} color={color} />
         )}
+        onPress={logout}
       />
     </DrawerContentScrollView>
   );

@@ -6,7 +6,7 @@ import Profilku from "../screen/user/Profilku";
 
 const Drawer = createDrawerNavigator();
 
-const DrawerNavigator = () => {
+const MainDrawerNavigator = () => {
   return (
     <Drawer.Navigator
       screenOptions={() => ({
@@ -20,4 +20,4 @@ const DrawerNavigator = () => {
   );
 };
 
-export default DrawerNavigator;
+export default MainDrawerNavigator;

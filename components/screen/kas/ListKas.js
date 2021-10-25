@@ -24,6 +24,7 @@ import NumberFormat from "react-number-format";
 import FloatingButton from "../../reusable/FloatingButton";
 import { Portal, Provider } from "react-native-paper";
 import Loading from "../../reusable/Loading";
+import GroupList from "../../reusable/GroupList";
 
 const ListKas = ({ navigation }) => {
   const {
@@ -149,6 +150,8 @@ const ListKas = ({ navigation }) => {
           await getDetailKas(0);
         }}
       />
+
+      <GroupList />
 
       {loadDataEvent ? (
         <Loading />

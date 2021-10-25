@@ -23,7 +23,7 @@ const height = Dimensions.get("window").height;
 const DetailHistory = ({ navigation, route }) => {
   const {
     id,
-    users_id,
+    user_id,
     name,
     event_kas_id,
     event_name,
@@ -149,7 +149,7 @@ const DetailHistory = ({ navigation, route }) => {
                         id: id,
                         event_kas_id: event_kas_id,
                         event_name: event_name,
-                        users_id: users_id,
+                        user_id: user_id,
                         jenis: jenis,
                         nominal: nominal,
                         keterangan: keterangan,

@@ -15,6 +15,7 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import EventKasHelper from "./EventKasHelper";
 import Header from "../../../reusable/Header";
+import { useSelector } from "react-redux";
 
 const inputValidationSchema = yup.object().shape({
   nama: yup.string().required("Nama event nya masih kosong tuh, isi dulu yaa"),
@@ -22,6 +23,7 @@ const inputValidationSchema = yup.object().shape({
 });
 
 const FormEventKas = ({ navigation, route }) => {
+  const user = useSelector((state) => state.user.data);
   const { postEventKas, updateEvent } = EventKasHelper(navigation);
   const { judul, method, payload } = route.params;
 
@@ -31,6 +33,7 @@ const FormEventKas = ({ navigation, route }) => {
         initialValues={{
           nama: method === "put" ? payload.nama : "",
           status: method === "put" ? payload.status.toString() : "",
+          grup: method === "put" ? payload.grup : "",
         }}
         onSubmit={(values) => {
           if (method === "put") {
@@ -73,6 +76,45 @@ const FormEventKas = ({ navigation, route }) => {
                           placeholderTextColor: "blueGray.50",
                         }}
                       />
+                    </FormControl>
+
+                    <FormControl isRequired style={{ marginVertical: 10 }}>
+                      <FormControl.Label>Grup</FormControl.Label>
+                      <Select
+                        onValueChange={handleChange("grup")}
+                        onBlur={handleBlur("grup")}
+                        selectedValue={values.grup}
+                        minWidth={200}
+                        accessibilityLabel="Grup"
+                        placeholder="Grup"
+                        _selectedItem={{
+                          bg: "teal.600",
+                          endIcon: (
+                            <Ionicons
+                              name="ios-checkmark"
+                              size={30}
+                              color="black"
+                              style={{ marginLeft: 5 }}
+                            />
+                          ),
+                        }}
+                        mt={1}
+                      >
+                        {user.user_group.length > 0 &&
+                          user.user_group.map((item, i) => (
+                            <Select.Item
+                              key={i}
+                              label={item.group.name}
+                              value={item.group_id}
+                            />
+                          ))}
+                      </Select>
+
+                      {errors.status && touched.status && (
+                        <Text style={{ fontSize: 11, color: "red" }}>
+                          {errors.status}
+                        </Text>
+                      )}
                     </FormControl>
 
                     <FormControl isRequired style={{ marginVertical: 10 }}>

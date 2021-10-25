@@ -1,12 +1,16 @@
 import * as React from "react";
 import { FAB, Portal, Provider } from "react-native-paper";
 
-const FloatingButton = ({ navigation, actions }) => {
+const FloatingButton = ({ navigation, actions, style = null }) => {
   const [state, setState] = React.useState({ open: false });
 
   const onStateChange = ({ open }) => setState({ open });
-
   const { open } = state;
+
+  const defaultStyle = {
+    position: "absolute",
+    paddingBottom: 120,
+  }
 
   return (
     <FAB.Group
@@ -15,10 +19,7 @@ const FloatingButton = ({ navigation, actions }) => {
       fabStyle={{
         backgroundColor: "tomato",
       }}
-      style={{
-        position: "absolute",
-        paddingBottom: 120,
-      }}
+      style={style || defaultStyle}
       icon={open ? "close" : "plus"}
       actions={actions}
       onStateChange={onStateChange}

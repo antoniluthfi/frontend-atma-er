@@ -5,15 +5,22 @@ import { NavigationContainer } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 // navigator
-import DrawerNavigator from "./components/navigator/DrawerNavigator";
-import StackNavigator from "./components/navigator/StackNavigator";
+import MainDrawerNavigator from "./components/navigator/MainDrawerNavigator";
+import MainStackNavigator from "./components/navigator/MainStackNavigator";
+import ProfileStackNavigator from "./components/navigator/ProfileStackNavigator";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const App = () => {
   const loading = useSelector((state) => state.loading);
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.data);
+
+  const validateUser = user ? true : false;
+
+  const tidakPunyaGrup = user && user.user_group && user.user_group.length < 1;
+  const grupBlmAccJoin =
+    user && user.user_group.length > 0 && user.user_group[0].status === "pending";
 
   return (
     <NavigationContainer>
@@ -44,7 +51,17 @@ const App = () => {
             <Text style={{ fontSize: 20, color: "#fff" }}>Tunggu yaa ...</Text>
           </View>
         )}
-        {user.data ? <DrawerNavigator /> : <StackNavigator />}
+        {validateUser && !tidakPunyaGrup && !grupBlmAccJoin ? (
+          <MainDrawerNavigator />
+        ) : tidakPunyaGrup || grupBlmAccJoin ? (
+          <ProfileStackNavigator
+            validateUser={validateUser}
+            grupBlmAccJoin={grupBlmAccJoin}
+            tidakPunyaGrup={tidakPunyaGrup}
+          />
+        ) : (
+          <MainStackNavigator />
+        )}
       </NativeBaseProvider>
     </NavigationContainer>
   );

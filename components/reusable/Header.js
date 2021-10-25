@@ -3,19 +3,27 @@ import { TouchableOpacity } from "react-native";
 import { Heading, HStack, IconButton, View } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-const Header = ({ title, navigation, refresh = false, _refresh = null }) => {
+const Header = ({
+  title,
+  navigation,
+  refresh = false,
+  _refresh = null,
+  menu = true,
+}) => {
   return (
     <View style={{ backgroundColor: "tomato", flexDirection: "row" }}>
-      <TouchableOpacity
-        onPress={() => navigation.openDrawer()}
-        style={{ paddingTop: 9, paddingLeft: 10 }}
-      >
-        <Ionicons name="menu" size={40} color="#fff" />
-      </TouchableOpacity>
+      {menu && (
+        <TouchableOpacity
+          onPress={() => navigation.openDrawer()}
+          style={{ paddingTop: 9, paddingLeft: 10 }}
+        >
+          <Ionicons name="menu" size={40} color="#fff" />
+        </TouchableOpacity>
+      )}
       <View style={{ width: "100%" }}>
         <HStack space={2}>
-          <View style={{ width: "70%" }}>
-            <Heading mt="2" mb="2" color="white">
+          <View style={{ width: "83%" }}>
+            <Heading mt="2" mb="2" ml={!menu ? "4" : ""} color="white">
               {title}
             </Heading>
           </View>

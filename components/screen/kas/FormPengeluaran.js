@@ -38,7 +38,7 @@ const FormPengeluaran = ({ navigation, route }) => {
           onSubmit={(values) => {
             values = {
               ...values,
-              users_id: 0,
+              user_id: 0,
               jenis: 0,
             };
 
