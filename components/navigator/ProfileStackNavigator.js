@@ -1,7 +1,7 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import DataDiri from "../screen/data-diri/DataDiri";
-import Group from "../screen/group/Group";
+import DataDiri from "../screen/kelengkapan-profil/data-diri/DataDiri";
+import Group from "../screen/kelengkapan-profil/group/Group";
 import { useSelector } from "react-redux";
 
 const Stack = createNativeStackNavigator();

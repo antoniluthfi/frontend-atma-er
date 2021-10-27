@@ -16,7 +16,7 @@ import {
   Input,
 } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Header from "../../reusable/Header";
+import Header from "../../../reusable/Header";
 import { useSelector } from "react-redux";
 import DataDiriHelper from "./DataDiriHelper";
 

@@ -3,7 +3,7 @@ import { Avatar, Box, HStack, Text, ScrollView, VStack, View } from "native-base
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useSelector } from "react-redux";
 
-const GroupList = ({ group }) => {
+const GroupList = () => {
   const user = useSelector((state) => state.user.data);
 
   return (

@@ -7,6 +7,7 @@ import Home from "../screen/Home";
 import KehadiranStack from "../stacks/KehadiranStack";
 import MasterDataStack from "../stacks/MasterDataStack";
 import KasStack from "../stacks/KasStack";
+import GroupStack from "../stacks/GroupStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -43,6 +44,8 @@ const TabNavigator = () => {
             iconName = focused ? "server" : "server-outline";
           } else if (route.name === "Kas") {
             iconName = focused ? "cash" : "cash-outline";
+          } else if (route.name === "Grup") {
+            iconName = focused ? "people" : "people-outline";
           }
           // You can return any component that you like here!
           return (
@@ -66,6 +69,7 @@ const TabNavigator = () => {
       <Tab.Screen name="Beranda" component={Home} />
       <Tab.Screen name="Kehadiran" component={KehadiranStack} />
       <Tab.Screen name="Kas" component={KasStack} />
+      <Tab.Screen name="Grup" component={GroupStack} />
       <Tab.Screen name="Master Data" component={MasterDataStack} />
     </Tab.Navigator>
   );

@@ -16,7 +16,7 @@ import {
 } from "native-base";
 import { useFocusEffect } from "@react-navigation/core";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Header from "../../reusable/Header";
+import Header from "../../../reusable/Header";
 import KasHelper from "./KasHelper";
 
 const inputValidationSchema = yup.object().shape({

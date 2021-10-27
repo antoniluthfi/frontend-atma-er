@@ -3,6 +3,7 @@ import { StatusBar, Dimensions } from "react-native";
 import { Spinner, View, NativeBaseProvider, Text } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 import { useSelector } from "react-redux";
+import LottieView from "lottie-react-native";
 
 // navigator
 import MainDrawerNavigator from "./components/navigator/MainDrawerNavigator";
@@ -20,7 +21,9 @@ const App = () => {
 
   const tidakPunyaGrup = user && user.user_group && user.user_group.length < 1;
   const grupBlmAccJoin =
-    user && user.user_group.length > 0 && user.user_group[0].status === "pending";
+    user &&
+    user.user_group.length > 0 &&
+    user.user_group[0].status === "pending";
 
   return (
     <NavigationContainer>
@@ -47,7 +50,15 @@ const App = () => {
               height: windowHeight + 10,
             }}
           >
-            <Spinner size="lg" color="warning.500" />
+            <LottieView
+              source={require("./assets/loader.json")}
+              style={{
+                width: 100,
+                height: 100
+              }}
+              autoPlay
+              loop
+            />
             <Text style={{ fontSize: 20, color: "#fff" }}>Tunggu yaa ...</Text>
           </View>
         )}

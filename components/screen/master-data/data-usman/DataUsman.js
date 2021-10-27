@@ -24,6 +24,8 @@ import moment from "moment";
 import Header from "../../../reusable/Header";
 import DataUsmanHelper from "./DataUsmanHelper";
 import FloatingButton from "../../../reusable/FloatingButton";
+import GroupList from "../../../reusable/GroupList";
+import Loading from "../../../reusable/Loading";
 
 const DataUsman = ({ navigation }) => {
   const {
@@ -120,11 +122,10 @@ const DataUsman = ({ navigation }) => {
         }}
       />
 
+      <GroupList />
+
       {loadDataUsman ? (
-        <Center flex={1}>
-          <Spinner size="lg" color="warning.500" />
-          <Text>Tunggu yaa ...</Text>
-        </Center>
+        <Loading />
       ) : (
         <View style={styles.container}>
           <Provider>
@@ -134,6 +135,8 @@ const DataUsman = ({ navigation }) => {
                   flexWrap: "wrap",
                   flexDirection: "row",
                   backgroundColor: "#fff",
+                  borderTopLeftRadius: 20,
+                  borderTopRightRadius: 20,
                 }}
               >
                 <View

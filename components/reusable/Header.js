@@ -22,7 +22,7 @@ const Header = ({
       )}
       <View style={{ width: "100%" }}>
         <HStack space={2}>
-          <View style={{ width: "83%" }}>
+          <View style={{ width: menu ? "70%" : "83%" }}>
             <Heading mt="2" mb="2" ml={!menu ? "4" : ""} color="white">
               {title}
             </Heading>

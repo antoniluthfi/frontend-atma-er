@@ -6,10 +6,11 @@ import { useSelector } from "react-redux";
 const EventKasHelper = (navigation) => {
   const user = useSelector((state) => state.user);
   const [dataEvent, setDataEvent] = useState([]);
+  const [dataEventCadangan, setDataEventCadangan] = useState([]);
   const [loadDataEvent, setLoadDataEvent] = useState(true);
+  const [keyword, setKeyword] = useState("");
 
   const getEventKas = async () => {
-    console.log("get event kas");
     await axios({
       method: "GET",
       url: `${TEST_URL}/event-kas`,
@@ -19,7 +20,9 @@ const EventKasHelper = (navigation) => {
       },
     })
       .then((response) => {
-        setDataEvent(response.data.result);
+        const result = response.data.result;
+        setDataEvent(result);
+        setDataEventCadangan(result);
       })
       .catch((error) => {
         console.log(error.message);
@@ -35,6 +38,7 @@ const EventKasHelper = (navigation) => {
       data: {
         nama: values.nama,
         status: values.status,
+        group_id: values.grup,
       },
       headers: {
         Accept: "application/json",
@@ -70,14 +74,28 @@ const EventKasHelper = (navigation) => {
       });
   };
 
+  const filterData = (keyword) => {
+    let val = dataEventCadangan;
+    if (keyword) {
+      val = val.filter((item) => {
+        return item.nama.toLowerCase().match(keyword.toLowerCase());
+      });
+    }
+
+    setDataEvent(val);
+  };
+
   return {
     dataEvent,
     setDataEvent,
     loadDataEvent,
     setLoadDataEvent,
+    keyword,
+    setKeyword,
     getEventKas,
     updateEvent,
     postEventKas,
+    filterData,
   };
 };
 

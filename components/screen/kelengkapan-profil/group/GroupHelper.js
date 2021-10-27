@@ -1,18 +1,22 @@
 import { useState } from "react";
-import { TEST_URL } from "@env";
 import axios from "axios";
+import { TEST_URL } from "@env";
 import { useSelector, useDispatch } from "react-redux";
 
-const GroupHelper = (navigation) => {
+const GroupHelper = () => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
+  const [loading, setLoading] = useState(true);
   const [dataGroup, setDataGroup] = useState([]);
   const [dataGroupCadangan, setDataGroupCadangan] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [keyword, setKeyword] = useState("");
   const [input, setInput] = useState({
     nama: "",
+    deskripsi: "",
+    jumlah_anggota: "",
+    foto_profil: "",
+    status: "",
   });
 
   const getDataGroup = async () => {
@@ -36,6 +40,26 @@ const GroupHelper = (navigation) => {
     setLoading(false);
   };
 
+  const daftarGroup = async (values) => {
+    await axios({
+      method: "POST",
+      url: `${TEST_URL}/user-group`,
+      data: values,
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+    })
+      .then((response) => {
+        alert("Berhasil mendaftar, silahkan tunggu konfirmasi dari admin grup");
+        setLoading(true);
+        getDataGroup();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const filterData = (keyword) => {
     let val = dataGroupCadangan;
     if (keyword) {
@@ -49,13 +73,16 @@ const GroupHelper = (navigation) => {
 
   return {
     user,
-    dataGroup,
-    setDataGroup,
     loading,
     setLoading,
+    dataGroup,
+    setDataGroup,
+    keyword,
+    setKeyword,
     input,
     setInput,
     getDataGroup,
+    daftarGroup,
     filterData
   };
 };

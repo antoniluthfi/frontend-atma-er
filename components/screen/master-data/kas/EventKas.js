@@ -9,13 +9,20 @@ import {
   // Avatar,
   Fab,
   Icon,
+  Input,
+  Avatar,
+  VStack,
 } from "native-base";
+import { StyleSheet, View } from "react-native";
+import { Portal, Provider } from "react-native-paper";
 import { SwipeListView } from "react-native-swipe-list-view";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import EventKasHelper from "./EventKasHelper";
 import Header from "../../../reusable/Header";
 import Loading from "../../../reusable/Loading";
+import NumberFormat from "react-number-format";
+import GroupList from "../../../reusable/GroupList";
 
 const EventKas = ({ navigation }) => {
   const {
@@ -23,7 +30,10 @@ const EventKas = ({ navigation }) => {
     setDataEvent,
     loadDataEvent,
     setLoadDataEvent,
+    keyword,
+    setKeyword,
     getEventKas,
+    filterData,
   } = EventKasHelper(navigation);
 
   useFocusEffect(
@@ -39,33 +49,88 @@ const EventKas = ({ navigation }) => {
 
   return (
     <NativeBaseProvider>
-      <Header title="Event Kas" navigation={navigation} />
+      <Header
+        title="Event Kas"
+        navigation={navigation}
+        refresh={true}
+        _refresh={async () => {
+          setDataEvent([]);
+          setLoadDataEvent(true);
+          await getEventKas();
+        }}
+      />
 
-      {!loadDataEvent ? (
-        <>
-          <Box textAlign="center" bg="white" flex={1} safeAreaTop>
-            <Basic navigation={navigation} dataEvent={dataEvent} />
-          </Box>
-          <Fab
-            position="absolute"
-            style={{
-              bottom: 130
-            }}
-            size="sm"
-            onPress={() =>
-              navigation.navigate("FormEventKas", {
-                method: "post",
-                judul: "Buat Event Baru",
-                payload: null,
-              })
-            }
-            icon={
-              <Icon color="white" as={<AntDesign name="plus" />} size="sm" />
-            }
-          />
-        </>
-      ) : (
+      <GroupList />
+
+      {loadDataEvent ? (
         <Loading />
+      ) : (
+        <>
+          <View style={styles.container}>
+            <Provider>
+              <Portal>
+                <View
+                  style={{
+                    flexWrap: "wrap",
+                    flexDirection: "row",
+                    backgroundColor: "#fff",
+                    borderTopLeftRadius: 20,
+                    borderTopRightRadius: 20
+                  }}
+                >
+                  <View
+                    style={{
+                      marginVertical: 15,
+                      paddingLeft: 15,
+                      width: "97%",
+                    }}
+                  >
+                    <Input
+                      type="text"
+                      placeholder="Cari kas disini ..."
+                      InputRightElement={
+                        <Ionicons
+                          name="search"
+                          size={30}
+                          style={{ marginRight: 10 }}
+                        />
+                      }
+                      value={keyword}
+                      onChangeText={(text) => {
+                        setKeyword(text);
+                        filterData(text);
+                      }}
+                    />
+                  </View>
+                </View>
+
+                <Basic navigation={navigation} dataEvent={dataEvent.event} />
+
+                <Fab
+                  position="absolute"
+                  style={{
+                    bottom: 130,
+                  }}
+                  size="sm"
+                  onPress={() =>
+                    navigation.navigate("FormEventKas", {
+                      method: "post",
+                      judul: "Buat Event Baru",
+                      payload: null,
+                    })
+                  }
+                  icon={
+                    <Icon
+                      color="white"
+                      as={<AntDesign name="plus" />}
+                      size="sm"
+                    />
+                  }
+                />
+              </Portal>
+            </Provider>
+          </View>
+        </>
       )}
     </NativeBaseProvider>
   );
@@ -102,7 +167,23 @@ const Basic = ({ navigation, dataEvent }) => {
       >
         <HStack width="100%" px={4}>
           <HStack space={2} alignItems="center">
-            <Text>{item.nama}</Text>
+            <Avatar color="white" bg={"warning.500"}>
+              <Ionicons name="wallet" size={30} color="white" />
+            </Avatar>
+            <VStack>
+              <Text>{item.nama}</Text>
+              <NumberFormat
+                value={item.total_kas}
+                displayType={"text"}
+                thousandSeparator={true}
+                prefix={"Rp. "}
+                renderText={(value, props) => (
+                  <Text style={{ fontSize: 12, color: "grey" }}>
+                    Total Kas {value}
+                  </Text>
+                )}
+              />
+            </VStack>
           </HStack>
         </HStack>
       </Pressable>
@@ -158,3 +239,9 @@ const Basic = ({ navigation, dataEvent }) => {
     </Box>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});

@@ -15,9 +15,9 @@ import { Portal, Provider } from "react-native-paper";
 import { Alert, Linking, StyleSheet } from "react-native";
 import moment from "moment";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Header from "../../reusable/Header";
-import Loading from "../../reusable/Loading";
-import FloatingButton from "../../reusable/FloatingButton";
+import Header from "../../../reusable/Header";
+import Loading from "../../../reusable/Loading";
+import FloatingButton from "../../../reusable/FloatingButton";
 import GroupHelper from "./GroupHelper";
 
 const Group = ({ navigation }) => {
@@ -32,7 +32,8 @@ const Group = ({ navigation }) => {
     input,
     setInput,
     getDataGroup,
-    filterData,
+    daftarGroup,
+    filterData
   } = GroupHelper();
 
   useEffect(() => {
@@ -46,8 +47,9 @@ const Group = ({ navigation }) => {
   return (
     <NativeBaseProvider>
       <Header
-        title="List Grup"
+        title="Pilih Grup"
         navigation={navigation}
+        menu={false}
         refresh={true}
         _refresh={async () => {
           setLoading(true);
@@ -96,11 +98,16 @@ const Group = ({ navigation }) => {
                 navigation={navigation}
                 dataGroup={dataGroup}
                 user={user}
+                daftarGroup={daftarGroup}
               />
 
               {user.data.hak_akses === "administrator" && (
                 <FloatingButton
                   navigation={navigation}
+                  style={{
+                    position: "absolute",
+                    paddingBottom: 50,
+                  }}
                   actions={[
                     {
                       icon: "plus",
@@ -126,7 +133,7 @@ const Group = ({ navigation }) => {
 
 export default Group;
 
-const Basic = ({ navigation, dataGroup, user }) => {
+const Basic = ({ navigation, dataGroup, user, daftarGroup }) => {
   const onRowDidOpen = (rowKey) => {
     console.log("This row opened", rowKey);
   };
@@ -171,22 +178,46 @@ const Basic = ({ navigation, dataGroup, user }) => {
 
   const renderHiddenItem = (data, rowMap) => (
     <HStack flex={1} pl={2}>
-      <Pressable
-        px={4}
-        ml="auto"
-        bg="success.500"
-        justifyContent="center"
-        onPress={() => {
-          Linking.openURL(
-            `whatsapp://send?text=assalamualaikum&phone=${data.item.nomorhp}`
-          );
-        }}
-        _pressed={{
-          opacity: 0.5,
-        }}
-      >
-        <Ionicons name="logo-whatsapp" size={30} color="#fff" />
-      </Pressable>
+      {data.item.terdaftar ? (
+        <Pressable
+          px={4}
+          ml="auto"
+          bg="success.500"
+          justifyContent="center"
+          onPress={() => {
+            Linking.openURL(
+              `whatsapp://send?text=assalamualaikum&phone=${data.item.nomorhp}`
+            );
+          }}
+          _pressed={{
+            opacity: 0.5,
+          }}
+        >
+          <Ionicons name="logo-whatsapp" size={30} color="#fff" />
+        </Pressable>
+      ) : (
+        <Pressable
+          px={4}
+          ml="auto"
+          bg="red.500"
+          justifyContent="center"
+          onPress={() => {
+            const values = {
+              group_id: data.item.id,
+              user_id: user.data.id,
+              hak_akses: "pendaftar",
+              status: "pending",
+            };
+
+            daftarGroup(values);
+          }}
+          _pressed={{
+            opacity: 0.5,
+          }}
+        >
+          <Ionicons name="arrow-redo-outline" size={30} color="#fff" />
+        </Pressable>
+      )}
     </HStack>
   );
 

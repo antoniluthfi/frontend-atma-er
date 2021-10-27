@@ -179,20 +179,17 @@ const ListKas = ({ navigation }) => {
                         )}
                       />
                     </Text>
-                    <Text style={{ fontWeight: "bold" }}>
-                      Total Pengeluaran :{" "}
-                      <NumberFormat
-                        value={rincianEvent.pengeluaran}
-                        displayType={"text"}
-                        thousandSeparator={true}
-                        prefix={"Rp. "}
-                        renderText={(value, props) => (
-                          <Text style={{ fontWeight: "bold", color: "red" }}>
-                            {value}
-                          </Text>
-                        )}
-                      />
-                    </Text>
+                    <NumberFormat
+                      value={rincianEvent.pengeluaran}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      prefix={"Rp. "}
+                      renderText={(value, props) => (
+                        <Text style={{ fontWeight: "bold", color: "red" }}>
+                          Total Pengeluaran : {value}
+                        </Text>
+                      )}
+                    />
                     <Text style={{ fontWeight: "bold" }}>
                       Total Kas :{" "}
                       <NumberFormat
