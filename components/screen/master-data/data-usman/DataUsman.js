@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Alert, PermissionsAndroid } from "react-native";
+import { Alert, KeyboardAvoidingView } from "react-native";
 import { useFocusEffect } from "@react-navigation/core";
 import {
   Avatar,
@@ -11,8 +11,6 @@ import {
   Pressable,
   Text,
   View,
-  Center,
-  Spinner,
 } from "native-base";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { StyleSheet } from "react-native";
@@ -26,6 +24,7 @@ import DataUsmanHelper from "./DataUsmanHelper";
 import FloatingButton from "../../../reusable/FloatingButton";
 import GroupList from "../../../reusable/GroupList";
 import Loading from "../../../reusable/Loading";
+import LottieView from "lottie-react-native";
 
 const DataUsman = ({ navigation }) => {
   const {
@@ -121,74 +120,76 @@ const DataUsman = ({ navigation }) => {
           await getDataUsman();
         }}
       />
-
       <GroupList />
-
-      {loadDataUsman ? (
-        <Loading />
-      ) : (
-        <View style={styles.container}>
-          <Provider>
-            <Portal>
+      <KeyboardAvoidingView
+        behavior="height"
+        enabled={true}
+        style={styles.container}
+      >
+        <Provider>
+          <Portal>
+            <View
+              style={{
+                flexWrap: "wrap",
+                flexDirection: "row",
+                backgroundColor: "#fff",
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+              }}
+            >
               <View
-                style={{
-                  flexWrap: "wrap",
-                  flexDirection: "row",
-                  backgroundColor: "#fff",
-                  borderTopLeftRadius: 20,
-                  borderTopRightRadius: 20,
-                }}
+                style={{ marginVertical: 15, paddingLeft: 15, width: "97%" }}
               >
-                <View
-                  style={{ marginVertical: 15, paddingLeft: 15, width: "97%" }}
-                >
-                  <Input
-                    type="text"
-                    placeholder="Cari anggota disini ..."
-                    InputRightElement={
-                      <Ionicons
-                        name="search"
-                        size={30}
-                        style={{ marginRight: 10 }}
-                      />
-                    }
-                    value={keyword}
-                    onChangeText={(text) => {
-                      setKeyword(text);
-                      filterData(text);
-                    }}
-                  />
-                </View>
+                <Input
+                  type="text"
+                  placeholder="Cari anggota disini ..."
+                  InputRightElement={
+                    <Ionicons
+                      name="search"
+                      size={30}
+                      style={{ marginRight: 10 }}
+                    />
+                  }
+                  value={keyword}
+                  onChangeText={(text) => {
+                    setKeyword(text);
+                    filterData(text);
+                  }}
+                />
               </View>
+            </View>
 
+            {loadDataUsman ? (
+              <Loading />
+            ) : (
               <Basic navigation={navigation} dataUsman={dataUsman} />
+            )}
 
-              <FloatingButton
-                navigation={navigation}
-                actions={[
-                  {
-                    icon: "plus",
-                    label: "Buat baru",
-                    onPress: () =>
-                      navigation.navigate("FormUsman", {
-                        payload: null,
-                        method: "post",
-                        judul: "Form Usman",
-                      }),
-                    small: false,
-                  },
-                  {
-                    icon: "download",
-                    label: "Unduh PDF",
-                    onPress: buatPdf,
-                    small: false,
-                  },
-                ]}
-              />
-            </Portal>
-          </Provider>
-        </View>
-      )}
+            <FloatingButton
+              navigation={navigation}
+              actions={[
+                {
+                  icon: "plus",
+                  label: "Buat baru",
+                  onPress: () =>
+                    navigation.navigate("FormUsman", {
+                      payload: null,
+                      method: "post",
+                      judul: "Form Usman",
+                    }),
+                  small: false,
+                },
+                {
+                  icon: "download",
+                  label: "Unduh PDF",
+                  onPress: buatPdf,
+                  small: false,
+                },
+              ]}
+            />
+          </Portal>
+        </Provider>
+      </KeyboardAvoidingView>
     </NativeBaseProvider>
   );
 };
@@ -275,16 +276,29 @@ const Basic = ({ navigation, dataUsman }) => {
 
   return (
     <Box bg="white" safeArea flex={1}>
-      <SwipeListView
-        data={dataUsman}
-        renderItem={renderItem}
-        renderHiddenItem={renderHiddenItem}
-        rightOpenValue={-130}
-        previewRowKey={"0"}
-        previewOpenValue={-40}
-        previewOpenDelay={1000}
-        onRowDidOpen={onRowDidOpen}
-      />
+      {dataUsman.length > 0 ? (
+        <SwipeListView
+          data={dataUsman}
+          renderItem={renderItem}
+          renderHiddenItem={renderHiddenItem}
+          rightOpenValue={-130}
+          previewRowKey={"0"}
+          previewOpenValue={-40}
+          previewOpenDelay={1000}
+          onRowDidOpen={onRowDidOpen}
+        />
+      ) : (
+        <LottieView
+          source={require("../../../../assets/data-not-found.json")}
+          style={{
+            position: "absolute",
+            top: -100,
+            zIndex: -100,
+          }}
+          autoPlay
+          loop
+        />
+      )}
     </Box>
   );
 };

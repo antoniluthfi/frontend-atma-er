@@ -32,6 +32,7 @@ const MasterDataStack = () => {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
+        tabBarVisible: false,
       }}
     >
       {routes.length > 0 ? (

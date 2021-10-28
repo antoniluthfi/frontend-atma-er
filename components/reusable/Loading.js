@@ -4,7 +4,7 @@ import LottieView from "lottie-react-native";
 
 const Loading = () => {
   return (
-    <Center flex={1}>
+    <Center flex={1} style={{ backgroundColor: "white" }}>
       <LottieView
         source={require("../../assets/loader.json")}
         style={{

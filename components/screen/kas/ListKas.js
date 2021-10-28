@@ -151,14 +151,14 @@ const ListKas = ({ navigation }) => {
         }}
       />
 
-      <GroupList />
-
       {loadDataEvent ? (
         <Loading />
       ) : (
         <View style={styles.container}>
           <Provider>
             <Portal>
+              <GroupList />
+
               <View style={styles.wrapper}>
                 <View style={[styles.card, styles.items]}>
                   <View style={{ marginLeft: 10 }}>
@@ -289,7 +289,7 @@ const Basic = ({ navigation, dataEvent }) => {
         <HStack width="100%" px={4}>
           <HStack space={2} alignItems="center">
             <Avatar color="white" bg={"warning.500"}>
-              <Ionicons name="card" size={30} color="white" />
+              <Ionicons name="wallet" size={30} color="white" />
             </Avatar>
             <VStack>
               <Text>{item.nama}</Text>
@@ -382,6 +382,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.5,
-    elevation: 5,
+    // elevation: 5,
   },
 });

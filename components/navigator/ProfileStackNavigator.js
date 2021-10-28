@@ -13,7 +13,6 @@ const ProfileStackNavigator = ({
 }) => {
   const user = useSelector((state) => state.user.data);
 
-  console.log(tidakPunyaGrup, grupBlmAccJoin);
   return (
     <Stack.Navigator
       screenOptions={() => ({

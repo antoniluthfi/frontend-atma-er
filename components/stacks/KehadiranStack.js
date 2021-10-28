@@ -6,7 +6,9 @@ import UpdateEventTerakhir from "../screen/kehadiran/UpdateEventTerakhir";
 
 const Stack = createNativeStackNavigator();
 
-const KehadiranStack = () => {
+const KehadiranStack = ({ navigation, route }) => {
+
+
   return (
     <Stack.Navigator
       screenOptions={{

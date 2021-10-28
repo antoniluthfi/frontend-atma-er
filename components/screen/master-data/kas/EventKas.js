@@ -23,6 +23,7 @@ import Header from "../../../reusable/Header";
 import Loading from "../../../reusable/Loading";
 import NumberFormat from "react-number-format";
 import GroupList from "../../../reusable/GroupList";
+import LottieView from "lottie-react-native";
 
 const EventKas = ({ navigation }) => {
   const {
@@ -59,79 +60,71 @@ const EventKas = ({ navigation }) => {
           await getEventKas();
         }}
       />
-
       <GroupList />
-
-      {loadDataEvent ? (
-        <Loading />
-      ) : (
-        <>
-          <View style={styles.container}>
-            <Provider>
-              <Portal>
-                <View
-                  style={{
-                    flexWrap: "wrap",
-                    flexDirection: "row",
-                    backgroundColor: "#fff",
-                    borderTopLeftRadius: 20,
-                    borderTopRightRadius: 20
-                  }}
-                >
-                  <View
-                    style={{
-                      marginVertical: 15,
-                      paddingLeft: 15,
-                      width: "97%",
-                    }}
-                  >
-                    <Input
-                      type="text"
-                      placeholder="Cari kas disini ..."
-                      InputRightElement={
-                        <Ionicons
-                          name="search"
-                          size={30}
-                          style={{ marginRight: 10 }}
-                        />
-                      }
-                      value={keyword}
-                      onChangeText={(text) => {
-                        setKeyword(text);
-                        filterData(text);
-                      }}
-                    />
-                  </View>
-                </View>
-
-                <Basic navigation={navigation} dataEvent={dataEvent.event} />
-
-                <Fab
-                  position="absolute"
-                  style={{
-                    bottom: 130,
-                  }}
-                  size="sm"
-                  onPress={() =>
-                    navigation.navigate("FormEventKas", {
-                      method: "post",
-                      judul: "Buat Event Baru",
-                      payload: null,
-                    })
-                  }
-                  icon={
-                    <Icon
-                      color="white"
-                      as={<AntDesign name="plus" />}
-                      size="sm"
+      <View style={styles.container}>
+        <Provider>
+          <Portal>
+            <View
+              style={{
+                flexWrap: "wrap",
+                flexDirection: "row",
+                backgroundColor: "#fff",
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+              }}
+            >
+              <View
+                style={{
+                  marginVertical: 15,
+                  paddingLeft: 15,
+                  width: "97%",
+                }}
+              >
+                <Input
+                  type="text"
+                  placeholder="Cari kas disini ..."
+                  InputRightElement={
+                    <Ionicons
+                      name="search"
+                      size={30}
+                      style={{ marginRight: 10 }}
                     />
                   }
+                  value={keyword}
+                  onChangeText={(text) => {
+                    setKeyword(text);
+                    filterData(text);
+                  }}
                 />
-              </Portal>
-            </Provider>
-          </View>
-        </>
-      )}
+              </View>
+            </View>
+
+            {loadDataEvent ? (
+              <Loading />
+            ) : (
+              <Basic navigation={navigation} dataEvent={dataEvent.event} />
+            )}
+
+            <Fab
+              position="absolute"
+              style={{
+                bottom: 130,
+              }}
+              size="sm"
+              onPress={() =>
+                navigation.navigate("FormEventKas", {
+                  method: "post",
+                  judul: "Buat Event Baru",
+                  payload: null,
+                })
+              }
+              icon={
+                <Icon color="white" as={<AntDesign name="plus" />} size="sm" />
+              }
+            />
+          </Portal>
+        </Provider>
+      </View>
     </NativeBaseProvider>
   );
 };
@@ -226,16 +219,29 @@ const Basic = ({ navigation, dataEvent }) => {
 
   return (
     <Box bg="white" safeArea flex={1}>
-      <SwipeListView
-        data={dataEvent}
-        renderItem={renderItem}
-        renderHiddenItem={renderHiddenItem}
-        rightOpenValue={-130}
-        previewRowKey={"0"}
-        previewOpenValue={-40}
-        previewOpenDelay={1000}
-        onRowDidOpen={onRowDidOpen}
-      />
+      {dataEvent.length > 0 ? (
+        <SwipeListView
+          data={dataEvent}
+          renderItem={renderItem}
+          renderHiddenItem={renderHiddenItem}
+          rightOpenValue={-130}
+          previewRowKey={"0"}
+          previewOpenValue={-40}
+          previewOpenDelay={1000}
+          onRowDidOpen={onRowDidOpen}
+        />
+      ) : (
+        <LottieView
+          source={require("../../../../assets/data-not-found.json")}
+          style={{
+            position: "absolute",
+            top: -100,
+            zIndex: -100,
+          }}
+          autoPlay
+          loop
+        />
+      )}
     </Box>
   );
 };

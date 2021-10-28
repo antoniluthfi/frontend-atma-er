@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   NativeBaseProvider,
   View,
@@ -19,6 +19,7 @@ import Header from "../../reusable/Header";
 import Loading from "../../reusable/Loading";
 import FloatingButton from "../../reusable/FloatingButton";
 import GroupHelper from "./GroupHelper";
+import { useFocusEffect } from "@react-navigation/core";
 
 const Group = ({ navigation }) => {
   const {
@@ -35,13 +36,16 @@ const Group = ({ navigation }) => {
     filterData,
   } = GroupHelper();
 
-  useEffect(() => {
-    getDataGroup();
+  useFocusEffect(
+    useCallback(() => {
+      getDataGroup();
 
-    return () => {
-      setDataGroup([]);
-    };
-  }, []);
+      return () => {
+        setDataGroup([]);
+        setLoading(true);
+      };
+    }, [])
+  );
 
   return (
     <NativeBaseProvider>
@@ -56,70 +60,69 @@ const Group = ({ navigation }) => {
           await getDataGroup();
         }}
       />
-
-      {loading ? (
-        <Loading />
-      ) : (
-        <View style={styles.container}>
-          <Provider>
-            <Portal>
+      <View style={styles.container}>
+        <Provider>
+          <Portal>
+            <View
+              style={{
+                flexWrap: "wrap",
+                flexDirection: "row",
+                backgroundColor: "#fff",
+              }}
+            >
               <View
-                style={{
-                  flexWrap: "wrap",
-                  flexDirection: "row",
-                  backgroundColor: "#fff",
-                }}
+                style={{ marginVertical: 15, paddingLeft: 15, width: "97%" }}
               >
-                <View
-                  style={{ marginVertical: 15, paddingLeft: 15, width: "97%" }}
-                >
-                  <Input
-                    type="text"
-                    placeholder="Cari grup disini ..."
-                    InputRightElement={
-                      <Ionicons
-                        name="search"
-                        size={30}
-                        style={{ marginRight: 10 }}
-                      />
-                    }
-                    value={keyword}
-                    onChangeText={(text) => {
-                      setKeyword(text);
-                      filterData(text);
-                    }}
-                  />
-                </View>
+                <Input
+                  type="text"
+                  placeholder="Cari grup disini ..."
+                  InputRightElement={
+                    <Ionicons
+                      name="search"
+                      size={30}
+                      style={{ marginRight: 10 }}
+                    />
+                  }
+                  value={keyword}
+                  onChangeText={(text) => {
+                    setKeyword(text);
+                    filterData(text);
+                  }}
+                />
               </View>
+            </View>
 
+            {loading ? (
+              <Loading />
+            ) : (
               <Basic
                 navigation={navigation}
                 dataGroup={dataGroup}
                 user={user}
               />
+            )}
 
-              {user.data.hak_akses === "administrator" && (
-                <FloatingButton
-                  navigation={navigation}
-                  actions={[
-                    {
-                      icon: "plus",
-                      label: "Buat baru",
-                      onPress: () =>
-                        navigation.navigate("FormUsman", {
-                          payload: null,
-                          method: "post",
-                          judul: "Form Usman",
-                        }),
-                      small: false,
-                    },
-                  ]}
-                />
-              )}
-            </Portal>
-          </Provider>
-        </View>
-      )}
+            {user.data.hak_akses === "administrator" && (
+              <FloatingButton
+                navigation={navigation}
+                actions={[
+                  {
+                    icon: "plus",
+                    label: "Buat baru",
+                    onPress: () =>
+                      navigation.navigate("FormUsman", {
+                        payload: null,
+                        method: "post",
+                        judul: "Form Usman",
+                      }),
+                    small: false,
+                  },
+                ]}
+              />
+            )}
+          </Portal>
+        </Provider>
+      </View>
     </NativeBaseProvider>
   );
 };
@@ -192,16 +195,29 @@ const Basic = ({ navigation, dataGroup, user }) => {
 
   return (
     <Box bg="white" safeArea flex={1}>
-      <SwipeListView
-        data={dataGroup}
-        renderItem={renderItem}
-        renderHiddenItem={renderHiddenItem}
-        rightOpenValue={-60}
-        previewRowKey={"0"}
-        previewOpenValue={-40}
-        previewOpenDelay={1000}
-        onRowDidOpen={onRowDidOpen}
-      />
+      {dataGroup.length > 0 ? (
+        <SwipeListView
+          data={dataGroup}
+          renderItem={renderItem}
+          renderHiddenItem={renderHiddenItem}
+          rightOpenValue={-60}
+          previewRowKey={"0"}
+          previewOpenValue={-40}
+          previewOpenDelay={1000}
+          onRowDidOpen={onRowDidOpen}
+        />
+      ) : (
+        <LottieView
+          source={require("../../../assets/data-not-found.json")}
+          style={{
+            position: "absolute",
+            top: -100,
+            zIndex: -100,
+          }}
+          autoPlay
+          loop
+        />
+      )}
     </Box>
   );
 };
