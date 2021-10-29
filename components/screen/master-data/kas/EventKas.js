@@ -245,9 +245,9 @@ const Basic = ({ navigation, dataEvent, deleteEventKas }) => {
         <LottieView
           source={require("../../../../assets/data-not-found.json")}
           style={{
-            position: "absolute",
-            top: -100,
-            zIndex: -100,
+            marginBottom: 100,
+            width: "100%",
+            height: 400
           }}
           autoPlay
           loop
