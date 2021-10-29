@@ -14,6 +14,8 @@ import {
 } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import EventKasHelper from "./EventKasHelper";
+import KeyboardHelper from "../../../reusable/KeyboardHelper";
+
 import Header from "../../../reusable/Header";
 import { useSelector } from "react-redux";
 
@@ -24,8 +26,20 @@ const inputValidationSchema = yup.object().shape({
 
 const FormEventKas = ({ navigation, route }) => {
   const user = useSelector((state) => state.user.data);
+
+  const { showKeyboard, hideKeyboard } = KeyboardHelper();
   const { postEventKas, updateEvent } = EventKasHelper(navigation);
   const { judul, method, payload } = route.params;
+
+  React.useEffect(() => {
+    showKeyboard;
+    hideKeyboard;
+
+    return () => {
+      showKeyboard.remove();
+      hideKeyboard.remove();
+    }
+  }, []);
 
   return (
     <>

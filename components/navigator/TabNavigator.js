@@ -1,14 +1,8 @@
 import React, { useRef, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Animated,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, Text, View, Animated, Dimensions } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { useSelector } from "react-redux";
 
 import Home from "../screen/Home";
 import KehadiranStack from "../stacks/KehadiranStack";
@@ -19,6 +13,7 @@ import GroupStack from "../stacks/GroupStack";
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
+  const tabBar = useSelector((state) => state.tabBar);
   const [indicatorWidth, setIndicatorWidth] = useState(200);
   const tabOffsetValue = useRef(new Animated.Value(145)).current;
 
@@ -27,7 +22,38 @@ const TabNavigator = () => {
     width = width - indicatorWidth;
     return width / 5;
   };
-  
+
+  const styles = StyleSheet.create({
+    tabBar: {
+      position: "absolute",
+      bottom: tabBar.barBottom,
+      left: 20,
+      right: 20,
+      elevation: 0,
+      backgroundColor: "#fff",
+      borderRadius: 10,
+      height: 60,
+      paddingBottom: 15,
+      paddingHorizontal: 8,
+      shadowColor: "#000",
+      shadowOpacity: 0.06,
+      shadowOffset: {
+        width: 10,
+        height: 10,
+      },
+    },
+    shadow: {
+      shadowColor: "#7f5df0",
+      shadowOffset: {
+        width: 0,
+        height: 10,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.5,
+      elevation: 5,
+    },
+  });
+
   return (
     <>
       <Tab.Navigator
@@ -37,27 +63,7 @@ const TabNavigator = () => {
           headerShown: false,
           headerTintColor: "#fff",
           headerTitleAlign: "center",
-          tabBarStyle: [
-            {
-              position: "absolute",
-              bottom: 40,
-              left: 20,
-              right: 20,
-              elevation: 0,
-              backgroundColor: "#fff",
-              borderRadius: 10,
-              height: 60,
-              paddingBottom: 15,
-              paddingHorizontal: 8,
-              shadowColor: "#000",
-              shadowOpacity: 0.06,
-              shadowOffset: {
-                width: 10,
-                height: 10,
-              },
-            },
-            styles.shadow,
-          ],
+          tabBarStyle: [styles.tabBar, styles.shadow],
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
 
@@ -144,7 +150,7 @@ const TabNavigator = () => {
           height: 4,
           backgroundColor: "tomato",
           position: "absolute",
-          bottom: 98,
+          bottom: tabBar.indicatorBottom,
           left: 30,
           borderRadius: 50,
           transform: [{ translateX: tabOffsetValue }],
@@ -153,18 +159,5 @@ const TabNavigator = () => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  shadow: {
-    shadowColor: "#7f5df0",
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.5,
-    elevation: 5,
-  },
-});
 
 export default TabNavigator;

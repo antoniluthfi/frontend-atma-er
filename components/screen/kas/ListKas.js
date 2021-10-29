@@ -150,115 +150,114 @@ const ListKas = ({ navigation }) => {
           await getDetailKas(0);
         }}
       />
+      <View style={styles.container}>
+        <Provider>
+          <Portal>
+            <GroupList />
 
-      {loadDataEvent ? (
-        <Loading />
-      ) : (
-        <View style={styles.container}>
-          <Provider>
-            <Portal>
-              <GroupList />
-
-              <View style={styles.wrapper}>
-                <View style={[styles.card, styles.items]}>
-                  <View style={{ marginLeft: 10 }}>
-                    <FontAwesome5 name="money-check" size={60} />
-                  </View>
-                  <View style={{ marginLeft: 15 }}>
-                    <Text style={{ fontWeight: "bold" }}>
-                      Total Pemasukan :{" "}
-                      <NumberFormat
-                        value={rincianEvent.pemasukan}
-                        displayType={"text"}
-                        thousandSeparator={true}
-                        prefix={"Rp. "}
-                        renderText={(value, props) => (
-                          <Text style={{ fontWeight: "bold", color: "blue" }}>
-                            {value}
-                          </Text>
-                        )}
-                      />
-                    </Text>
+            <View style={styles.wrapper}>
+              <View style={[styles.card, styles.items]}>
+                <View style={{ marginLeft: 10 }}>
+                  <FontAwesome5 name="money-check" size={60} />
+                </View>
+                <View style={{ marginLeft: 15 }}>
+                  <Text style={{ fontWeight: "bold" }}>
+                    Total Pemasukan :{" "}
                     <NumberFormat
-                      value={rincianEvent.pengeluaran}
+                      value={rincianEvent.pemasukan}
                       displayType={"text"}
                       thousandSeparator={true}
                       prefix={"Rp. "}
                       renderText={(value, props) => (
-                        <Text style={{ fontWeight: "bold", color: "red" }}>
-                          Total Pengeluaran : {value}
+                        <Text style={{ fontWeight: "bold", color: "blue" }}>
+                          {value}
                         </Text>
                       )}
                     />
-                    <Text style={{ fontWeight: "bold" }}>
-                      Total Kas :{" "}
-                      <NumberFormat
-                        value={rincianEvent.total}
-                        displayType={"text"}
-                        thousandSeparator={true}
-                        prefix={"Rp. "}
-                        renderText={(value, props) => (
-                          <Text style={{ fontWeight: "bold", color: "green" }}>
-                            {value}
-                          </Text>
-                        )}
-                      />
-                    </Text>
-                    <Text>{moment().format("dddd, Do MMMM YYYY")}</Text>
-                  </View>
-                </View>
-              </View>
-
-              <View
-                style={{
-                  flexWrap: "wrap",
-                  flexDirection: "row",
-                  backgroundColor: "#fff",
-                  marginTop: 20,
-                  borderTopRightRadius: 20,
-                  borderTopLeftRadius: 20,
-                  // elevation: 5,
-                }}
-              >
-                <View
-                  style={{ marginVertical: 15, paddingLeft: 15, width: "97%" }}
-                >
-                  <Input
-                    type="text"
-                    placeholder="Cari kas disini ..."
-                    InputRightElement={
-                      <Ionicons
-                        name="search"
-                        size={30}
-                        style={{ marginRight: 10 }}
-                      />
-                    }
-                    value={keyword}
-                    onChangeText={(text) => {
-                      setKeyword(text);
-                      filterKas(text);
-                    }}
+                  </Text>
+                  <NumberFormat
+                    value={rincianEvent.pengeluaran}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    prefix={"Rp. "}
+                    renderText={(value, props) => (
+                      <Text style={{ fontWeight: "bold", color: "red" }}>
+                        Total Pengeluaran : {value}
+                      </Text>
+                    )}
                   />
+                  <Text style={{ fontWeight: "bold" }}>
+                    Total Kas :{" "}
+                    <NumberFormat
+                      value={rincianEvent.total}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      prefix={"Rp. "}
+                      renderText={(value, props) => (
+                        <Text style={{ fontWeight: "bold", color: "green" }}>
+                          {value}
+                        </Text>
+                      )}
+                    />
+                  </Text>
+                  <Text>{moment().format("dddd, Do MMMM YYYY")}</Text>
                 </View>
               </View>
+            </View>
 
+            <View
+              style={{
+                flexWrap: "wrap",
+                flexDirection: "row",
+                backgroundColor: "#fff",
+                marginTop: 20,
+                borderTopRightRadius: 20,
+                borderTopLeftRadius: 20,
+                // elevation: 5,
+              }}
+            >
+              <View
+                style={{ marginVertical: 15, paddingLeft: 15, width: "97%" }}
+              >
+                <Input
+                  type="text"
+                  placeholder="Cari kas disini ..."
+                  InputRightElement={
+                    <Ionicons
+                      name="search"
+                      size={30}
+                      style={{ marginRight: 10 }}
+                    />
+                  }
+                  value={keyword}
+                  onChangeText={(text) => {
+                    setKeyword(text);
+                    filterKas(text);
+                  }}
+                />
+              </View>
+            </View>
+
+            {loadDataEvent ? (
+              <Loading />
+            ) : (
               <Basic navigation={navigation} dataEvent={dataEvent} />
+            )}
 
-              <FloatingButton
-                navigation={navigation}
-                actions={[
-                  {
-                    icon: "download",
-                    label: "Unduh PDF",
-                    onPress: buatPdf,
-                    small: false,
-                  },
-                ]}
-              />
-            </Portal>
-          </Provider>
-        </View>
-      )}
+            <FloatingButton
+              navigation={navigation}
+              actions={[
+                {
+                  icon: "download",
+                  label: "Unduh PDF",
+                  onPress: buatPdf,
+                  small: false,
+                },
+              ]}
+            />
+          </Portal>
+        </Provider>
+      </View>
     </NativeBaseProvider>
   );
 };

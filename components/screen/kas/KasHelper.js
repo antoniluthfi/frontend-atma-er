@@ -31,10 +31,9 @@ const KasHelper = (navigation) => {
   });
 
   const getListKas = async () => {
-    console.log("list kas");
     await axios({
       method: "GET",
-      url: `${TEST_URL}/event-kas`,
+      url: `${TEST_URL}/event-kas/group/1`,
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${user.token}`,

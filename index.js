@@ -7,13 +7,15 @@ import { Provider } from "react-redux";
 import { userReducer } from "./reducer/userReducer";
 import { loadingReducer } from "./reducer/loadingReducer";
 import { alertReducer } from "./reducer/alertReducer";
+import { tabBarReducer } from "./reducer/tabBarReducer";
 
 import App from "./App";
 
 const rootReducer = combineReducers({
   user: userReducer,
   loading: loadingReducer,
-  alert: alertReducer
+  alert: alertReducer,
+  tabBar: tabBarReducer
 });
 
 const store = createStore(rootReducer);
