@@ -6,12 +6,14 @@ import { combineReducers, createStore } from "redux";
 import { Provider } from "react-redux";
 import { userReducer } from "./reducer/userReducer";
 import { loadingReducer } from "./reducer/loadingReducer";
+import { alertReducer } from "./reducer/alertReducer";
 
 import App from "./App";
 
 const rootReducer = combineReducers({
   user: userReducer,
   loading: loadingReducer,
+  alert: alertReducer
 });
 
 const store = createStore(rootReducer);

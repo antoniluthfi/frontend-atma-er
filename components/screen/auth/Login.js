@@ -15,7 +15,14 @@ import * as yup from "yup";
 import { Formik } from "formik";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { StyleSheet } from "react-native";
+import {
+  useFonts,
+  Raleway_400Regular,
+  Raleway_500Medium,
+} from "@expo-google-fonts/raleway";
 import AuthHelper from "./AuthHelper";
+import Alert from "../../reusable/Alert";
+import { useSelector } from "react-redux";
 
 const inputValidationSchema = yup.object().shape({
   email: yup.string().required("Email nya masih kosong tuh, isi dulu yaa"),
@@ -23,12 +30,21 @@ const inputValidationSchema = yup.object().shape({
 });
 
 const Login = ({ navigation }) => {
+  const alert = useSelector((state) => state.alert);
+
   const { login } = AuthHelper(navigation);
   const [type, setType] = useState("password");
   const [icon, setIcon] = useState("eye");
 
-  return (
+  const [fontsLoaded, error] = useFonts({
+    Raleway_400Regular,
+    Raleway_500Medium,
+  });
+
+  return !fontsLoaded ? null : (
     <NativeBaseProvider>
+      {alert.show && <Alert />}
+
       <View style={{ backgroundColor: "tomato", paddingVertical: 25 }}>
         <Box
           alignSelf={{
@@ -40,7 +56,15 @@ const Login = ({ navigation }) => {
             <Ionicons name="people-circle" size={100} color="white" />
           </Center>
           <Heading size="2xl" color="white">
-            Usman Sidomulyo
+            <Text
+              style={{
+                fontFamily: "Raleway_500Medium",
+                fontSize: 30,
+                color: "white",
+              }}
+            >
+              Usman Sidomulyo
+            </Text>
           </Heading>
         </Box>
       </View>
@@ -72,7 +96,15 @@ const Login = ({ navigation }) => {
                   }}
                 >
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Email</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Email
+                      </Text>
+                    </FormControl.Label>
                     <Input
                       type="email"
                       keyboardType="email-address"
@@ -93,11 +125,22 @@ const Login = ({ navigation }) => {
                           style={{ marginLeft: 8 }}
                         />
                       }
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     />
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Password</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Password
+                      </Text>
+                    </FormControl.Label>
                     <Input
                       type={type}
                       onChangeText={handleChange("password")}
@@ -133,12 +176,20 @@ const Login = ({ navigation }) => {
                           }}
                         />
                       }
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     />
                   </FormControl>
                 </View>
                 <Text
                   onPress={() => navigation.navigate("Register")}
-                  style={{ marginBottom: 15, fontSize: 13, color: "tomato" }}
+                  style={{
+                    marginBottom: 15,
+                    fontSize: 13,
+                    color: "tomato",
+                    fontFamily: "Raleway_400Regular",
+                  }}
                 >
                   Belum pernah daftar? coba daftar dulu deh
                 </Text>
@@ -146,9 +197,17 @@ const Login = ({ navigation }) => {
                   onPress={handleSubmit}
                   size="md"
                   colorScheme="orange"
+                  disabled={!values.email || !values.password}
                   _text={{ color: "#fff", fontWeight: "bold" }}
                 >
-                  Login
+                  <Text
+                    style={{
+                      fontFamily: "Raleway_500Medium",
+                      color: "white",
+                    }}
+                  >
+                    Login
+                  </Text>
                 </Button>
               </View>
             </View>

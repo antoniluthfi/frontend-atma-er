@@ -19,8 +19,8 @@ import GroupStack from "../stacks/GroupStack";
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
-  const [indicatorWidth, setIndicatorWidth] = useState(100);
-  const tabOffsetValue = useRef(new Animated.Value(0)).current;
+  const [indicatorWidth, setIndicatorWidth] = useState(200);
+  const tabOffsetValue = useRef(new Animated.Value(145)).current;
 
   const getWidth = () => {
     let width = Dimensions.get("window").width;
@@ -31,6 +31,7 @@ const TabNavigator = () => {
   return (
     <>
       <Tab.Navigator
+        initialRouteName="Beranda"
         screenOptions={({ route }) => ({
           tabBarShowLabel: false,
           headerShown: false,
@@ -105,7 +106,7 @@ const TabNavigator = () => {
         })}
         screenListeners={({ navigation, route }) => ({
           tabPress: (e) => {
-            let value = 0;
+            let value = 145;
             if (route.name === "Kehadiran") {
               value = 0;
               setIndicatorWidth(90);

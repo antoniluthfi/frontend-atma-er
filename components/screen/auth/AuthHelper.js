@@ -1,28 +1,30 @@
-import { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { TEST_URL } from "@env";
-import { Alert } from "react-native";
 
 const AuthHelper = (navigation) => {
   const dispatch = useDispatch();
 
   const login = async (values) => {
+    dispatch({
+      type: "SET_LOADING",
+      payload: true,
+    });
+
     let alert;
     if (!values.email) alert = "Email harus diisi!";
     else if (!values.password) alert = "Password harus diisi!";
 
     if (alert) {
-      Alert.alert("Login Gagal", alert, [
-        { text: "Oke", style: "cancel", onPress: () => console.log("oke") },
-      ]);
-    } else {
       dispatch({
-        type: "SET_LOADING",
-        payload: true,
+        type: "SET_SHOW_ALERT",
+        payload: {
+          type: "failed",
+          show: true,
+          message: alert,
+        },
       });
-
-      console.log("login");
+    } else {
       await axios({
         method: "post",
         url: `${TEST_URL}/login`,
@@ -39,6 +41,15 @@ const AuthHelper = (navigation) => {
             type: "LOGIN",
             payload: response.data.success,
           });
+
+          dispatch({
+            type: "SET_SHOW_ALERT",
+            payload: {
+              type: "success",
+              show: true,
+              message: "Login berhasil",
+            },
+          });
         })
         .catch((error) => {
           let message;
@@ -50,9 +61,14 @@ const AuthHelper = (navigation) => {
               "Maaf server kami sedang mengalami gangguan, silahkan login lagi nanti";
           }
 
-          Alert.alert("Login Gagal", message, [
-            { text: "Oke", style: "cancel", onPress: () => console.log("oke") },
-          ]);
+          dispatch({
+            type: "SET_SHOW_ALERT",
+            payload: {
+              type: "failed",
+              show: true,
+              message: message,
+            },
+          });
         });
 
       dispatch({
@@ -63,7 +79,6 @@ const AuthHelper = (navigation) => {
   };
 
   const register = async (values) => {
-    console.log("register");
     await axios({
       method: "post",
       url: `${TEST_URL}/register`,
@@ -80,10 +95,24 @@ const AuthHelper = (navigation) => {
     })
       .then((response) => {
         navigation.navigate("Login");
-        alert("Silahkan cek email untuk bisa mengaktifkan akun!");
+        dispatch({
+          type: "SET_SHOW_ALERT",
+          payload: {
+            type: "failed",
+            show: true,
+            message: "Registrasi berhasil",
+          },
+        });
       })
       .catch((error) => {
-        console.log(error.message);
+        dispatch({
+          type: "SET_SHOW_ALERT",
+          payload: {
+            type: "failed",
+            show: true,
+            message: error.message,
+          },
+        });
       });
 
     dispatch({

@@ -137,11 +137,26 @@ const KasHelper = (navigation) => {
       },
     })
       .then((response) => {
-        alert(response.data.message);
+        dispatch({
+          type: "SET_SHOW_ALERT",
+          payload: {
+            type: "success",
+            show: true,
+            message: response.data.message,
+          },
+        });
+
         navigation.goBack();
       })
       .catch((error) => {
-        console.log(error.message);
+        dispatch({
+          type: "SET_SHOW_ALERT",
+          payload: {
+            type: "failed",
+            show: true,
+            message: error.message,
+          },
+        });
       });
 
     dispatch({
@@ -173,14 +188,29 @@ const KasHelper = (navigation) => {
       },
     })
       .then((response) => {
-        alert(response.data.message);
+        dispatch({
+          type: "SET_SHOW_ALERT",
+          payload: {
+            type: "success",
+            show: true,
+            message: response.data.message,
+          },
+        });
+
         navigation.navigate("DetailKas", {
           title: values.event_name,
           id: values.event_kas_id,
         });
       })
       .catch((error) => {
-        console.log(error.message);
+        dispatch({
+          type: "SET_SHOW_ALERT",
+          payload: {
+            type: "failed",
+            show: true,
+            message: error.message,
+          },
+        });
       });
 
     dispatch({
@@ -204,11 +234,25 @@ const KasHelper = (navigation) => {
       },
     })
       .then((response) => {
-        alert(response.data.message);
+        dispatch({
+          type: "SET_SHOW_ALERT",
+          payload: {
+            type: "success",
+            show: true,
+            message: response.data.message,
+          },
+        });
         navigation.goBack();
       })
       .catch((error) => {
-        console.log(error.message);
+        dispatch({
+          type: "SET_SHOW_ALERT",
+          payload: {
+            type: "failed",
+            show: true,
+            message: error.message,
+          },
+        });
       });
 
     dispatch({

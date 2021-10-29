@@ -3,11 +3,16 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { useSelector } from "react-redux";
 import Header from "../../reusable/Header";
+import Alert from "../../reusable/Alert";
 
 const Kehadiran = ({ navigation }) => {
+  const alert = useSelector(state => state.alert);
+
   return (
     <NativeBaseProvider>
+      {alert.show && <Alert />}
       <Header title="Kehadiran" navigation={navigation} />
 
       <View style={styles.container}>

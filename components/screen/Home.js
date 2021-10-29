@@ -4,6 +4,8 @@ import { StackedBarChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 import Header from "../reusable/Header";
 import { NativeBaseProvider } from "native-base";
+import { useSelector } from "react-redux";
+import Alert from "../reusable/Alert";
 
 const screenWidth = Dimensions.get("window").width - 35;
 const data = {
@@ -28,8 +30,12 @@ const chartConfig = {
 };
 
 const Home = ({ navigation }) => {
+  const alert = useSelector(state => state.alert);
+
   return (
     <NativeBaseProvider>
+      {alert.show && <Alert />}
+
       <Header title="Beranda" navigation={navigation} />
       <View style={styles.container}>
         <View style={[styles.taskWrapper, styles.item]}>

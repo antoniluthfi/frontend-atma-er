@@ -1,6 +1,6 @@
 import React from "react";
 import { StatusBar, Dimensions } from "react-native";
-import { Spinner, View, NativeBaseProvider, Text } from "native-base";
+import { View, NativeBaseProvider, Text } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import LottieView from "lottie-react-native";
@@ -16,6 +16,7 @@ const windowHeight = Dimensions.get("window").height;
 const App = () => {
   const loading = useSelector((state) => state.loading);
   const user = useSelector((state) => state.user.data);
+  const alert = useSelector((state) => state.alert);
 
   const validateUser = user ? true : false;
 
@@ -30,7 +31,13 @@ const App = () => {
       <NativeBaseProvider>
         <StatusBar
           animated={true}
-          backgroundColor={loading ? "rgb(74, 29, 22)" : "tomato"}
+          backgroundColor={
+            loading
+              ? "rgb(74, 29, 22)"
+              : alert.show
+              ? "rgb(128, 49, 34)"
+              : "tomato"
+          }
           barStyle="default"
           showHideTransition="fade"
           hidden={false}
@@ -54,7 +61,7 @@ const App = () => {
               source={require("./assets/loader.json")}
               style={{
                 width: 100,
-                height: 100
+                height: 100,
               }}
               autoPlay
               loop
@@ -62,6 +69,7 @@ const App = () => {
             <Text style={{ fontSize: 20, color: "#fff" }}>Tunggu yaa ...</Text>
           </View>
         )}
+
         {validateUser && !tidakPunyaGrup && !grupBlmAccJoin ? (
           <MainDrawerNavigator />
         ) : tidakPunyaGrup || grupBlmAccJoin ? (

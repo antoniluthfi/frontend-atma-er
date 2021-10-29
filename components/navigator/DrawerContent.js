@@ -38,11 +38,25 @@ const DrawerContent = ({ progress, ...props }) => {
             token: null,
           },
         });
+
+        dispatch({
+          type: "SET_SHOW_ALERT",
+          payload: {
+            type: "success",
+            show: true,
+            message: "Logout berhasil",
+          },
+        });  
       })
       .catch((err) => {
-        Alert.alert("Gagal Logout", "Maaf, silahkan coba lagi", [
-          { text: "Oke", style: "cancel", onPress: () => console.log("oke") },
-        ]);
+        dispatch({
+          type: "SET_SHOW_ALERT",
+          payload: {
+            type: "failed",
+            show: true,
+            message: "Logout gagal, silahkan coba lagi!",
+          },
+        });
       });
 
     dispatch({

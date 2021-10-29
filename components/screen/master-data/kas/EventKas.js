@@ -18,14 +18,18 @@ import { Portal, Provider } from "react-native-paper";
 import { SwipeListView } from "react-native-swipe-list-view";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import LottieView from "lottie-react-native";
+import { useSelector } from "react-redux";
+
 import EventKasHelper from "./EventKasHelper";
 import Header from "../../../reusable/Header";
 import Loading from "../../../reusable/Loading";
 import NumberFormat from "react-number-format";
 import GroupList from "../../../reusable/GroupList";
-import LottieView from "lottie-react-native";
+import Alert from "../../../reusable/Alert";
 
 const EventKas = ({ navigation }) => {
+  const alert = useSelector((state) => state.alert);
   const {
     dataEvent,
     setDataEvent,
@@ -34,6 +38,7 @@ const EventKas = ({ navigation }) => {
     keyword,
     setKeyword,
     getEventKas,
+    deleteEventKas,
     filterData,
   } = EventKasHelper(navigation);
 
@@ -61,6 +66,8 @@ const EventKas = ({ navigation }) => {
         }}
       />
       <GroupList />
+
+      {alert.show && <Alert />}
       <View style={styles.container}>
         <Provider>
           <Portal>
@@ -102,7 +109,11 @@ const EventKas = ({ navigation }) => {
             {loadDataEvent ? (
               <Loading />
             ) : (
-              <Basic navigation={navigation} dataEvent={dataEvent.event} />
+              <Basic
+                navigation={navigation}
+                dataEvent={dataEvent.event}
+                deleteEventKas={deleteEventKas}
+              />
             )}
 
             <Fab
@@ -131,7 +142,7 @@ const EventKas = ({ navigation }) => {
 
 export default EventKas;
 
-const Basic = ({ navigation, dataEvent }) => {
+const Basic = ({ navigation, dataEvent, deleteEventKas }) => {
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
       rowMap[rowKey].closeRow();
@@ -190,12 +201,12 @@ const Basic = ({ navigation, dataEvent }) => {
         ml="auto"
         bg="dark.500"
         justifyContent="center"
-        onPress={() => closeRow(rowMap, data.item.key)}
+        onPress={() => deleteEventKas(data.item.id)}
         _pressed={{
           opacity: 0.5,
         }}
       >
-        <Ionicons name="close" size={30} color="#fff" />
+        <Ionicons name="trash" size={30} color="#fff" />
       </Pressable>
       <Pressable
         px={4}

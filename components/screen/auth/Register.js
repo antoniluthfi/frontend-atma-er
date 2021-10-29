@@ -14,9 +14,11 @@ import {
 import * as yup from "yup";
 import { Formik } from "formik";
 import { StyleSheet } from "react-native";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import { launchImageLibrary } from "react-native-image-picker";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AuthHelper from "./AuthHelper";
+import Alert from "../../reusable/Alert";
+import { useSelector } from "react-redux";
 
 const inputValidationSchema = yup.object().shape({
   name: yup.string().required("Nama nya masih kosong tuh, isi dulu yaa"),
@@ -29,6 +31,7 @@ const inputValidationSchema = yup.object().shape({
 });
 
 const Login = ({ navigation }) => {
+  const alert = useSelector((state) => state.alert);
   const { register } = AuthHelper(navigation);
   const [type, setType] = useState({
     type1: "password",
@@ -41,6 +44,8 @@ const Login = ({ navigation }) => {
 
   return (
     <NativeBaseProvider>
+      {alert.show && <Alert />}
+
       <View style={{ backgroundColor: "tomato", paddingVertical: 25 }}>
         <Box
           alignSelf={{

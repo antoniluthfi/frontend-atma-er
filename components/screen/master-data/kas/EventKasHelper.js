@@ -1,10 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
-import { API_URL, TEST_URL } from "@env";
-import { useSelector } from "react-redux";
+import { TEST_URL } from "@env";
+import { useDispatch, useSelector } from "react-redux";
 
 const EventKasHelper = (navigation) => {
   const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
   const [dataEvent, setDataEvent] = useState([]);
   const [dataEventCadangan, setDataEventCadangan] = useState([]);
   const [loadDataEvent, setLoadDataEvent] = useState(true);
@@ -13,7 +15,7 @@ const EventKasHelper = (navigation) => {
   const getEventKas = async () => {
     await axios({
       method: "GET",
-      url: `${TEST_URL}/event-kas`,
+      url: `${TEST_URL}/event-kas/group/1`,
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${user.token}`,
@@ -46,10 +48,26 @@ const EventKasHelper = (navigation) => {
       },
     })
       .then((response) => {
+        dispatch({
+          type: "SET_SHOW_ALERT",
+          payload: {
+            type: "success",
+            show: true,
+            message: response.data.message,
+          },
+        });
+
         navigation.goBack();
       })
       .catch((error) => {
-        console.log(error);
+        dispatch({
+          type: "SET_SHOW_ALERT",
+          payload: {
+            type: "failed",
+            show: true,
+            message: error.message,
+          },
+        });
       });
   };
 
@@ -67,10 +85,59 @@ const EventKasHelper = (navigation) => {
       },
     })
       .then((response) => {
+        dispatch({
+          type: "SET_SHOW_ALERT",
+          payload: {
+            type: "success",
+            show: true,
+            message: response.data.message,
+          },
+        });
+
         navigation.goBack();
       })
       .catch((error) => {
-        console.log(error);
+        dispatch({
+          type: "SET_SHOW_ALERT",
+          payload: {
+            type: "failed",
+            show: true,
+            message: error.message,
+          },
+        });
+      });
+  };
+
+  const deleteEventKas = async (id) => {
+    await axios({
+      method: "delete",
+      url: `${TEST_URL}/event-kas/${id}`,
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+    })
+      .then((response) => {
+        dispatch({
+          type: "SET_SHOW_ALERT",
+          payload: {
+            type: "success",
+            show: true,
+            message: response.data.message,
+          },
+        });
+
+        getEventKas();
+      })
+      .catch((error) => {
+        dispatch({
+          type: "SET_SHOW_ALERT",
+          payload: {
+            type: "failed",
+            show: true,
+            message: error.message,
+          },
+        });
       });
   };
 
@@ -93,8 +160,9 @@ const EventKasHelper = (navigation) => {
     keyword,
     setKeyword,
     getEventKas,
-    updateEvent,
     postEventKas,
+    updateEvent,
+    deleteEventKas,
     filterData,
   };
 };
