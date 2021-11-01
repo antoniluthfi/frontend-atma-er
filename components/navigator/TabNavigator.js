@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Animated, Dimensions } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useSelector } from "react-redux";
+import { useFonts, Raleway_400Regular } from "@expo-google-fonts/raleway";
 
 import Home from "../screen/Home";
 import KehadiranStack from "../stacks/KehadiranStack";
@@ -16,6 +17,10 @@ const TabNavigator = () => {
   const tabBar = useSelector((state) => state.tabBar);
   const [indicatorWidth, setIndicatorWidth] = useState(200);
   const tabOffsetValue = useRef(new Animated.Value(145)).current;
+
+  const [fontsLoaded, error] = useFonts({
+    Raleway_400Regular,
+  });
 
   const getWidth = () => {
     let width = Dimensions.get("window").width;
@@ -88,7 +93,15 @@ const TabNavigator = () => {
                 }}
               >
                 <Ionicons name={iconName} size={20} color={color} />
-                <Text style={{ color: color, fontSize: 12 }}>{route.name}</Text>
+                <Text
+                  style={{
+                    color: color,
+                    fontSize: 12,
+                    fontFamily: "Raleway_400Regular",
+                  }}
+                >
+                  {route.name}
+                </Text>
               </View>
             ) : (
               <View

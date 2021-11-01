@@ -6,11 +6,6 @@ const AuthHelper = (navigation) => {
   const dispatch = useDispatch();
 
   const login = async (values) => {
-    dispatch({
-      type: "SET_LOADING",
-      payload: true,
-    });
-
     let alert;
     if (!values.email) alert = "Email harus diisi!";
     else if (!values.password) alert = "Password harus diisi!";
@@ -25,6 +20,11 @@ const AuthHelper = (navigation) => {
         },
       });
     } else {
+      dispatch({
+        type: "SET_LOADING",
+        payload: true,
+      });
+  
       await axios({
         method: "post",
         url: `${TEST_URL}/login`,

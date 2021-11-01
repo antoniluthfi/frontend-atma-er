@@ -19,14 +19,19 @@ import RNHTMLtoPDF from "react-native-html-to-pdf";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import "moment/locale/id";
 import moment from "moment";
+import { useFonts, Raleway_400Regular } from "@expo-google-fonts/raleway";
+
+// component
 import Header from "../../../reusable/Header";
 import DataUsmanHelper from "./DataUsmanHelper";
 import FloatingButton from "../../../reusable/FloatingButton";
 import GroupList from "../../../reusable/GroupList";
 import Loading from "../../../reusable/Loading";
 import LottieView from "lottie-react-native";
+import KeyboardHelper from "../../../reusable/KeyboardHelper";
 
 const DataUsman = ({ navigation }) => {
+  const {} = KeyboardHelper("DataUsman");
   const {
     dataUsman,
     setDataUsman,
@@ -37,6 +42,10 @@ const DataUsman = ({ navigation }) => {
     setKeyword,
     filterData,
   } = DataUsmanHelper(navigation);
+
+  const [fontsLoaded, error] = useFonts({
+    Raleway_400Regular,
+  });
 
   const buatPdf = async () => {
     const options = {
@@ -120,7 +129,6 @@ const DataUsman = ({ navigation }) => {
           await getDataUsman();
         }}
       />
-      <GroupList />
       <KeyboardAvoidingView
         behavior="height"
         enabled={true}
@@ -128,6 +136,8 @@ const DataUsman = ({ navigation }) => {
       >
         <Provider>
           <Portal>
+            <GroupList />
+
             <View
               style={{
                 flexWrap: "wrap",
@@ -154,6 +164,9 @@ const DataUsman = ({ navigation }) => {
                   onChangeText={(text) => {
                     setKeyword(text);
                     filterData(text);
+                  }}
+                  style={{
+                    fontFamily: "Raleway_400Regular",
                   }}
                 />
               </View>
@@ -224,8 +237,20 @@ const Basic = ({ navigation, dataUsman }) => {
               <Ionicons name="person" size={30} color="white" />
             </Avatar>
             <VStack>
-              <Text>{item.name}</Text>
-              <Text style={{ fontSize: 12, color: "grey" }}>
+              <Text
+                style={{
+                  fontFamily: "Raleway_400Regular",
+                }}
+              >
+                {item.name}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: "grey",
+                  fontFamily: "Raleway_400Regular",
+                }}
+              >
                 Terdaftar pada{" "}
                 {moment(item.created_at).format("dddd, Do MMMM YYYY")}
               </Text>

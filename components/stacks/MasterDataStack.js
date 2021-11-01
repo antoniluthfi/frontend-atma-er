@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
+import { useFocusEffect } from "@react-navigation/core";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector } from "react-redux";
 import Loading from "../reusable/Loading";
@@ -8,25 +9,27 @@ import administratorStack from "../../routes/master-data-stack/administrator";
 
 const Stack = createNativeStackNavigator();
 
-const MasterDataStack = () => {
+const MasterDataStack = ({ navigation }) => {
   const user = useSelector((state) => state.user);
   const administrator = user && user.data.hak_akses === "administrator";
 
   const [routes, setRoutes] = useState([]);
 
-  useEffect(() => {
-    const getRoutes = () => {
-      if (administrator) {
-        setRoutes(administratorStack);
-      }
-    };
+  const getRoutes = () => {
+    if (administrator) {
+      setRoutes(administratorStack);
+    }
+  };
 
-    getRoutes();
+  useFocusEffect(
+    useCallback(() => {
+      getRoutes();
 
-    return () => {
-      setRoutes([]);
-    };
-  }, []);
+      return () => {
+        setRoutes([]);
+      };
+    }, [])
+  );
 
   return (
     <Stack.Navigator

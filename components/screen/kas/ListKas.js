@@ -5,11 +5,11 @@ import {
   Text,
   Pressable,
   HStack,
-  // Avatar,
   View,
   Input,
   Avatar,
   VStack,
+  ScrollView,
 } from "native-base";
 import { Alert, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/core";
@@ -25,6 +25,7 @@ import FloatingButton from "../../reusable/FloatingButton";
 import { Portal, Provider } from "react-native-paper";
 import Loading from "../../reusable/Loading";
 import GroupList from "../../reusable/GroupList";
+import LottieView from "lottie-react-native";
 
 const ListKas = ({ navigation }) => {
   const {
@@ -334,16 +335,31 @@ const Basic = ({ navigation, dataEvent }) => {
 
   return (
     <Box bg="white" safeArea flex={1}>
-      <SwipeListView
-        data={dataEvent}
-        renderItem={renderItem}
-        renderHiddenItem={renderHiddenItem}
-        rightOpenValue={-65}
-        previewRowKey={"0"}
-        previewOpenValue={-40}
-        previewOpenDelay={1000}
-        onRowDidOpen={onRowDidOpen}
-      />
+      {dataEvent.length > 0 ? (
+        <SwipeListView
+          data={dataEvent}
+          renderItem={renderItem}
+          renderHiddenItem={renderHiddenItem}
+          rightOpenValue={-65}
+          previewRowKey={"0"}
+          previewOpenValue={-40}
+          previewOpenDelay={1000}
+          onRowDidOpen={onRowDidOpen}
+        />
+      ) : (
+        <ScrollView>
+          <LottieView
+            source={require("../../../assets/data-not-found.json")}
+            style={{
+              marginBottom: 50,
+              width: "100%",
+              height: 400,
+            }}
+            autoPlay
+            loop
+          />
+        </ScrollView>
+      )}
     </Box>
   );
 };

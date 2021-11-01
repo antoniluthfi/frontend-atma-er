@@ -3,6 +3,9 @@
     "name": "usman-sidomulyo",
     "slug": "usman-sidomulyo",
     "version": "1.0.0",
+    "android": {
+      "softwareKeyboardLayoutMode": "pan"
+    },
     "assetBundlePatterns": [
       "**/*"
     ]

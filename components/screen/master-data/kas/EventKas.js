@@ -29,6 +29,7 @@ import GroupList from "../../../reusable/GroupList";
 import Alert from "../../../reusable/Alert";
 
 const EventKas = ({ navigation }) => {
+  const fab2Bottom = useSelector((state) => state.tabBar.fab2Bottom);
   const alert = useSelector((state) => state.alert);
   const {
     dataEvent,
@@ -65,12 +66,13 @@ const EventKas = ({ navigation }) => {
           await getEventKas();
         }}
       />
-      <GroupList />
 
       {alert.show && <Alert />}
       <View style={styles.container}>
         <Provider>
           <Portal>
+            <GroupList />
+
             <View
               style={{
                 flexWrap: "wrap",
@@ -111,7 +113,7 @@ const EventKas = ({ navigation }) => {
             ) : (
               <Basic
                 navigation={navigation}
-                dataEvent={dataEvent.event}
+                events={dataEvent.event}
                 deleteEventKas={deleteEventKas}
               />
             )}
@@ -119,7 +121,7 @@ const EventKas = ({ navigation }) => {
             <Fab
               position="absolute"
               style={{
-                bottom: 130,
+                bottom: fab2Bottom,
               }}
               size="sm"
               onPress={() =>
@@ -142,13 +144,7 @@ const EventKas = ({ navigation }) => {
 
 export default EventKas;
 
-const Basic = ({ navigation, dataEvent, deleteEventKas }) => {
-  const closeRow = (rowMap, rowKey) => {
-    if (rowMap[rowKey]) {
-      rowMap[rowKey].closeRow();
-    }
-  };
-
+const Basic = ({ navigation, events, deleteEventKas }) => {
   const onRowDidOpen = (rowKey) => {
     console.log("This row opened", rowKey);
   };
@@ -230,9 +226,9 @@ const Basic = ({ navigation, dataEvent, deleteEventKas }) => {
 
   return (
     <Box bg="white" safeArea flex={1}>
-      {dataEvent.length > 0 ? (
+      {events.length > 0 ? (
         <SwipeListView
-          data={dataEvent}
+          data={events}
           renderItem={renderItem}
           renderHiddenItem={renderHiddenItem}
           rightOpenValue={-130}
@@ -247,7 +243,7 @@ const Basic = ({ navigation, dataEvent, deleteEventKas }) => {
           style={{
             marginBottom: 100,
             width: "100%",
-            height: 400
+            height: 400,
           }}
           autoPlay
           loop

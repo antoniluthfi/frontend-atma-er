@@ -7,7 +7,6 @@ import "moment/locale/id";
 import moment from "moment";
 import {
   NativeBaseProvider,
-  TextArea,
   FormControl,
   Select,
   Button,
@@ -16,6 +15,9 @@ import {
   Input,
 } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { useFonts, Raleway_400Regular } from "@expo-google-fonts/raleway";
+
+// component
 import Header from "../../../reusable/Header";
 import DataUsmanHelper from "./DataUsmanHelper";
 
@@ -55,6 +57,10 @@ const FormUsman = ({ navigation, route }) => {
         : Date.now()
       : Date.now()
   );
+
+  const [fontsLoaded, error] = useFonts({
+    Raleway_400Regular,
+  });
 
   return (
     <Formik
@@ -101,7 +107,15 @@ const FormUsman = ({ navigation, route }) => {
                   }}
                 >
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Nama</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Nama
+                      </Text>
+                    </FormControl.Label>
                     <Input
                       onChangeText={handleChange("name")}
                       onBlur={handleBlur("name")}
@@ -113,11 +127,22 @@ const FormUsman = ({ navigation, route }) => {
                       _dark={{
                         placeholderTextColor: "blueGray.50",
                       }}
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     />
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Email</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Email
+                      </Text>
+                    </FormControl.Label>
                     <Input
                       keyboardType="email-address"
                       onChangeText={handleChange("email")}
@@ -130,11 +155,22 @@ const FormUsman = ({ navigation, route }) => {
                       _dark={{
                         placeholderTextColor: "blueGray.50",
                       }}
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     />
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Alamat</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Alamat
+                      </Text>
+                    </FormControl.Label>
                     <Input
                       onChangeText={handleChange("alamat")}
                       onBlur={handleBlur("alamat")}
@@ -146,11 +182,22 @@ const FormUsman = ({ navigation, route }) => {
                       _dark={{
                         placeholderTextColor: "blueGray.50",
                       }}
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     />
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Nomor Hp</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Nomor Hp
+                      </Text>
+                    </FormControl.Label>
                     <Input
                       keyboardType="numeric"
                       onChangeText={handleChange("nomorhp")}
@@ -163,11 +210,22 @@ const FormUsman = ({ navigation, route }) => {
                       _dark={{
                         placeholderTextColor: "blueGray.50",
                       }}
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     />
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Nama Ayah</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Nama Ayah
+                      </Text>
+                    </FormControl.Label>
                     <Input
                       onChangeText={handleChange("nama_ayah")}
                       onBlur={handleBlur("nama_ayah")}
@@ -179,11 +237,22 @@ const FormUsman = ({ navigation, route }) => {
                       _dark={{
                         placeholderTextColor: "blueGray.50",
                       }}
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     />
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Nama Ibu</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Nama Ibu
+                      </Text>
+                    </FormControl.Label>
                     <Input
                       onChangeText={handleChange("nama_ibu")}
                       onBlur={handleBlur("nama_ibu")}
@@ -195,11 +264,22 @@ const FormUsman = ({ navigation, route }) => {
                       _dark={{
                         placeholderTextColor: "blueGray.50",
                       }}
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     />
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Tempat Lahir</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Tempat Lahir
+                      </Text>
+                    </FormControl.Label>
                     <Input
                       onChangeText={handleChange("tempat_lahir")}
                       onBlur={handleBlur("tempat_lahir")}
@@ -211,11 +291,22 @@ const FormUsman = ({ navigation, route }) => {
                       _dark={{
                         placeholderTextColor: "blueGray.50",
                       }}
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     />
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Tanggal Lahir</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Tanggal Lahir
+                      </Text>
+                    </FormControl.Label>
                     <Input
                       type="date"
                       value={moment(tglLahir).format("dddd, Do MMMM YYYY")}
@@ -235,6 +326,9 @@ const FormUsman = ({ navigation, route }) => {
                           onPress={() => setShowDatePicker(true)}
                         />
                       }
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     />
                     {showDatePicker && (
                       <DateTimePicker
@@ -259,7 +353,15 @@ const FormUsman = ({ navigation, route }) => {
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Jenis Kelamin</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Jenis Kelamin
+                      </Text>
+                    </FormControl.Label>
                     <Select
                       onValueChange={handleChange("jenis_kelamin")}
                       onBlur={handleBlur("jenis_kelamin")}
@@ -283,6 +385,9 @@ const FormUsman = ({ navigation, route }) => {
                         ),
                       }}
                       mt={1}
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     >
                       <Select.Item label="Laki-laki" value="1" />
                       <Select.Item label="Perempuan" value="0" />
@@ -296,7 +401,15 @@ const FormUsman = ({ navigation, route }) => {
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Status</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Status
+                      </Text>
+                    </FormControl.Label>
                     <Select
                       onValueChange={handleChange("status")}
                       onBlur={handleBlur("status")}
@@ -316,6 +429,9 @@ const FormUsman = ({ navigation, route }) => {
                         ),
                       }}
                       mt={1}
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     >
                       <Select.Item label="Bekerja" value="Bekerja" />
                       <Select.Item label="Kuliah" value="Kuliah" />
@@ -334,7 +450,15 @@ const FormUsman = ({ navigation, route }) => {
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Hak Akses</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Hak Akses
+                      </Text>
+                    </FormControl.Label>
                     <Select
                       onValueChange={handleChange("hak_akses")}
                       onBlur={handleBlur("hak_akses")}
@@ -354,6 +478,9 @@ const FormUsman = ({ navigation, route }) => {
                         ),
                       }}
                       mt={1}
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     >
                       <Select.Item
                         label="Administrator"
@@ -377,7 +504,14 @@ const FormUsman = ({ navigation, route }) => {
                   colorScheme="orange"
                   _text={{ color: "#fff", fontWeight: "bold" }}
                 >
-                  {method === "put" ? "Update" : "Submit"}
+                  <Text
+                    style={{
+                      fontFamily: "Raleway_400Regular",
+                      color: "white",
+                    }}
+                  >
+                    {method === "put" ? "Update" : "Submit"}
+                  </Text>
                 </Button>
               </View>
             </View>

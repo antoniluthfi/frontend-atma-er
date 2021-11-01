@@ -1,8 +1,13 @@
 import React from "react";
 import { Center, Text } from "native-base";
 import LottieView from "lottie-react-native";
+import { useFonts, Raleway_400Regular } from "@expo-google-fonts/raleway";
 
 const Loading = () => {
+  const [fontsLoaded, error] = useFonts({
+    Raleway_400Regular,
+  });
+
   return (
     <Center flex={1} style={{ backgroundColor: "white" }}>
       <LottieView
@@ -14,7 +19,13 @@ const Loading = () => {
         autoPlay
         loop
       />
-      <Text>Tunggu yaa ...</Text>
+      <Text
+        style={{
+          fontFamily: "Raleway_400Regular",
+        }}
+      >
+        Tunggu yaa ...
+      </Text>
     </Center>
   );
 };

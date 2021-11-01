@@ -1,15 +1,17 @@
 import * as React from "react";
-import { FAB, Portal, Provider } from "react-native-paper";
+import { FAB } from "react-native-paper";
+import { useSelector } from "react-redux";
 
 const FloatingButton = ({ navigation, actions, style = null }) => {
+  const fabBottom = useSelector(state => state.tabBar.fabBottom);
   const [state, setState] = React.useState({ open: false });
 
   const onStateChange = ({ open }) => setState({ open });
   const { open } = state;
 
   const defaultStyle = {
-    position: "absolute",
-    paddingBottom: 120,
+    // position: "absolute",
+    paddingBottom: fabBottom,
   }
 
   return (

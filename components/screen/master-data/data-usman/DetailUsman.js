@@ -12,6 +12,11 @@ import Share from "react-native-share";
 import "moment/locale/id";
 import moment from "moment";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import {
+  useFonts,
+  Raleway_400Regular,
+  Raleway_500Medium,
+} from "@expo-google-fonts/raleway";
 import Header from "../../../reusable/Header";
 import DataUsmanHelper from "./DataUsmanHelper";
 
@@ -61,6 +66,11 @@ const DetailUsman = ({ navigation, route }) => {
     }
   };
 
+  const [fontsLoaded, error] = useFonts({
+    Raleway_400Regular,
+    Raleway_500Medium
+  });
+
   return (
     <NativeBaseProvider>
       <Header title="Detail Usman" navigation={navigation} />
@@ -78,53 +88,53 @@ const DetailUsman = ({ navigation, route }) => {
                   style={{
                     fontSize: 23,
                     textAlign: "center",
-                    fontWeight: "bold",
+                    fontFamily: "Raleway_500Medium", 
                     marginTop: 0,
                   }}
                 >
                   {parseInt(user.jenis_kelamin) ? "Laki-laki" : "Perempuan"}
                 </Text>
 
-                <Text style={[styles.text, { fontWeight: "bold" }]}>Umur</Text>
+                <Text style={[styles.subTitle]}>Umur</Text>
                 <Text style={styles.text}>{getUmur()}</Text>
 
                 <Text
-                  style={[styles.text, { fontWeight: "bold", marginTop: 5 }]}
+                  style={[styles.subTitle]}
                 >
                   Email
                 </Text>
                 <Text style={styles.text}>{user.email}</Text>
 
                 <Text
-                  style={[styles.text, { fontWeight: "bold", marginTop: 5 }]}
+                  style={[styles.subTitle]}
                 >
                   Nomor Hp
                 </Text>
                 <Text style={styles.text}>+62 {user.nomorhp}</Text>
 
                 <Text
-                  style={[styles.text, { fontWeight: "bold", marginTop: 5 }]}
+                  style={[styles.subTitle]}
                 >
                   Alamat
                 </Text>
                 <Text style={styles.text}>{user.alamat}</Text>
 
                 <Text
-                  style={[styles.text, { fontWeight: "bold", marginTop: 5 }]}
+                  style={[styles.subTitle]}
                 >
                   Nama Ayah
                 </Text>
                 <Text style={styles.text}>{user.nama_ayah}</Text>
 
                 <Text
-                  style={[styles.text, { fontWeight: "bold", marginTop: 5 }]}
+                  style={[styles.subTitle]}
                 >
                   Nama Ibu
                 </Text>
                 <Text style={styles.text}>{user.nama_ibu}</Text>
 
                 <Text
-                  style={[styles.text, { fontWeight: "bold", marginTop: 5 }]}
+                  style={[styles.subTitle]}
                 >
                   Tempat, Tanggal Lahir
                 </Text>
@@ -134,14 +144,14 @@ const DetailUsman = ({ navigation, route }) => {
                 </Text>
 
                 <Text
-                  style={[styles.text, { fontWeight: "bold", marginTop: 5 }]}
+                  style={[styles.subTitle]}
                 >
                   Status
                 </Text>
                 <Text style={styles.text}>{user.status}</Text>
 
                 <Text
-                  style={[styles.text, { fontWeight: "bold", marginTop: 5 }]}
+                  style={[styles.subTitle]}
                 >
                   Dapukan
                 </Text>
@@ -227,11 +237,17 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 30,
-    fontWeight: "bold",
     textAlign: "center",
+    fontFamily: "Raleway_500Medium", 
+  },
+  subTitle: {
+    fontSize: 20,
+    marginTop: 5,
+    fontFamily: "Raleway_500Medium", 
   },
   text: {
-    fontSize: 20,
+    fontSize: 17,
+    fontFamily: "Raleway_400Regular"
   },
   items: {
     shadowOffset: { width: 10, height: 10 },

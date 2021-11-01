@@ -1,6 +1,8 @@
 const initialState = {
-  barBottom: 40,
-  indicatorBottom: 98,
+  barBottom: 5,
+  indicatorBottom: 63,
+  fabBottom: 60,
+  fab2Bottom: 80,
 };
 
 export const tabBarReducer = (state = initialState, action) => {

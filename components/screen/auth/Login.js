@@ -23,6 +23,7 @@ import {
 import AuthHelper from "./AuthHelper";
 import Alert from "../../reusable/Alert";
 import { useSelector } from "react-redux";
+import Header from "./Header";
 
 const inputValidationSchema = yup.object().shape({
   email: yup.string().required("Email nya masih kosong tuh, isi dulu yaa"),
@@ -45,29 +46,7 @@ const Login = ({ navigation }) => {
     <NativeBaseProvider>
       {alert.show && <Alert />}
 
-      <View style={{ backgroundColor: "tomato", paddingVertical: 25 }}>
-        <Box
-          alignSelf={{
-            base: "center",
-            md: "flex-start",
-          }}
-        >
-          <Center>
-            <Ionicons name="people-circle" size={100} color="white" />
-          </Center>
-          <Heading size="2xl" color="white">
-            <Text
-              style={{
-                fontFamily: "Raleway_500Medium",
-                fontSize: 30,
-                color: "white",
-              }}
-            >
-              Usman Sidomulyo
-            </Text>
-          </Heading>
-        </Box>
-      </View>
+      <Header />
 
       <ScrollView>
         <Formik
@@ -197,7 +176,6 @@ const Login = ({ navigation }) => {
                   onPress={handleSubmit}
                   size="md"
                   colorScheme="orange"
-                  disabled={!values.email || !values.password}
                   _text={{ color: "#fff", fontWeight: "bold" }}
                 >
                   <Text

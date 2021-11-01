@@ -12,16 +12,22 @@ import {
 } from "native-base";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { Portal, Provider } from "react-native-paper";
-import { Alert, Linking, StyleSheet } from "react-native";
+import { Linking, StyleSheet } from "react-native";
 import moment from "moment";
+import { useFocusEffect } from "@react-navigation/core";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import LottieView from "lottie-react-native";
+import { useFonts, Raleway_400Regular } from "@expo-google-fonts/raleway";
+
+// component
 import Header from "../../reusable/Header";
 import Loading from "../../reusable/Loading";
 import FloatingButton from "../../reusable/FloatingButton";
 import GroupHelper from "./GroupHelper";
-import { useFocusEffect } from "@react-navigation/core";
+import KeyboardHelper from "../../reusable/KeyboardHelper";
 
 const Group = ({ navigation }) => {
+  const {} = KeyboardHelper("Group");
   const {
     user,
     loading,
@@ -35,6 +41,10 @@ const Group = ({ navigation }) => {
     getDataGroup,
     filterData,
   } = GroupHelper();
+
+  const [fontsLoaded, error] = useFonts({
+    Raleway_400Regular,
+  });
 
   useFocusEffect(
     useCallback(() => {
@@ -88,11 +98,14 @@ const Group = ({ navigation }) => {
                     setKeyword(text);
                     filterData(text);
                   }}
+                  style={{
+                    fontFamily: "Raleway_400Regular",
+                  }}
                 />
               </View>
             </View>
 
-            {loading ? (
+            {loading || !fontsLoaded ? (
               <Loading />
             ) : (
               <Basic
@@ -157,11 +170,29 @@ const Basic = ({ navigation, dataGroup, user }) => {
               <Ionicons name="people" size={30} color="white" />
             </Avatar>
             <VStack>
-              <Text>{item.nama}</Text>
-              <Text style={{ fontSize: 12, color: "grey" }}>
+              <Text
+                style={{
+                  fontFamily: "Raleway_400Regular",
+                }}
+              >
+                {item.nama}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: "grey",
+                  fontFamily: "Raleway_400Regular",
+                }}
+              >
                 {item.jumlah_anggota} Anggota
               </Text>
-              <Text style={{ fontSize: 12, color: "grey" }}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: "grey",
+                  fontFamily: "Raleway_400Regular",
+                }}
+              >
                 Dibuat pada{" "}
                 {moment(item.created_at).format("dddd, Do MMMM YYYY")}
               </Text>

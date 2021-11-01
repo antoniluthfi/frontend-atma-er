@@ -1,10 +1,22 @@
 import React from "react";
-import { Avatar, Box, HStack, Text, ScrollView, VStack, View } from "native-base";
+import {
+  Avatar,
+  Box,
+  HStack,
+  Text,
+  ScrollView,
+  VStack,
+  View,
+} from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useSelector } from "react-redux";
+import { useFonts, Raleway_400Regular } from "@expo-google-fonts/raleway";
 
 const GroupList = () => {
   const user = useSelector((state) => state.user.data);
+  const [fontsLoaded, error] = useFonts({
+    Raleway_400Regular,
+  });
 
   return (
     <View style={{ flex: 0 }}>
@@ -31,7 +43,9 @@ const GroupList = () => {
                 <Avatar color="white" bg={"warning.500"} size="lg">
                   <Ionicons name="people" size={40} color="white" />
                 </Avatar>
-                <Text style={{ fontSize: 12 }}>
+                <Text
+                  style={{ fontSize: 12, fontFamily: "Raleway_400Regular" }}
+                >
                   {item.group.nama.length > 6
                     ? `${item.group.nama.substr(0, 6)}...`
                     : item.group.nama}

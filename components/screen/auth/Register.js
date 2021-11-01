@@ -19,6 +19,12 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import AuthHelper from "./AuthHelper";
 import Alert from "../../reusable/Alert";
 import { useSelector } from "react-redux";
+import {
+  useFonts,
+  Raleway_400Regular,
+  Raleway_500Medium,
+} from "@expo-google-fonts/raleway";
+import Header from "./Header";
 
 const inputValidationSchema = yup.object().shape({
   name: yup.string().required("Nama nya masih kosong tuh, isi dulu yaa"),
@@ -42,25 +48,16 @@ const Login = ({ navigation }) => {
     icon2: "eye",
   });
 
+  const [fontsLoaded, error] = useFonts({
+    Raleway_400Regular,
+    Raleway_500Medium,
+  });
+
   return (
     <NativeBaseProvider>
       {alert.show && <Alert />}
 
-      <View style={{ backgroundColor: "tomato", paddingVertical: 25 }}>
-        <Box
-          alignSelf={{
-            base: "center",
-            md: "flex-start",
-          }}
-        >
-          <Center>
-            <Ionicons name="people-circle" size={100} color="white" />
-          </Center>
-          <Heading size="2xl" color="white">
-            Usman Sidomulyo
-          </Heading>
-        </Box>
-      </View>
+      <Header />
 
       <ScrollView>
         <Formik
@@ -92,7 +89,15 @@ const Login = ({ navigation }) => {
                   }}
                 >
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Foto Profil</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Foto Profil
+                      </Text>
+                    </FormControl.Label>
                     <Input
                       type="text"
                       isDisabled
@@ -118,11 +123,22 @@ const Login = ({ navigation }) => {
                           }}
                         />
                       }
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     />
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Nama Lengkap</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Nama Lengkap
+                      </Text>
+                    </FormControl.Label>
                     <Input
                       type="text"
                       onChangeText={handleChange("name")}
@@ -135,11 +151,22 @@ const Login = ({ navigation }) => {
                       _dark={{
                         placeholderTextColor: "blueGray.50",
                       }}
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     />
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Nomor HP / WhatsApp</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Nomor HP / WhatsApp
+                      </Text>
+                    </FormControl.Label>
                     <Input
                       type="number"
                       keyboardType="numeric"
@@ -153,11 +180,22 @@ const Login = ({ navigation }) => {
                       _dark={{
                         placeholderTextColor: "blueGray.50",
                       }}
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     />
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Email</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Email
+                      </Text>
+                    </FormControl.Label>
                     <Input
                       type="email"
                       keyboardType="email-address"
@@ -171,11 +209,22 @@ const Login = ({ navigation }) => {
                       _dark={{
                         placeholderTextColor: "blueGray.50",
                       }}
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     />
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Password</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Password
+                      </Text>
+                    </FormControl.Label>
                     <Input
                       type={type.type1}
                       onChangeText={handleChange("password")}
@@ -204,17 +253,28 @@ const Login = ({ navigation }) => {
                           }}
                         />
                       }
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     />
                   </FormControl>
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>Konfirmasi Password</FormControl.Label>
+                    <FormControl.Label>
+                      <Text
+                        style={{
+                          fontFamily: "Raleway_400Regular",
+                        }}
+                      >
+                        Konfirmasi Password
+                      </Text>
+                    </FormControl.Label>
                     <Input
                       type={type.type2}
                       onChangeText={handleChange("c_password")}
                       onBlur={handleBlur("c_password")}
                       value={values.c_password}
-                      placeholder="Password" // mx={4}
+                      placeholder="Konfirmasi Password" // mx={4}
                       _light={{
                         placeholderTextColor: "blueGray.400",
                       }}
@@ -237,12 +297,20 @@ const Login = ({ navigation }) => {
                           }}
                         />
                       }
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
                     />
                   </FormControl>
                 </View>
                 <Text
                   onPress={() => navigation.navigate("Login")}
-                  style={{ marginBottom: 15, fontSize: 13, color: "tomato" }}
+                  style={{
+                    marginBottom: 15,
+                    fontSize: 13,
+                    color: "tomato",
+                    fontFamily: "Raleway_400Regular",
+                  }}
                 >
                   Kalo udah punya akun, langsung login aja disini!
                 </Text>
@@ -251,9 +319,19 @@ const Login = ({ navigation }) => {
                   onPress={handleSubmit}
                   size="md"
                   colorScheme="orange"
-                  _text={{ color: "#fff", fontWeight: "bold" }}
+                  _text={{
+                    color: "#fff",
+                    fontWeight: "bold",
+                  }}
                 >
-                  Register
+                  <Text
+                    style={{
+                      fontFamily: "Raleway_500Medium",
+                      color: "white",
+                    }}
+                  >
+                    Register
+                  </Text>
                 </Button>
               </View>
             </View>

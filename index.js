@@ -8,14 +8,17 @@ import { userReducer } from "./reducer/userReducer";
 import { loadingReducer } from "./reducer/loadingReducer";
 import { alertReducer } from "./reducer/alertReducer";
 import { tabBarReducer } from "./reducer/tabBarReducer";
-
+import { NavigationContainer } from "@react-navigation/native";
+import { LogBox } from 'react-native';
 import App from "./App";
+
+LogBox.ignoreAllLogs();
 
 const rootReducer = combineReducers({
   user: userReducer,
   loading: loadingReducer,
   alert: alertReducer,
-  tabBar: tabBarReducer
+  tabBar: tabBarReducer,
 });
 
 const store = createStore(rootReducer);
@@ -33,7 +36,9 @@ const Index = () => {
   return (
     <Provider store={store}>
       <PaperProvider theme={theme}>
-        <App />
+        <NavigationContainer>
+          <App />
+        </NavigationContainer>
       </PaperProvider>
     </Provider>
   );

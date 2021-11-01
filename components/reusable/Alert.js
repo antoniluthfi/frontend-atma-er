@@ -13,11 +13,16 @@ import { useSelector, useDispatch } from "react-redux";
 import { useFocusEffect } from "@react-navigation/core";
 import success from "../../assets/success.json";
 import failed from "../../assets/failed.json";
+import { useFonts, Raleway_400Regular } from "@expo-google-fonts/raleway";
 
 const Alert = () => {
   const dispatch = useDispatch();
   const alert = useSelector((state) => state.alert);
   const scaleValue = React.useRef(new Animated.Value(0)).current;
+
+  const [fontsLoaded, error] = useFonts({
+    Raleway_400Regular,
+  });
 
   const toggle = () => {
     if (alert.show) {
@@ -74,7 +79,12 @@ const Alert = () => {
             />
           </View>
           <Text
-            style={{ marginVertical: 30, fontSize: 20, textAlign: "center" }}
+            style={{
+              marginVertical: 30,
+              fontSize: 20,
+              textAlign: "center",
+              fontFamily: "Raleway_400Regular",
+            }}
           >
             {alert.message}
           </Text>
