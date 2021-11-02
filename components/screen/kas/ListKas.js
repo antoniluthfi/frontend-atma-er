@@ -26,6 +26,11 @@ import { Portal, Provider } from "react-native-paper";
 import Loading from "../../reusable/Loading";
 import GroupList from "../../reusable/GroupList";
 import LottieView from "lottie-react-native";
+import {
+  useFonts,
+  Raleway_400Regular,
+  Raleway_500Medium,
+} from "@expo-google-fonts/raleway";
 
 const ListKas = ({ navigation }) => {
   const {
@@ -43,6 +48,11 @@ const ListKas = ({ navigation }) => {
     getListKas,
     filterKas,
   } = KasHelper(navigation);
+
+  const [fontsLoaded, error] = useFonts({
+    Raleway_400Regular,
+    Raleway_500Medium,
+  });
 
   const buatPdf = async () => {
     const options = {
@@ -109,13 +119,13 @@ const ListKas = ({ navigation }) => {
     );
   };
 
+  const fetchData = async () => {
+    await getListKas();
+    await getDetailKas(0);
+  };
+
   useFocusEffect(
     useCallback(() => {
-      const fetchData = async () => {
-        await getListKas();
-        await getDetailKas(0);
-      };
-
       fetchData();
 
       return () => {
@@ -134,7 +144,7 @@ const ListKas = ({ navigation }) => {
   return (
     <NativeBaseProvider>
       <Header
-        title="Event Kas"
+        title="List Kas"
         navigation={navigation}
         refresh={true}
         _refresh={async () => {
@@ -162,7 +172,11 @@ const ListKas = ({ navigation }) => {
                   <FontAwesome5 name="money-check" size={60} />
                 </View>
                 <View style={{ marginLeft: 15 }}>
-                  <Text style={{ fontWeight: "bold" }}>
+                  <Text
+                    style={{
+                      fontFamily: "Raleway_500Medium",
+                    }}
+                  >
                     Total Pemasukan :{" "}
                     <NumberFormat
                       value={rincianEvent.pemasukan}
@@ -170,24 +184,47 @@ const ListKas = ({ navigation }) => {
                       thousandSeparator={true}
                       prefix={"Rp. "}
                       renderText={(value, props) => (
-                        <Text style={{ fontWeight: "bold", color: "blue" }}>
+                        <Text
+                          style={{
+                            color: "blue",
+                            fontFamily: "Raleway_500Medium",
+                          }}
+                        >
                           {value}
                         </Text>
                       )}
                     />
                   </Text>
-                  <NumberFormat
-                    value={rincianEvent.pengeluaran}
-                    displayType={"text"}
-                    thousandSeparator={true}
-                    prefix={"Rp. "}
-                    renderText={(value, props) => (
-                      <Text style={{ fontWeight: "bold", color: "red" }}>
-                        Total Pengeluaran : {value}
-                      </Text>
-                    )}
-                  />
-                  <Text style={{ fontWeight: "bold" }}>
+
+                  <Text
+                    style={{
+                      fontFamily: "Raleway_500Medium",
+                    }}
+                  >
+                    Total Pengeluaran :
+                    <NumberFormat
+                      value={rincianEvent.pengeluaran}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      prefix={"Rp. "}
+                      renderText={(value, props) => (
+                        <Text
+                          style={{
+                            color: "red",
+                            fontFamily: "Raleway_500Medium",
+                          }}
+                        >
+                          {value}
+                        </Text>
+                      )}
+                    />
+                  </Text>
+
+                  <Text
+                    style={{
+                      fontFamily: "Raleway_500Medium",
+                    }}
+                  >
                     Total Kas :{" "}
                     <NumberFormat
                       value={rincianEvent.total}
@@ -195,13 +232,24 @@ const ListKas = ({ navigation }) => {
                       thousandSeparator={true}
                       prefix={"Rp. "}
                       renderText={(value, props) => (
-                        <Text style={{ fontWeight: "bold", color: "green" }}>
+                        <Text
+                          style={{
+                            color: "green",
+                            fontFamily: "Raleway_500Medium",
+                          }}
+                        >
                           {value}
                         </Text>
                       )}
                     />
                   </Text>
-                  <Text>{moment().format("dddd, Do MMMM YYYY")}</Text>
+                  <Text
+                    style={{
+                      fontFamily: "Raleway_500Medium",
+                    }}
+                  >
+                    {moment().format("dddd, Do MMMM YYYY")}
+                  </Text>
                 </View>
               </View>
             </View>
@@ -234,6 +282,9 @@ const ListKas = ({ navigation }) => {
                   onChangeText={(text) => {
                     setKeyword(text);
                     filterKas(text);
+                  }}
+                  style={{
+                    fontFamily: "Raleway_400Regular",
                   }}
                 />
               </View>

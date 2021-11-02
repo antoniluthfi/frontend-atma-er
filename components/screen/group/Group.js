@@ -24,10 +24,8 @@ import Header from "../../reusable/Header";
 import Loading from "../../reusable/Loading";
 import FloatingButton from "../../reusable/FloatingButton";
 import GroupHelper from "./GroupHelper";
-import KeyboardHelper from "../../reusable/KeyboardHelper";
 
 const Group = ({ navigation }) => {
-  const {} = KeyboardHelper("Group");
   const {
     user,
     loading,

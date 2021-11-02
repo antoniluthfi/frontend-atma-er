@@ -3,40 +3,16 @@ import { StatusBar, Dimensions } from "react-native";
 import { View, NativeBaseProvider, Text } from "native-base";
 import { useSelector } from "react-redux";
 import LottieView from "lottie-react-native";
-import KeyboardHelper from "./components/reusable/KeyboardHelper";
 
 // navigator
-import MainDrawerNavigator from "./components/navigator/MainDrawerNavigator";
 import MainStackNavigator from "./components/navigator/MainStackNavigator";
-import ProfileStackNavigator from "./components/navigator/ProfileStackNavigator";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const App = () => {
   const loading = useSelector((state) => state.loading);
-  const user = useSelector((state) => state.user.data);
   const alert = useSelector((state) => state.alert);
-
-  const { showKeyboard, hideKeyboard } = KeyboardHelper();
-
-  const validateUser = user ? true : false;
-
-  const tidakPunyaGrup = user && user.user_group && user.user_group.length < 1;
-  const grupBlmAccJoin =
-    user &&
-    user.user_group.length > 0 &&
-    user.user_group[0].status === "pending";
-
-  React.useEffect(() => {
-    showKeyboard;
-    hideKeyboard;
-
-    return () => {
-      showKeyboard.remove();
-      hideKeyboard.remove();
-    };
-  }, []);
 
   return (
     <NativeBaseProvider>
@@ -81,17 +57,7 @@ const App = () => {
         </View>
       )}
 
-      {validateUser && !tidakPunyaGrup && !grupBlmAccJoin ? (
-        <MainDrawerNavigator />
-      ) : tidakPunyaGrup || grupBlmAccJoin ? (
-        <ProfileStackNavigator
-          validateUser={validateUser}
-          grupBlmAccJoin={grupBlmAccJoin}
-          tidakPunyaGrup={tidakPunyaGrup}
-        />
-      ) : (
-        <MainStackNavigator />
-      )}
+      <MainStackNavigator />
     </NativeBaseProvider>
   );
 };

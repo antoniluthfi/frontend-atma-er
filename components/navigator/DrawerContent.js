@@ -1,17 +1,13 @@
 import React from "react";
-import {
-  DrawerContentScrollView,
-  DrawerItem,
-  DrawerItemList,
-} from "@react-navigation/drawer";
-import { Alert, StyleSheet } from "react-native";
+import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
+import { StyleSheet } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Heading, HStack, Text, View } from "native-base";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { TEST_URL } from "@env";
 
-const DrawerContent = ({ progress, ...props }) => {
+const DrawerContent = ({ ...props }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
@@ -46,7 +42,7 @@ const DrawerContent = ({ progress, ...props }) => {
             show: true,
             message: "Logout berhasil",
           },
-        });  
+        });
       })
       .catch((err) => {
         dispatch({
@@ -91,6 +87,7 @@ const DrawerContent = ({ progress, ...props }) => {
           props.navigation.navigate("Home");
         }}
       />
+
       <DrawerItem
         label="Profilku"
         icon={({ color, size }) => (
@@ -100,6 +97,51 @@ const DrawerContent = ({ progress, ...props }) => {
           props.navigation.navigate("Profilku");
         }}
       />
+
+      <DrawerItem
+        label="Kehadiran"
+        icon={({ color, size }) => (
+          <Ionicons name="bar-chart" size={size} color={color} />
+        )}
+        onPress={() => {
+          props.navigation.navigate("KehadiranStack", {
+            screen: "Kehadiran",
+          });
+        }}
+      />
+
+      <DrawerItem
+        label="Kas"
+        icon={({ color, size }) => (
+          <Ionicons name="wallet" size={size} color={color} />
+        )}
+        onPress={() => {
+          props.navigation.navigate("KasStack", { screen: "ListKas" });
+        }}
+      />
+
+      <DrawerItem
+        label="Grup"
+        icon={({ color, size }) => (
+          <Ionicons name="people" size={size} color={color} />
+        )}
+        onPress={() => {
+          props.navigation.navigate("GroupStack", { screen: "Group" });
+        }}
+      />
+
+      <DrawerItem
+        label="Master Data"
+        icon={({ color, size }) => (
+          <Ionicons name="server" size={size} color={color} />
+        )}
+        onPress={() => {
+          props.navigation.navigate("MasterDataStack", {
+            screen: "MasterData",
+          });
+        }}
+      />
+
       <DrawerItem
         label="Logout"
         icon={({ color, size }) => (

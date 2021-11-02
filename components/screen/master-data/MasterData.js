@@ -13,7 +13,9 @@ const MasterData = ({ navigation }) => {
       <View style={styles.container}>
         <View style={styles.taskWrapper}>
           <TouchableOpacity
-            onPress={() => navigation.navigate("DataUsman")}
+            onPress={() =>
+              navigation.navigate("MasterDataStack", { screen: "DataUsman" })
+            }
             style={[styles.card, styles.items]}
           >
             <Text style={styles.sectionTitle}>Data Usman</Text>
@@ -23,7 +25,9 @@ const MasterData = ({ navigation }) => {
             <Text style={styles.sectionTitle}>Event Pengajian</Text>
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate("EventKas")}
+            onPress={() =>
+              navigation.navigate("EventKas")
+            }
             style={[styles.card, styles.items]}
           >
             <Text style={styles.sectionTitle}>Event Kas</Text>

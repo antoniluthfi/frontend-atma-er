@@ -29,7 +29,6 @@ import GroupList from "../../../reusable/GroupList";
 import Alert from "../../../reusable/Alert";
 
 const EventKas = ({ navigation }) => {
-  const fab2Bottom = useSelector((state) => state.tabBar.fab2Bottom);
   const alert = useSelector((state) => state.alert);
   const {
     dataEvent,
@@ -121,7 +120,7 @@ const EventKas = ({ navigation }) => {
             <Fab
               position="absolute"
               style={{
-                bottom: fab2Bottom,
+                bottom: 10,
               }}
               size="sm"
               onPress={() =>

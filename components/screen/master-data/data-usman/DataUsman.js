@@ -28,10 +28,8 @@ import FloatingButton from "../../../reusable/FloatingButton";
 import GroupList from "../../../reusable/GroupList";
 import Loading from "../../../reusable/Loading";
 import LottieView from "lottie-react-native";
-import KeyboardHelper from "../../../reusable/KeyboardHelper";
 
 const DataUsman = ({ navigation }) => {
-  const {} = KeyboardHelper("DataUsman");
   const {
     dataUsman,
     setDataUsman,
