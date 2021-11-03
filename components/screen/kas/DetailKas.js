@@ -368,7 +368,7 @@ const Basic = ({ navigation, loadDetailKas, detailKas }) => {
       <Pressable
         px={4}
         ml="auto"
-        bg="dark.500"
+        bg="info.500"
         justifyContent="center"
         onPress={() => {
           navigation.navigate("HistoryKasPerAnggota", {

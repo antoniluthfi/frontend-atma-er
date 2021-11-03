@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Alert, KeyboardAvoidingView } from "react-native";
+import { KeyboardAvoidingView } from "react-native";
 import { useFocusEffect } from "@react-navigation/core";
 import {
   Avatar,
@@ -20,26 +20,30 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import "moment/locale/id";
 import moment from "moment";
 import { useFonts, Raleway_400Regular } from "@expo-google-fonts/raleway";
+import { useSelector, useDispatch } from "react-redux";
 
 // component
 import Header from "../../../reusable/Header";
-import DataUsmanHelper from "./DataUsmanHelper";
+import Alert from "../../../reusable/Alert";
+import DetailGroupHelper from "./DetailGroupHelper";
 import FloatingButton from "../../../reusable/FloatingButton";
-import GroupList from "../../../reusable/GroupList";
 import Loading from "../../../reusable/Loading";
 import LottieView from "lottie-react-native";
 
-const DataUsman = ({ navigation }) => {
+const DetailGroup = ({ navigation, route }) => {
+  const dispatch = useDispatch();
+  const alert = useSelector(state => state.alert);
+  const { group_id, nama } = route.params;
   const {
-    dataUsman,
-    setDataUsman,
-    loadDataUsman,
-    setLoadDataUsman,
-    getDataUsman,
+    detailGroup,
+    setDetailGroup,
+    loadDetailGroup,
+    setLoadDetailGroup,
+    getDetailGroup,
     keyword,
     setKeyword,
     filterData,
-  } = DataUsmanHelper(navigation);
+  } = DetailGroupHelper(navigation);
 
   const [fontsLoaded, error] = useFonts({
     Raleway_400Regular,
@@ -62,7 +66,7 @@ const DataUsman = ({ navigation }) => {
             </tr>
           </thead>
           <tbody>
-            ${dataUsman.map(
+            ${detailGroup.map(
               (usman, i) => `
               <tr>
                 <td style="border: 1px solid #ddd; padding: 8px;">${i + 1}</td>
@@ -96,21 +100,23 @@ const DataUsman = ({ navigation }) => {
 
     const file = await RNHTMLtoPDF.convert(options);
 
-    Alert.alert(
-      "Berhasil",
-      `Berhasil download file, file tersimpan di ${file.filePath}`,
-      [{ text: "Oke deh", style: "cancel" }],
-      { cancelable: true }
-    );
+    dispatch({
+      type: "SET_SHOW_ALERT",
+      payload: {
+        type: "success",
+        show: true,
+        message: `Berhasil download file, file tersimpan di ${file.filePath}`
+      }
+    });
   };
 
   useFocusEffect(
     useCallback(() => {
-      getDataUsman();
+      getDetailGroup(group_id);
 
       return () => {
-        setDataUsman([]);
-        setLoadDataUsman(true);
+        setDetailGroup([]);
+        setLoadDetailGroup(true);
       };
     }, [])
   );
@@ -118,15 +124,18 @@ const DataUsman = ({ navigation }) => {
   return (
     <NativeBaseProvider>
       <Header
-        title="Data Usman"
+        title={nama.length > 15 ? `${nama.substr(0, 15)}...` : nama}
         navigation={navigation}
         refresh={true}
         _refresh={async () => {
-          setDataUsman([]);
-          setLoadDataUsman(true);
-          await getDataUsman();
+          setDetailGroup([]);
+          setLoadDetailGroup(true);
+          await getDetailGroup(group_id);
         }}
       />
+
+      {alert.show && <Alert />}
+
       <KeyboardAvoidingView
         behavior="height"
         enabled={true}
@@ -134,8 +143,6 @@ const DataUsman = ({ navigation }) => {
       >
         <Provider>
           <Portal>
-            <GroupList />
-
             <View
               style={{
                 flexWrap: "wrap",
@@ -170,10 +177,10 @@ const DataUsman = ({ navigation }) => {
               </View>
             </View>
 
-            {loadDataUsman ? (
+            {loadDetailGroup ? (
               <Loading />
             ) : (
-              <Basic navigation={navigation} dataUsman={dataUsman} />
+              <Basic navigation={navigation} detailGroup={detailGroup} />
             )}
 
             <FloatingButton
@@ -183,10 +190,10 @@ const DataUsman = ({ navigation }) => {
                   icon: "plus",
                   label: "Buat baru",
                   onPress: () =>
-                    navigation.navigate("FormUsman", {
+                    navigation.navigate("FormPeserta", {
                       payload: null,
                       method: "post",
-                      judul: "Form Usman",
+                      judul: "Tambah Peserta",
                     }),
                   small: false,
                 },
@@ -205,9 +212,10 @@ const DataUsman = ({ navigation }) => {
   );
 };
 
-export default DataUsman;
+export default DetailGroup;
 
-const Basic = ({ navigation, dataUsman }) => {
+const Basic = ({ navigation, detailGroup }) => {
+  const user = useSelector((state) => state.user.data);
   const onRowDidOpen = (rowKey) => {
     console.log("This row opened", rowKey);
   };
@@ -240,7 +248,16 @@ const Basic = ({ navigation, dataUsman }) => {
                   fontFamily: "Raleway_400Regular",
                 }}
               >
-                {item.name}
+                {item.user.name}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: "grey",
+                  fontFamily: "Raleway_400Regular",
+                }}
+              >
+                {item.hak_akses}
               </Text>
               <Text
                 style={{
@@ -264,47 +281,50 @@ const Basic = ({ navigation, dataUsman }) => {
       <Pressable
         px={4}
         ml="auto"
-        bg="dark.500"
+        bg="info.500"
         justifyContent="center"
-        onPress={() =>
-          navigation.navigate("DetailUsman", {
-            user: data.item,
-          })
-        }
+        onPress={() => {
+          navigation.navigate("DetailPeserta", {
+            user: data.item.user,
+          });
+        }}
         _pressed={{
           opacity: 0.5,
         }}
       >
         <Ionicons name="eye" size={30} color="#fff" />
       </Pressable>
-      <Pressable
-        px={4}
-        bg="red.500"
-        justifyContent="center"
-        onPress={() =>
-          navigation.navigate("FormUsman", {
-            payload: data.item,
-            method: "put",
-            judul: "Update Usman",
-          })
-        }
-        _pressed={{
-          opacity: 0.5,
-        }}
-      >
-        <Ionicons name="pencil" size={30} color="#fff" />
-      </Pressable>
+
+      {user.hak_akses === "administrator" && (
+        <Pressable
+          px={4}
+          bg="red.500"
+          justifyContent="center"
+          onPress={() =>
+            navigation.navigate("FormPeserta", {
+              payload: data.item.user,
+              method: "put",
+              judul: "Update Peserta",
+            })
+          }
+          _pressed={{
+            opacity: 0.5,
+          }}
+        >
+          <Ionicons name="pencil" size={30} color="#fff" />
+        </Pressable>
+      )}
     </HStack>
   );
 
   return (
     <Box bg="white" safeArea flex={1}>
-      {dataUsman.length > 0 ? (
+      {detailGroup.length > 0 ? (
         <SwipeListView
-          data={dataUsman}
+          data={detailGroup}
           renderItem={renderItem}
           renderHiddenItem={renderHiddenItem}
-          rightOpenValue={-130}
+          rightOpenValue={user.hak_akses === "administrator" ? -130 : -65}
           previewRowKey={"0"}
           previewOpenValue={-40}
           previewOpenDelay={1000}

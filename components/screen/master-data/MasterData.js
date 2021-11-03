@@ -12,22 +12,14 @@ const MasterData = ({ navigation }) => {
       <Header title="Master Data" navigation={navigation} />
       <View style={styles.container}>
         <View style={styles.taskWrapper}>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("MasterDataStack", { screen: "DataUsman" })
-            }
-            style={[styles.card, styles.items]}
-          >
-            <Text style={styles.sectionTitle}>Data Usman</Text>
-            <Text>Total 27 Anggota</Text>
-          </TouchableOpacity>
           <View style={[styles.card, styles.items]}>
             <Text style={styles.sectionTitle}>Event Pengajian</Text>
           </View>
+          <View style={[styles.card, styles.items]}>
+            <Text style={styles.sectionTitle}>Dokumentasi</Text>
+          </View>
           <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("EventKas")
-            }
+            onPress={() => navigation.navigate("EventKas")}
             style={[styles.card, styles.items]}
           >
             <Text style={styles.sectionTitle}>Event Kas</Text>

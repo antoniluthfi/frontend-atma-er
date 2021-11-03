@@ -203,22 +203,59 @@ const Basic = ({ navigation, dataGroup, user }) => {
 
   const renderHiddenItem = (data, rowMap) => (
     <HStack flex={1} pl={2}>
-      <Pressable
-        px={4}
-        ml="auto"
-        bg="success.500"
-        justifyContent="center"
-        onPress={() => {
-          Linking.openURL(
-            `whatsapp://send?text=assalamualaikum&phone=${data.item.nomorhp}`
-          );
-        }}
-        _pressed={{
-          opacity: 0.5,
-        }}
-      >
-        <Ionicons name="logo-whatsapp" size={30} color="#fff" />
-      </Pressable>
+      {data.item.status_daftar === "tidak terdaftar" && (
+        <Pressable
+          px={4}
+          ml="auto"
+          bg="danger.500"
+          justifyContent="center"
+          onPress={() => {}}
+          _pressed={{
+            opacity: 0.5,
+          }}
+        >
+          <Ionicons name="enter" size={30} color="#fff" />
+        </Pressable>
+      )}
+
+      {data.item.status_daftar === "pending" && (
+        <Pressable
+          px={4}
+          ml="auto"
+          bg="success.500"
+          justifyContent="center"
+          onPress={() => {
+            Linking.openURL(
+              `whatsapp://send?text=assalamualaikum&phone=${data.item.nomorhp}`
+            );
+          }}
+          _pressed={{
+            opacity: 0.5,
+          }}
+        >
+          <Ionicons name="logo-whatsapp" size={30} color="#fff" />
+        </Pressable>
+      )}
+
+      {data.item.status_daftar === "terdaftar" && (
+        <Pressable
+          px={4}
+          ml="auto"
+          bg="info.500"
+          justifyContent="center"
+          onPress={() => {
+            navigation.navigate("DetailGroup", {
+              group_id: data.item.id,
+              nama: data.item.nama,
+            });
+          }}
+          _pressed={{
+            opacity: 0.5,
+          }}
+        >
+          <Ionicons name="eye" size={30} color="#fff" />
+        </Pressable>
+      )}
     </HStack>
   );
 

@@ -55,6 +55,8 @@ const GroupHelper = (navigation) => {
     setLoading,
     input,
     setInput,
+    keyword,
+    setKeyword,
     getDataGroup,
     filterData
   };

@@ -1,6 +1,5 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useSelector } from "react-redux";
 import Loading from "../reusable/Loading";
 
 // import stack

@@ -16,38 +16,17 @@ import {
 } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useFonts, Raleway_400Regular } from "@expo-google-fonts/raleway";
+import { useSelector } from "react-redux";
 
 // component
+import Alert from "../../../reusable/Alert";
 import Header from "../../../reusable/Header";
-import DataUsmanHelper from "./DataUsmanHelper";
+import DetailGroupHelper from "./DetailGroupHelper";
 
-const inputValidationSchema = yup.object().shape({
-  name: yup.string().required("Nama nya masih kosong tuh, isi dulu yaa"),
-  email: yup.string().required("Email nya masih kosong tuh, isi dulu yaa"),
-  alamat: yup.string().required("Alamat nya masih kosong tuh, isi dulu yaa"),
-  nomorhp: yup.string().required("Nomor HP nya masih kosong tuh, isi dulu yaa"),
-  nama_ayah: yup
-    .string()
-    .required("Nama ayah nya masih kosong tuh, isi dulu yaa"),
-  nama_ibu: yup
-    .string()
-    .required("Nama ibu nya masih kosong tuh, isi dulu yaa"),
-  tempat_lahir: yup
-    .string()
-    .required("Tempat lahir nya masih kosong tuh, isi dulu yaa"),
-  tgl_lahir: yup
-    .string()
-    .required("Tanggal lahir nya masih kosong tuh, isi dulu yaa"),
-  jenis_kelamin: yup
-    .string()
-    .required("Jenis kelamin nya masih kosong tuh, isi dulu yaa"),
-  status: yup.string().required("Status nya diisi dulu yaa"),
-  hak_akses: yup.string().required("Hak akses nya diisi dulu yaa"),
-});
-
-const FormUsman = ({ navigation, route }) => {
+const FormPeserta = ({ navigation, route }) => {
+  const alert = useSelector(state => state.alert);
   const { judul, method, payload } = route.params;
-  const { postDataUsman, updateDataUsman } = DataUsmanHelper(navigation);
+  const { postDetailGroup, updateDetailGroup } = DetailGroupHelper(navigation);
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [tglLahir, setTglLahir] = useState(
@@ -81,9 +60,9 @@ const FormUsman = ({ navigation, route }) => {
         values.tgl_lahir = tglLahir;
 
         if (method === "put") {
-          updateDataUsman(values, payload.id);
+          updateDetailGroup(values, payload.id);
         } else if (method === "post") {
-          postDataUsman(values);
+          postDetailGroup(values);
         }
       }}
     >
@@ -98,6 +77,8 @@ const FormUsman = ({ navigation, route }) => {
       }) => (
         <NativeBaseProvider>
           <Header title={judul} navigation={navigation} />
+          {alert.show && <Alert />}
+
           <ScrollView>
             <View style={styles.container}>
               <View style={styles.taskWrapper}>
@@ -539,4 +520,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FormUsman;
+export default FormPeserta;

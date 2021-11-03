@@ -18,11 +18,11 @@ import {
   Raleway_500Medium,
 } from "@expo-google-fonts/raleway";
 import Header from "../../../reusable/Header";
-import DataUsmanHelper from "./DataUsmanHelper";
+import DetailGroupHelper from "./DetailGroupHelper";
 
-const DetailUsman = ({ navigation, route }) => {
+const DetailPeserta = ({ navigation, route }) => {
   const { user } = route.params;
-  const { hapusData } = DataUsmanHelper(navigation);
+  const { hapusData } = DetailGroupHelper(navigation);
   const shareRef = useRef();
 
   const getUmur = () => {
@@ -73,7 +73,7 @@ const DetailUsman = ({ navigation, route }) => {
 
   return (
     <NativeBaseProvider>
-      <Header title="Detail Usman" navigation={navigation} />
+      <Header title="Detail Peserta" navigation={navigation} />
 
       <ScrollView style={styles.container}>
         <View style={styles.taskWrapper}>
@@ -153,14 +153,14 @@ const DetailUsman = ({ navigation, route }) => {
                 <Text
                   style={[styles.subTitle]}
                 >
-                  Dapukan
+                  Hak Akses
                 </Text>
                 <Text style={styles.text}>
                   {user.hak_akses === "user" ? "Anggota" : user.hak_akses}
                 </Text>
               </View>
             </View>
-            <Center style={{ marginBottom: 120 }}>
+            <Center>
               <HStack space={2} alignItems="center">
                 <TouchableOpacity
                   style={{
@@ -261,4 +261,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetailUsman;
+export default DetailPeserta;
