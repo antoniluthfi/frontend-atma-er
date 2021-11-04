@@ -256,6 +256,26 @@ const Basic = ({ navigation, dataGroup, user }) => {
           <Ionicons name="eye" size={30} color="#fff" />
         </Pressable>
       )}
+
+      {user.data.hak_akses === "administrator" && (
+        <Pressable
+          px={4}
+          bg="success.500"
+          justifyContent="center"
+          onPress={() => {
+            navigation.navigate("FormGroup", {
+              judul: data.item.nama,
+              method: "put",
+              payload: data.item
+            });
+          }}
+          _pressed={{
+            opacity: 0.5,
+          }}
+        >
+          <Ionicons name="pencil" size={30} color="#fff" />
+        </Pressable>
+      )}
     </HStack>
   );
 
@@ -266,7 +286,7 @@ const Basic = ({ navigation, dataGroup, user }) => {
           data={dataGroup}
           renderItem={renderItem}
           renderHiddenItem={renderHiddenItem}
-          rightOpenValue={-60}
+          rightOpenValue={user.data.hak_akses === "administrator" ? -130 : -65}
           previewRowKey={"0"}
           previewOpenValue={-40}
           previewOpenDelay={1000}

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import * as yup from "yup";
 import { Formik } from "formik";
 import { View, StyleSheet } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
