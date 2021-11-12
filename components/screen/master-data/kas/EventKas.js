@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/core";
 import {
   NativeBaseProvider,
@@ -13,7 +13,7 @@ import {
   Avatar,
   VStack,
 } from "native-base";
-import { StyleSheet, View } from "react-native";
+import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { Portal, Provider } from "react-native-paper";
 import { SwipeListView } from "react-native-swipe-list-view";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -33,8 +33,11 @@ const EventKas = ({ navigation }) => {
   const {
     dataEvent,
     setDataEvent,
+    setDataEventCadangan,
     loadDataEvent,
     setLoadDataEvent,
+    refreshDataEvent,
+    setRefreshDataEvent,
     keyword,
     setKeyword,
     getEventKas,
@@ -42,32 +45,52 @@ const EventKas = ({ navigation }) => {
     filterData,
   } = EventKasHelper(navigation);
 
+  const onRefresh = useCallback(() => {
+    getEventKas("refresh");
+
+    return () => {
+      setDataEvent({ event: [], pemasukan: 0, pengeluaran: 0, total: 0 });
+      setRefreshDataEvent(false);
+    };
+  }, []);
+
   useFocusEffect(
-    React.useCallback(() => {
-      getEventKas();
+    useCallback(() => {
+      getEventKas("loading");
 
       return () => {
-        setDataEvent([]);
         setLoadDataEvent(true);
+        setDataEvent({
+          event: [],
+          pemasukan: 0,
+          pengeluaran: 0,
+          total: 0,
+        });
+        setDataEventCadangan({
+          event: [],
+          pemasukan: 0,
+          pengeluaran: 0,
+          total: 0,
+        });
       };
     }, [])
   );
 
   return (
     <NativeBaseProvider>
-      <Header
-        title="Event Kas"
-        navigation={navigation}
-        refresh={true}
-        _refresh={async () => {
-          setDataEvent([]);
-          setLoadDataEvent(true);
-          await getEventKas();
-        }}
-      />
+      <Header title="Event Kas" navigation={navigation} />
 
       {alert.show && <Alert />}
-      <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshDataEvent}
+            onRefresh={onRefresh}
+            colors={["crimson", "coral"]}
+          />
+        }
+      >
         <Provider>
           <Portal>
             <GroupList />
@@ -136,7 +159,7 @@ const EventKas = ({ navigation }) => {
             />
           </Portal>
         </Provider>
-      </View>
+      </ScrollView>
     </NativeBaseProvider>
   );
 };

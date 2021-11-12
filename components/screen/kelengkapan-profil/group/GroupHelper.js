@@ -8,6 +8,7 @@ const GroupHelper = () => {
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(false);
   const [dataGroup, setDataGroup] = useState([]);
   const [dataGroupCadangan, setDataGroupCadangan] = useState([]);
   const [keyword, setKeyword] = useState("");
@@ -19,7 +20,11 @@ const GroupHelper = () => {
     status: "",
   });
 
-  const getDataGroup = async () => {
+  const getDataGroup = async (state = "loading") => {
+    if (state === "refresh") {
+      setRefresh(true);
+    }
+
     await axios({
       method: "GET",
       url: `${TEST_URL}/group/${user.data.id}`,
@@ -37,10 +42,19 @@ const GroupHelper = () => {
         console.log(error);
       });
 
-    setLoading(false);
+    if (state === "refresh") {
+      setRefresh(false);
+    } else {
+      setLoading(false);
+    }
   };
 
   const daftarGroup = async (values) => {
+    dispatch({
+      type: "SET_LOADING",
+      payload: true,
+    });
+
     await axios({
       method: "POST",
       url: `${TEST_URL}/user-group`,
@@ -51,13 +65,25 @@ const GroupHelper = () => {
       },
     })
       .then((response) => {
-        alert("Berhasil mendaftar, silahkan tunggu konfirmasi dari admin grup");
-        setLoading(true);
+        dispatch({
+          type: "SET_SHOW_ALERT",
+          payload: {
+            type: "success",
+            show: true,
+            message:
+              "Berhasil mendaftar, silahkan tunggu konfirmasi dari admin grup",
+          },
+        });
         getDataGroup();
       })
       .catch((error) => {
         console.log(error);
       });
+
+    dispatch({
+      type: "SET_LOADING",
+      payload: false,
+    });
   };
 
   const filterData = (keyword) => {
@@ -75,6 +101,8 @@ const GroupHelper = () => {
     user,
     loading,
     setLoading,
+    refresh,
+    setRefresh,
     dataGroup,
     setDataGroup,
     keyword,
@@ -83,7 +111,7 @@ const GroupHelper = () => {
     setInput,
     getDataGroup,
     daftarGroup,
-    filterData
+    filterData,
   };
 };
 

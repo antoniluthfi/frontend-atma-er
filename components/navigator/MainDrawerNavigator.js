@@ -4,7 +4,7 @@ import DrawerContent from "./DrawerContent";
 
 // screen
 import Home from "../screen/Home";
-import Profilku from "../screen/user/Profilku";
+import UserStack from "../stacks/UserStack";
 import KehadiranStack from "../stacks/KehadiranStack";
 import KasStack from "../stacks/KasStack";
 import GroupStack from "../stacks/GroupStack";
@@ -22,7 +22,7 @@ const MainDrawerNavigator = () => {
       drawerContent={(props) => <DrawerContent {...props} />}
     >
       <Drawer.Screen name="Home" component={Home} />
-      <Drawer.Screen name="Profilku" component={Profilku} />
+      <Drawer.Screen name="UserStack" component={UserStack} />
       <Drawer.Screen name="GroupStack" component={GroupStack} />
       <Drawer.Screen name="KasStack" component={KasStack} />
       <Drawer.Screen name="KehadiranStack" component={KehadiranStack} />

@@ -10,9 +10,11 @@ const KasHelper = (navigation) => {
   const [dataEvent, setDataEvent] = useState([]);
   const [dataEventCadangan, setDataEventCadangan] = useState([]);
   const [loadDataEvent, setLoadDataEvent] = useState(true);
+  const [refreshDataEvent, setRefreshDataEvent] = useState(false);
   const [detailKas, setDetailKas] = useState({});
   const [detailKasCadangan, setDetailKasCadangan] = useState({});
   const [loadDetailKas, setLoadDetailKas] = useState(true);
+  const [refreshDetailKas, setRefreshDetailKas] = useState(false);
   const [detailPerUser, setDetailPerUser] = useState([]);
   const [loadDetailPerUser, setLoadDetailPerUser] = useState(true);
   const [logPenyetoran, setLogPenyetoran] = useState([]);
@@ -30,7 +32,11 @@ const KasHelper = (navigation) => {
     total: 0,
   });
 
-  const getListKas = async () => {
+  const getListKas = async (state = "loading") => {
+    if (state === "refresh") {
+      setRefreshDataEvent(true);
+    }
+
     await axios({
       method: "GET",
       url: `${TEST_URL}/event-kas/group/1`,
@@ -53,10 +59,18 @@ const KasHelper = (navigation) => {
         console.log(error.message);
       });
 
-    setLoadDataEvent(false);
+    if (state === "refresh") {
+      setRefreshDataEvent(false);
+    } else {
+      setLoadDataEvent(false);
+    }
   };
 
-  const getDetailKas = async (id) => {
+  const getDetailKas = async (id, state = "loading") => {
+    if(state === "refresh") {
+      setRefreshDetailKas(true);
+    }
+
     await axios({
       method: "GET",
       url: `${TEST_URL}/arus-kas/${id}`,
@@ -74,7 +88,11 @@ const KasHelper = (navigation) => {
         console.log(error.message);
       });
 
-    setLoadDetailKas(false);
+      if(state === "refresh") {
+        setRefreshDetailKas(false);
+      } else {
+        setLoadDetailKas(false);
+      }  
   };
 
   const getDetailPerUser = async (id, user_id) => {
@@ -96,10 +114,10 @@ const KasHelper = (navigation) => {
     setLoadDetailPerUser(false);
   };
 
-  const getDataUsers = async () => {
+  const getDataUsers = async (group_id) => {
     await axios({
       method: "GET",
-      url: `${TEST_URL}/user`,
+      url: `${TEST_URL}/user-group/list-user/${group_id}`,
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${user.token}`,
@@ -342,10 +360,14 @@ const KasHelper = (navigation) => {
     setDataEvent,
     loadDataEvent,
     setLoadDataEvent,
+    refreshDataEvent,
+    setRefreshDataEvent,
     detailKas,
     setDetailKas,
     loadDetailKas,
     setLoadDetailKas,
+    refreshDetailKas,
+    setRefreshDetailKas,
     detailPerUser,
     setDetailPerUser,
     loadDetailPerUser,

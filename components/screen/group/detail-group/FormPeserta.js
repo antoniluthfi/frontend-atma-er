@@ -23,8 +23,9 @@ import Header from "../../../reusable/Header";
 import DetailGroupHelper from "./DetailGroupHelper";
 
 const FormPeserta = ({ navigation, route }) => {
-  const alert = useSelector(state => state.alert);
-  const { judul, method, payload } = route.params;
+  const user = useSelector((state) => state.user.data);
+  const alert = useSelector((state) => state.alert);
+  const { judul, method, payload, group_id, hak_akses } = route.params;
   const { postDetailGroup, updateDetailGroup } = DetailGroupHelper(navigation);
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -51,12 +52,13 @@ const FormPeserta = ({ navigation, route }) => {
         nama_ayah: method === "put" ? payload.nama_ayah : "",
         nama_ibu: method === "put" ? payload.nama_ibu : "",
         tempat_lahir: method === "put" ? payload.tempat_lahir : "",
-        jenis_kelamin: method === "put" ? payload.jenis_kelamin : "",
+        jenis_kelamin: method === "put" ? payload.jenis_kelamin.toString() : "",
         status: method === "put" ? payload.status : "",
-        hak_akses: method === "put" ? payload.hak_akses : "",
+        hak_akses: method === "put" ? hak_akses : "",
       }}
       onSubmit={(values) => {
         values.tgl_lahir = tglLahir;
+        values.group_id = group_id;
 
         if (method === "put") {
           updateDetailGroup(values, payload.id);
@@ -429,54 +431,57 @@ const FormPeserta = ({ navigation, route }) => {
                     )}
                   </FormControl>
 
-                  <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>
-                      <Text
-                        style={{
-                          fontFamily: "Raleway_400Regular",
-                        }}
-                      >
-                        Hak Akses
-                      </Text>
-                    </FormControl.Label>
-                    <Select
-                      onValueChange={handleChange("hak_akses")}
-                      onBlur={handleBlur("hak_akses")}
-                      selectedValue={values.hak_akses}
-                      minWidth={200}
-                      accessibilityLabel="Hak Akses"
-                      placeholder="Hak Akses"
-                      _selectedItem={{
-                        bg: "teal.600",
-                        endIcon: (
-                          <Ionicons
-                            name="ios-checkmark"
-                            size={30}
-                            color="black"
-                            style={{ marginLeft: 5 }}
+                  {method === "put" &&
+                    parseInt(user.id) !== parseInt(payload.id) && (
+                      <FormControl isRequired style={{ marginVertical: 10 }}>
+                        <FormControl.Label>
+                          <Text
+                            style={{
+                              fontFamily: "Raleway_400Regular",
+                            }}
+                          >
+                            Hak Akses
+                          </Text>
+                        </FormControl.Label>
+                        <Select
+                          onValueChange={handleChange("hak_akses")}
+                          onBlur={handleBlur("hak_akses")}
+                          selectedValue={values.hak_akses}
+                          minWidth={200}
+                          accessibilityLabel="Hak Akses"
+                          placeholder="Hak Akses"
+                          _selectedItem={{
+                            bg: "teal.600",
+                            endIcon: (
+                              <Ionicons
+                                name="ios-checkmark"
+                                size={30}
+                                color="black"
+                                style={{ marginLeft: 5 }}
+                              />
+                            ),
+                          }}
+                          mt={1}
+                          style={{
+                            fontFamily: "Raleway_400Regular",
+                          }}
+                        >
+                          <Select.Item
+                            label="Administrator"
+                            value="admin"
                           />
-                        ),
-                      }}
-                      mt={1}
-                      style={{
-                        fontFamily: "Raleway_400Regular",
-                      }}
-                    >
-                      <Select.Item
-                        label="Administrator"
-                        value="administrator"
-                      />
-                      <Select.Item label="Sekretaris" value="sekretaris" />
-                      <Select.Item label="Bendahara" value="bendahara" />
-                      <Select.Item label="Anggota" value="user" />
-                    </Select>
+                          <Select.Item label="Sekretaris" value="sekretaris" />
+                          <Select.Item label="Bendahara" value="bendahara" />
+                          <Select.Item label="Anggota" value="user" />
+                        </Select>
 
-                    {errors.jenis_kelamin && touched.jenis_kelamin && (
-                      <Text style={{ fontSize: 11, color: "red" }}>
-                        {errors.jenis_kelamin}
-                      </Text>
+                        {errors.jenis_kelamin && touched.jenis_kelamin && (
+                          <Text style={{ fontSize: 11, color: "red" }}>
+                            {errors.jenis_kelamin}
+                          </Text>
+                        )}
+                      </FormControl>
                     )}
-                  </FormControl>
                 </View>
                 <Button
                   onPress={handleSubmit}

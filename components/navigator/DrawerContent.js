@@ -94,7 +94,7 @@ const DrawerContent = ({ ...props }) => {
           <Ionicons name="people" size={size} color={color} />
         )}
         onPress={() => {
-          props.navigation.navigate("Profilku");
+          props.navigation.navigate("UserStack", { screen: "Profilku" });
         }}
       />
 

@@ -11,7 +11,7 @@ import {
   VStack,
   ScrollView,
 } from "native-base";
-import { Alert, StyleSheet } from "react-native";
+import { Alert, RefreshControl, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/core";
 import { SwipeListView } from "react-native-swipe-list-view";
 import RNHTMLtoPDF from "react-native-html-to-pdf";
@@ -38,6 +38,8 @@ const ListKas = ({ navigation }) => {
     setDataEvent,
     loadDataEvent,
     setLoadDataEvent,
+    refreshDataEvent,
+    setRefreshDataEvent,
     keyword,
     setKeyword,
     rincianEvent,
@@ -119,14 +121,29 @@ const ListKas = ({ navigation }) => {
     );
   };
 
-  const fetchData = async () => {
-    await getListKas();
-    await getDetailKas(0);
+  const fetchData = async (state) => {
+    await getListKas(state);
+    await getDetailKas(0, state);
   };
+
+  const onRefresh = useCallback(() => {
+    fetchData("refresh");
+
+    return () => {
+      setDataEvent([]);
+      setRefreshDataEvent(false);
+      setDetailKas([]);
+      setRincianEvent({
+        pemasukan: 0,
+        pengeluaran: 0,
+        total: 0,
+      });
+    };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
-      fetchData();
+      fetchData("loading");
 
       return () => {
         setDataEvent([]);
@@ -143,25 +160,17 @@ const ListKas = ({ navigation }) => {
 
   return (
     <NativeBaseProvider>
-      <Header
-        title="List Kas"
-        navigation={navigation}
-        refresh={true}
-        _refresh={async () => {
-          setDataEvent([]);
-          setLoadDataEvent(true);
-          setDetailKas([]);
-          setRincianEvent({
-            pemasukan: 0,
-            pengeluaran: 0,
-            total: 0,
-          });
-
-          await getListKas();
-          await getDetailKas(0);
-        }}
-      />
-      <View style={styles.container}>
+      <Header title="List Kas" navigation={navigation} />
+      <ScrollView
+        contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshDataEvent}
+            onRefresh={onRefresh}
+            colors={["crimson", "coral"]}
+          />
+        }
+      >
         <Provider>
           <Portal>
             <GroupList />
@@ -309,7 +318,7 @@ const ListKas = ({ navigation }) => {
             />
           </Portal>
         </Provider>
-      </View>
+      </ScrollView>
     </NativeBaseProvider>
   );
 };
@@ -343,18 +352,30 @@ const Basic = ({ navigation, dataEvent }) => {
               <Ionicons name="wallet" size={30} color="white" />
             </Avatar>
             <VStack>
-              <Text>{item.nama}</Text>
-              <Text>
-                <NumberFormat
-                  value={item.total_kas}
-                  displayType={"text"}
-                  thousandSeparator={true}
-                  prefix={"Rp. "}
-                  renderText={(value, props) => (
-                    <Text style={{ fontSize: 13, color: "gray" }}>{value}</Text>
-                  )}
-                />
+              <Text
+                style={{
+                  fontFamily: "Raleway_400Regular",
+                }}
+              >
+                {item.nama}
               </Text>
+              <NumberFormat
+                value={item.total_kas}
+                displayType={"text"}
+                thousandSeparator={true}
+                prefix={"Rp. "}
+                renderText={(value, props) => (
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      color: "gray",
+                      fontFamily: "Raleway_400Regular",
+                    }}
+                  >
+                    {value}
+                  </Text>
+                )}
+              />
             </VStack>
           </HStack>
         </HStack>
@@ -373,6 +394,7 @@ const Basic = ({ navigation, dataEvent }) => {
           navigation.navigate("DetailKas", {
             title: data.item.nama,
             id: data.item.id,
+            group_id: data.item.group_id,
           });
         }}
         _pressed={{

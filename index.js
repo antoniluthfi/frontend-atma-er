@@ -7,8 +7,9 @@ import { Provider } from "react-redux";
 import { userReducer } from "./reducer/userReducer";
 import { loadingReducer } from "./reducer/loadingReducer";
 import { alertReducer } from "./reducer/alertReducer";
+import { selectReducer } from "./reducer/selectReducer";
 import { NavigationContainer } from "@react-navigation/native";
-import { LogBox } from 'react-native';
+import { LogBox } from "react-native";
 import App from "./App";
 
 LogBox.ignoreAllLogs();
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   loading: loadingReducer,
   alert: alertReducer,
+  select: selectReducer,
 });
 
 const store = createStore(rootReducer);

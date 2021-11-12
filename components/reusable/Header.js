@@ -5,14 +5,11 @@ import { DrawerActions } from "@react-navigation/routers";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useFonts, Raleway_400Regular } from "@expo-google-fonts/raleway";
 import { useRoute } from "@react-navigation/core";
+import AuthHelper from "../screen/auth/AuthHelper";
 
-const Header = ({
-  title,
-  navigation,
-  refresh = false,
-  _refresh = null,
-  menu = true,
-}) => {
+const Header = ({ title, navigation, logoutIcon = false, menu = true }) => {
+  const { logout } = AuthHelper(navigation);
+
   const route = useRoute();
   const [fontsLoaded, error] = useFonts({
     Raleway_400Regular,
@@ -55,14 +52,14 @@ const Header = ({
               </Heading>
             </View>
             <View style={{ width: "12%", justifyContent: "center" }}>
-              {refresh && _refresh && (
+              {logoutIcon && (
                 <IconButton
-                  icon={<Ionicons name="refresh" size={30} color="white" />}
+                  icon={<Ionicons name="exit-outline" size={30} color="white" />}
                   _pressed={{
                     bg: "warning.600",
                   }}
                   onPress={() => {
-                    _refresh();
+                    logout();
                   }}
                 />
               )}

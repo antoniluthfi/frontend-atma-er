@@ -9,6 +9,7 @@ const DetailGroupHelper = (navigation) => {
   const [detailGroup, setDetailGroup] = useState([]);
   const [detailGroupCadangan, setDetailGroupCadangan] = useState([]);
   const [loadDetailGroup, setLoadDetailGroup] = useState(true);
+  const [refreshDetailGroup, setRefreshDetailGroup] = useState(false);
   const [keyword, setKeyword] = useState("");
 
   const formValidasi = (values) => {
@@ -50,7 +51,11 @@ const DetailGroupHelper = (navigation) => {
     return true;
   };
 
-  const getDetailGroup = async (group_id) => {
+  const getDetailGroup = async (group_id, state = "loading") => {
+    if (state === "refresh") {
+      setRefreshDetailGroup(true);
+    }
+
     await axios({
       method: "GET",
       url: `${TEST_URL}/user-group/list-user/${group_id}`,
@@ -68,7 +73,11 @@ const DetailGroupHelper = (navigation) => {
         console.log(error);
       });
 
-    setLoadDetailGroup(false);
+    if (state === "refresh") {
+      setRefreshDetailGroup(false);
+    } else {
+      setLoadDetailGroup(false);
+    }
   };
 
   const postDetailGroup = async (values) => {
@@ -131,7 +140,7 @@ const DetailGroupHelper = (navigation) => {
     }
   };
 
-  const hapusData = async (id) => {
+  const hapusData = async (group_id, id) => {
     dispatch({
       type: "SET_LOADING",
       payload: true,
@@ -139,7 +148,7 @@ const DetailGroupHelper = (navigation) => {
 
     await axios({
       method: "delete",
-      url: `${TEST_URL}/user/${id}`,
+      url: `${TEST_URL}/user-group/${group_id}/${id}`,
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${user.token}`,
@@ -174,6 +183,8 @@ const DetailGroupHelper = (navigation) => {
     setDetailGroup,
     loadDetailGroup,
     setLoadDetailGroup,
+    refreshDetailGroup,
+    setRefreshDetailGroup,
     getDetailGroup,
     postDetailGroup,
     updateDetailGroup,

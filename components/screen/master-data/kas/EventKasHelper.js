@@ -7,15 +7,31 @@ const EventKasHelper = (navigation) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  const [dataEvent, setDataEvent] = useState([]);
-  const [dataEventCadangan, setDataEventCadangan] = useState([]);
+  const [dataEvent, setDataEvent] = useState({
+    event: [],
+    pemasukan: 0,
+    pengeluaran: 0,
+    total: 0,
+  });
+  const [dataEventCadangan, setDataEventCadangan] = useState({
+    event: [],
+    pemasukan: 0,
+    pengeluaran: 0,
+    total: 0,
+  });
   const [loadDataEvent, setLoadDataEvent] = useState(true);
+  const [refreshDataEvent, setRefreshDataEvent] = useState(false);
+  const [indexGroup, setIndexGroup] = useState(1);
   const [keyword, setKeyword] = useState("");
 
-  const getEventKas = async () => {
+  const getEventKas = async (state = "loading") => {
+    if (state === "refresh") {
+      setRefreshDataEvent(true);
+    }
+
     await axios({
       method: "GET",
-      url: `${TEST_URL}/event-kas/group/1`,
+      url: `${TEST_URL}/event-kas/group/${indexGroup}`,
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${user.token}`,
@@ -30,7 +46,11 @@ const EventKasHelper = (navigation) => {
         console.log(error.message);
       });
 
-    setLoadDataEvent(false);
+    if (state === "refresh") {
+      setRefreshDataEvent(false);
+    } else {
+      setLoadDataEvent(false);
+    }
   };
 
   const postEventKas = async (values) => {
@@ -155,8 +175,11 @@ const EventKasHelper = (navigation) => {
   return {
     dataEvent,
     setDataEvent,
+    setDataEventCadangan,
     loadDataEvent,
     setLoadDataEvent,
+    refreshDataEvent,
+    setRefreshDataEvent,
     keyword,
     setKeyword,
     getEventKas,

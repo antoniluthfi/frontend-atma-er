@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import {
   NativeBaseProvider,
   View,
@@ -12,7 +12,7 @@ import {
 } from "native-base";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { Portal, Provider } from "react-native-paper";
-import { Linking, StyleSheet } from "react-native";
+import { Linking, StyleSheet, RefreshControl, ScrollView } from "react-native";
 import moment from "moment";
 import { useFocusEffect } from "@react-navigation/core";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -30,6 +30,8 @@ const Group = ({ navigation }) => {
     user,
     loading,
     setLoading,
+    refresh,
+    setRefresh,
     dataGroup,
     setDataGroup,
     keyword,
@@ -44,9 +46,18 @@ const Group = ({ navigation }) => {
     Raleway_400Regular,
   });
 
+  const onRefresh = useCallback(() => {
+    getDataGroup("refresh");
+
+    return () => {
+      setDataGroup([]);
+      setRefresh(false);
+    };
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
-      getDataGroup();
+      getDataGroup("loading");
 
       return () => {
         setDataGroup([]);
@@ -57,18 +68,18 @@ const Group = ({ navigation }) => {
 
   return (
     <NativeBaseProvider>
-      <Header
-        title="List Grup"
-        navigation={navigation}
-        refresh={true}
-        _refresh={async () => {
-          setLoading(true);
-          setDataGroup([]);
+      <Header title="List Grup" navigation={navigation} />
 
-          await getDataGroup();
-        }}
-      />
-      <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={refresh}
+            onRefresh={onRefresh}
+            colors={["crimson", "coral"]}
+          />
+        }
+      >
         <Provider>
           <Portal>
             <View
@@ -120,12 +131,23 @@ const Group = ({ navigation }) => {
                   {
                     icon: "plus",
                     label: "Buat baru",
-                    onPress: () =>
-                      navigation.navigate("FormUsman", {
-                        payload: null,
+                    onPress: () => {
+                      navigation.navigate("FormGroup", {
+                        judul: "Buat Grup Baru",
                         method: "post",
-                        judul: "Form Usman",
-                      }),
+                        payload: null,
+                      });
+                    },
+                    small: false,
+                  },
+                  {
+                    icon: ({ color, direction, size }) => (
+                      <Ionicons name="person-add" color={color} size={size} />
+                    ),
+                    label: "List pending",
+                    onPress: () => {
+                      navigation.navigate("ListPending");
+                    },
                     small: false,
                   },
                 ]}
@@ -133,7 +155,7 @@ const Group = ({ navigation }) => {
             )}
           </Portal>
         </Provider>
-      </View>
+      </ScrollView>
     </NativeBaseProvider>
   );
 };
@@ -266,7 +288,7 @@ const Basic = ({ navigation, dataGroup, user }) => {
             navigation.navigate("FormGroup", {
               judul: data.item.nama,
               method: "put",
-              payload: data.item
+              payload: data.item,
             });
           }}
           _pressed={{
@@ -311,6 +333,12 @@ const Basic = ({ navigation, dataGroup, user }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
   },
   wrapper: {
     marginTop: 10,

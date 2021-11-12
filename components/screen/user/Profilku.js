@@ -5,14 +5,19 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import Ionicons from "react-native-vector-icons/Ionicons";
+
+// component
 import Header from "../../reusable/Header";
+import Alert from "../../reusable/Alert";
 
 const Profilku = ({ navigation }) => {
   const user = useSelector((state) => state.user.data);
+  const alert = useSelector((state) => state.alert);
 
   return (
     <NativeBaseProvider>
       <Header title="Profilku" navigation={navigation} />
+      {alert.show && <Alert />}
 
       <ScrollView>
         <View style={styles.containerImage}>
@@ -87,7 +92,15 @@ const Profilku = ({ navigation }) => {
 
               <Center>
                 <TouchableOpacity
-                  onPress={() => console.log("update user")}
+                  onPress={() =>
+                    navigation.navigate("UpdateProfil", {
+                      judul:
+                        user.name.length > 20
+                          ? `${user.name.substr(0, 20)}...`
+                          : user.name,
+                      payload: user,
+                    })
+                  }
                   style={{
                     backgroundColor: "tomato",
                     padding: 10,

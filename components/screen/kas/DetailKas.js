@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useCallback } from "react";
 import "moment/locale/id";
 import moment from "moment";
-import { View, StyleSheet, Alert } from "react-native";
+import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
 import { useFocusEffect } from "@react-navigation/core";
 import {
   NativeBaseProvider,
@@ -18,21 +18,35 @@ import {
 import NumberFormat from "react-number-format";
 import { Portal, Provider } from "react-native-paper";
 import { SwipeListView } from "react-native-swipe-list-view";
+import { useSelector, useDispatch } from "react-redux";
 import RNHTMLtoPDF from "react-native-html-to-pdf";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import LottieView from "lottie-react-native";
+import {
+  useFonts,
+  Raleway_400Regular,
+  Raleway_500Medium,
+} from "@expo-google-fonts/raleway";
+
+// component
 import Header from "../../reusable/Header";
+import Alert from "../../reusable/Alert";
 import FloatingButton from "../../reusable/FloatingButton";
 import KasHelper from "./KasHelper";
 import Loading from "../../reusable/Loading";
 
 const DetailKas = ({ navigation, route }) => {
-  const { title, id } = route.params;
+  const dispatch = useDispatch();
+  const alert = useSelector((state) => state.alert);
+  const { title, id, group_id } = route.params;
   const {
     detailKas,
     setDetailKas,
     loadDetailKas,
     setLoadDetailKas,
+    refreshDetailKas,
+    setRefreshDetailKas,
     dataArusKas,
     setDataArusKas,
     pemasukan,
@@ -45,6 +59,11 @@ const DetailKas = ({ navigation, route }) => {
     getArusKasBulanIni,
     filterUser,
   } = KasHelper();
+
+  const [fontsLoaded, error] = useFonts({
+    Raleway_400Regular,
+    Raleway_500Medium,
+  });
 
   const buatPdf = async () => {
     const options = {
@@ -95,22 +114,36 @@ const DetailKas = ({ navigation, route }) => {
 
     const file = await RNHTMLtoPDF.convert(options);
 
-    Alert.alert(
-      "Berhasil",
-      `Berhasil download file, file tersimpan di ${file.filePath}`,
-      [{ text: "Oke deh", style: "cancel" }],
-      { cancelable: true }
-    );
+    dispatch({
+      type: "SET_SHOW_ALERT",
+      payload: {
+        type: "success",
+        show: true,
+        message: `Berhasil download file, file tersimpan di ${file.filePath}`,
+      },
+    });
   };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const fetchData = async () => {
-        await getDetailKas(id);
-        await getArusKasBulanIni(id);
-      };
+  const fetchData = async (state) => {
+    await getDetailKas(id, state);
+    await getArusKasBulanIni(id);
+  };
 
-      fetchData();
+  const onRefresh = useCallback(() => {
+    fetchData("refresh");
+
+    return () => {
+      setDetailKas({});
+      setRefreshDetailKas(false);
+      setDataArusKas([]);
+      setPemasukan(0);
+      setPengeluaran(0);
+    };
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData("loading");
 
       return () => {
         setDetailKas({});
@@ -124,199 +157,222 @@ const DetailKas = ({ navigation, route }) => {
 
   return (
     <NativeBaseProvider>
-      <Header
-        title={title}
-        navigation={navigation}
-        refresh={true}
-        _refresh={async () => {
-          setDetailKas({});
-          setLoadDetailKas(true);
-          setDataArusKas([]);
-          setPemasukan(0);
-          setPengeluaran(0);
+      <Header title={title} navigation={navigation} />
+      {alert.show && <Alert />}
 
-          await getDetailKas(id);
-          await getArusKasBulanIni(id);
-        }}
-      />
-
-      {loadDetailKas ? (
-        <Loading />
-      ) : (
-        <View style={styles.container}>
-          <Provider>
-            <Portal>
-              <View style={styles.wrapper}>
-                <View style={[styles.card, styles.items]}>
-                  <View style={{ marginLeft: 10 }}>
-                    <FontAwesome5 name="money-check" size={60} />
-                  </View>
-                  <View style={{ marginLeft: 15 }}>
-                    <Text style={{ fontWeight: "bold" }}>
-                      Total Pemasukan :{" "}
-                      {detailKas && (
-                        <NumberFormat
-                          value={detailKas.total.total_pemasukan}
-                          displayType={"text"}
-                          thousandSeparator={true}
-                          prefix={"Rp. "}
-                          renderText={(value, props) => (
-                            <Text style={{ fontWeight: "bold", color: "blue" }}>
-                              {value}
-                            </Text>
-                          )}
-                        />
-                      )}
-                    </Text>
-                    <Text style={{ fontWeight: "bold" }}>
-                      Total Pengeluaran :{" "}
-                      {detailKas && (
-                        <NumberFormat
-                          value={detailKas.total.total_pengeluaran}
-                          displayType={"text"}
-                          thousandSeparator={true}
-                          prefix={"Rp. "}
-                          renderText={(value, props) => (
-                            <Text style={{ fontWeight: "bold", color: "red" }}>
-                              {value}
-                            </Text>
-                          )}
-                        />
-                      )}
-                    </Text>
-                    <Text style={{ fontWeight: "bold" }}>
-                      Total Kas :{" "}
-                      {detailKas && (
-                        <NumberFormat
-                          value={detailKas.total.total_kas}
-                          displayType={"text"}
-                          thousandSeparator={true}
-                          prefix={"Rp. "}
-                          renderText={(value, props) => (
-                            <Text
-                              style={{ fontWeight: "bold", color: "green" }}
-                            >
-                              {value}
-                            </Text>
-                          )}
-                        />
-                      )}
-                    </Text>
-                    <Text>{moment().format("dddd, Do MMMM YYYY")}</Text>
-                  </View>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshDetailKas}
+            onRefresh={onRefresh}
+            colors={["crimson", "coral"]}
+          />
+        }
+      >
+        <Provider>
+          <Portal>
+            <View style={styles.wrapper}>
+              <View style={[styles.card, styles.items]}>
+                <View style={{ marginLeft: 10 }}>
+                  <FontAwesome5 name="money-check" size={60} />
                 </View>
-              </View>
-
-              <View
-                style={{
-                  flexWrap: "wrap",
-                  flexDirection: "row",
-                  backgroundColor: "#fff",
-                  marginTop: 20,
-                  borderTopRightRadius: 20,
-                  borderTopLeftRadius: 20,
-                  // elevation: 5,
-                }}
-              >
-                <View
-                  style={{ marginVertical: 15, paddingLeft: 15, width: "83%" }}
-                >
-                  <Input
-                    type="text"
-                    placeholder="Cari anggota disini ..."
-                    InputRightElement={
-                      <Ionicons
-                        name="search"
-                        size={30}
-                        style={{ marginRight: 10 }}
-                      />
-                    }
-                    value={keyword}
-                    onChangeText={(text) => {
-                      setKeyword(text);
-                      filterUser(text);
+                <View style={{ marginLeft: 15 }}>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      fontFamily: "Raleway_500Medium",
                     }}
-                  />
-                </View>
-                <View
-                  style={{ marginVertical: 15, paddingLeft: 5, width: "14%" }}
-                >
-                  <Menu
-                    onOpen={() => console.log("open option")}
-                    onClose={() => console.log("close option")}
-                    trigger={(triggerProps) => (
-                      <IconButton
-                        {...triggerProps}
-                        variant="outline"
-                        colorScheme="gray"
-                        icon={<Ionicons name="ellipsis-vertical" size={34} />}
-                        style={{
-                          borderRadius: 7,
-                        }}
-                      />
-                    )}
                   >
-                    <Menu.Item>Belum Bayar</Menu.Item>
-                  </Menu>
+                    Total Pemasukan :{" "}
+                    <NumberFormat
+                      value={
+                        loadDetailKas ? "0" : detailKas.kas.total_pemasukan
+                      }
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      prefix={"Rp. "}
+                      renderText={(value, props) => (
+                        <Text
+                          style={{
+                            color: "blue",
+                            fontFamily: "Raleway_400Regular",
+                          }}
+                        >
+                          {value}
+                        </Text>
+                      )}
+                    />
+                  </Text>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      fontFamily: "Raleway_500Medium",
+                    }}
+                  >
+                    Total Pengeluaran :{" "}
+                    <NumberFormat
+                      value={
+                        loadDetailKas ? "0" : detailKas.kas.total_pengeluaran
+                      }
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      prefix={"Rp. "}
+                      renderText={(value, props) => (
+                        <Text
+                          style={{
+                            color: "red",
+                            fontFamily: "Raleway_400Regular",
+                          }}
+                        >
+                          {value}
+                        </Text>
+                      )}
+                    />
+                  </Text>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      fontFamily: "Raleway_500Medium",
+                    }}
+                  >
+                    Total Kas :{" "}
+                    <NumberFormat
+                      value={loadDetailKas ? "0" : detailKas.kas.total_kas}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      prefix={"Rp. "}
+                      renderText={(value, props) => (
+                        <Text
+                          style={{
+                            color: "green",
+                            fontFamily: "Raleway_400Regular",
+                          }}
+                        >
+                          {value}
+                        </Text>
+                      )}
+                    />
+                  </Text>
+                  <Text>{moment().format("dddd, Do MMMM YYYY")}</Text>
                 </View>
               </View>
+            </View>
 
-              <Basic
-                navigation={navigation}
-                loadDetailKas={loadDetailKas}
-                detailKas={detailKas}
-              />
+            <View
+              style={{
+                flexWrap: "wrap",
+                flexDirection: "row",
+                backgroundColor: "#fff",
+                marginTop: 20,
+                borderTopRightRadius: 20,
+                borderTopLeftRadius: 20,
+                // elevation: 5,
+              }}
+            >
+              <View
+                style={{ marginVertical: 15, paddingLeft: 15, width: "83%" }}
+              >
+                <Input
+                  type="text"
+                  placeholder="Cari data disini ..."
+                  InputRightElement={
+                    <Ionicons
+                      name="search"
+                      size={30}
+                      style={{ marginRight: 10 }}
+                    />
+                  }
+                  value={keyword}
+                  onChangeText={(text) => {
+                    setKeyword(text);
+                    filterUser(text);
+                  }}
+                  style={{
+                    fontFamily: "Raleway_400Regular",
+                  }}
+                />
+              </View>
+              <View
+                style={{ marginVertical: 15, paddingLeft: 5, width: "14%" }}
+              >
+                <Menu
+                  onOpen={() => console.log("open option")}
+                  onClose={() => console.log("close option")}
+                  trigger={(triggerProps) => (
+                    <IconButton
+                      {...triggerProps}
+                      variant="outline"
+                      colorScheme="gray"
+                      icon={<Ionicons name="ellipsis-vertical" size={34} />}
+                      style={{
+                        borderRadius: 7,
+                      }}
+                    />
+                  )}
+                >
+                  <Menu.Item>Belum Bayar</Menu.Item>
+                </Menu>
+              </View>
+            </View>
 
-              <FloatingButton
-                navigation={navigation}
-                id={id}
-                actions={[
-                  {
-                    icon: "cash-plus",
-                    label: "Setor Kas",
-                    onPress: () =>
-                      navigation.navigate("FormPenyetoran", {
-                        method: "post",
-                        event_kas_id: id,
-                      }),
-                    small: false,
-                  },
-                  {
-                    icon: "cash-minus",
-                    label: "Buat Pengeluaran",
-                    onPress: () =>
-                      navigation.navigate("FormPengeluaran", {
-                        method: "post",
-                        event_kas_id: id,
-                      }),
-                    small: false,
-                  },
-                  {
-                    icon: "file",
-                    label: "History Kas",
-                    onPress: () =>
-                      navigation.navigate("HistoryKasKeseluruhan", {
-                        id: id,
-                      }),
-                    small: false,
-                  },
-                  {
-                    icon: "download",
-                    label: "Unduh PDF",
-                    onPress: buatPdf,
-                    small: false,
-                  },
-                ]}
-              />
-            </Portal>
-          </Provider>
-        </View>
-      )}
+            {loadDetailKas ? (
+              <Loading />
+            ) : (
+              <Basic navigation={navigation} kas={detailKas.per_user} />
+            )}
+
+            <FloatingButton
+              navigation={navigation}
+              id={id}
+              actions={[
+                {
+                  icon: "cash-plus",
+                  label: "Setor Kas",
+                  onPress: () =>
+                    navigation.navigate("FormPenyetoran", {
+                      method: "post",
+                      event_kas_id: id,
+                      group_id: group_id,
+                    }),
+                  small: false,
+                },
+                {
+                  icon: "cash-minus",
+                  label: "Buat Pengeluaran",
+                  onPress: () =>
+                    navigation.navigate("FormPengeluaran", {
+                      method: "post",
+                      event_kas_id: id,
+                      group_id: group_id,
+                    }),
+                  small: false,
+                },
+                {
+                  icon: "file",
+                  label: "History Kas",
+                  onPress: () =>
+                    navigation.navigate("HistoryKasKeseluruhan", {
+                      id: id,
+                    }),
+                  small: false,
+                },
+                {
+                  icon: "download",
+                  label: "Unduh PDF",
+                  onPress: buatPdf,
+                  small: false,
+                },
+              ]}
+            />
+          </Portal>
+        </Provider>
+      </ScrollView>
     </NativeBaseProvider>
   );
 };
 
-const Basic = ({ navigation, loadDetailKas, detailKas }) => {
+const Basic = ({ navigation, kas }) => {
   const onRowDidOpen = (rowKey) => {
     console.log("This row opened", rowKey);
   };
@@ -344,7 +400,13 @@ const Basic = ({ navigation, loadDetailKas, detailKas }) => {
               <Ionicons name="person" size={30} color="white" />
             </Avatar>
             <VStack>
-              <Text>{item.users.name}</Text>
+              <Text
+                style={{
+                  fontFamily: "Raleway_400Regular",
+                }}
+              >
+                {item.user.name}
+              </Text>
               <Text>
                 <NumberFormat
                   value={item.total}
@@ -352,7 +414,15 @@ const Basic = ({ navigation, loadDetailKas, detailKas }) => {
                   thousandSeparator={true}
                   prefix={"Rp. "}
                   renderText={(value, props) => (
-                    <Text style={{ fontSize: 13, color: "gray" }}>{value}</Text>
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        color: "gray",
+                        fontFamily: "Raleway_400Regular",
+                      }}
+                    >
+                      {value}
+                    </Text>
                   )}
                 />
               </Text>
@@ -373,7 +443,7 @@ const Basic = ({ navigation, loadDetailKas, detailKas }) => {
         onPress={() => {
           navigation.navigate("HistoryKasPerAnggota", {
             event_id: data.item.event_kas_id,
-            user: { id: data.item.users.id, name: data.item.users.name },
+            user: { id: data.item.user.id, name: data.item.user.name },
             total: data.item.total,
             bulan_ini: data.item.total,
           });
@@ -389,16 +459,31 @@ const Basic = ({ navigation, loadDetailKas, detailKas }) => {
 
   return (
     <Box bg="white" safeArea flex={1}>
-      <SwipeListView
-        data={loadDetailKas ? [] : detailKas.per_user}
-        renderItem={renderItem}
-        renderHiddenItem={renderHiddenItem}
-        rightOpenValue={-65}
-        previewRowKey={"0"}
-        previewOpenValue={-40}
-        previewOpenDelay={1000}
-        onRowDidOpen={onRowDidOpen}
-      />
+      {kas.length > 0 ? (
+        <SwipeListView
+          data={kas}
+          renderItem={renderItem}
+          renderHiddenItem={renderHiddenItem}
+          rightOpenValue={-65}
+          previewRowKey={"0"}
+          previewOpenValue={-40}
+          previewOpenDelay={1000}
+          onRowDidOpen={onRowDidOpen}
+        />
+      ) : (
+        <ScrollView>
+          <LottieView
+            source={require("../../../assets/data-not-found.json")}
+            style={{
+              marginBottom: 50,
+              width: "100%",
+              height: 400,
+            }}
+            autoPlay
+            loop
+          />
+        </ScrollView>
+      )}
     </Box>
   );
 };
@@ -436,7 +521,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.5,
-    elevation: 5,
+    // elevation: 5,
   },
 });
 

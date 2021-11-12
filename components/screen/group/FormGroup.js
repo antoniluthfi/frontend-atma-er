@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Formik } from "formik";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import "moment/locale/id";
@@ -12,24 +12,41 @@ import {
   Input,
   Center,
   Circle,
+  HStack,
 } from "native-base";
+import { useFocusEffect } from "@react-navigation/core";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useFonts, Raleway_400Regular } from "@expo-google-fonts/raleway";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 
 // component
 import Alert from "../../reusable/Alert";
 import Header from "../../reusable/Header";
+import CustomSelect from "../../reusable/CustomSelect";
 import DetailGroupHelper from "./GroupHelper";
+import ProfilePhoto from "../../reusable/ProfilePhoto";
 
 const FormGroup = ({ navigation, route }) => {
+  const dispatch = useDispatch();
   const alert = useSelector((state) => state.alert);
   const { judul, method, payload } = route.params;
-  const { postDetailGroup, updateDetailGroup } = DetailGroupHelper(navigation);
+  const { updateFotoProfil } = DetailGroupHelper(navigation);
 
   const [fontsLoaded, error] = useFonts({
     Raleway_400Regular,
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      dispatch({
+        type: "SET_SHOW_SELECT",
+        payload: {
+          show: false,
+        },
+      });
+    }, [])
+  );
 
   return (
     <Formik
@@ -40,11 +57,11 @@ const FormGroup = ({ navigation, route }) => {
         status: method === "put" ? payload.status : "",
       }}
       onSubmit={(values) => {
-        if (method === "put") {
-          updateDetailGroup(values, payload.id);
-        } else if (method === "post") {
-          postDetailGroup(values);
-        }
+        // if (method === "put") {
+        //   updateDetailGroup(values, payload.id);
+        // } else if (method === "post") {
+        //   postDetailGroup(values);
+        // }
       }}
     >
       {({
@@ -60,7 +77,89 @@ const FormGroup = ({ navigation, route }) => {
           <Header title={judul} navigation={navigation} />
           {alert.show && <Alert />}
 
-          <ScrollView>
+          <CustomSelect>
+            <HStack>
+              <TouchableOpacity>
+                <Circle size={60} bg="danger.500">
+                  <Ionicons name="trash-outline" size={40} />
+                </Circle>
+                <Center>
+                  <Text
+                    style={{
+                      fontFamily: "Raleway_400Regular",
+                    }}
+                  >
+                    Hapus
+                  </Text>
+                </Center>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  marginLeft: 15,
+                }}
+                onPress={() =>
+                  launchCamera(
+                    {
+                      mediaType: "photo",
+                      quality: 1,
+                      cameraType: "front",
+                      saveToPhotos: true,
+                    },
+                    (response) => {
+                      if (response.assets && response.assets.length > 0) {
+                        updateFotoProfil(response.assets[0], payload.id);
+                      }
+                    }
+                  )
+                }
+              >
+                <Circle size={60} bg="info.400">
+                  <Ionicons name="camera-outline" size={40} />
+                </Circle>
+                <Center>
+                  <Text
+                    style={{
+                      fontFamily: "Raleway_400Regular",
+                    }}
+                  >
+                    Kamera
+                  </Text>
+                </Center>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  marginLeft: 15,
+                }}
+                onPress={() => {
+                  launchImageLibrary({
+                    mediaType: "photo",
+                    quality: 1,  
+                  }, (response) => {
+                    console.log(response);
+                  })
+                }}
+              >
+                <Circle size={60} bg="primary.300">
+                  <Ionicons name="image-outline" size={40} />
+                </Circle>
+                <Center>
+                  <Text
+                    style={{
+                      fontFamily: "Raleway_400Regular",
+                    }}
+                  >
+                    Galeri
+                  </Text>
+                </Center>
+              </TouchableOpacity>
+            </HStack>
+          </CustomSelect>
+
+          <ScrollView
+            style={{
+              backgroundColor: "#e8eaed",
+            }}
+          >
             <View style={styles.container}>
               <View style={styles.taskWrapper}>
                 <View
@@ -68,29 +167,7 @@ const FormGroup = ({ navigation, route }) => {
                     paddingVertical: 10,
                   }}
                 >
-                  <Center flex={1} px="3">
-                    <Circle size={175} bg="light.100">
-                      <Ionicons name="people" size={150} />
-                    </Circle>
-                  </Center>
-
-                  <Center>
-                    <TouchableOpacity
-                      style={{
-                        position: "absolute",
-                        width: 50,
-                        height: 50,
-                        borderRadius: 100,
-                        backgroundColor: "#38d963",
-                        right: "25%",
-                        bottom: 0,
-                      }}
-                    >
-                      <Center>
-                        <Ionicons name="camera" size={40} color="black" />
-                      </Center>
-                    </TouchableOpacity>
-                  </Center>
+                  <ProfilePhoto />
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
                     <FormControl.Label>
@@ -219,7 +296,6 @@ const FormGroup = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#e8eaed",
     paddingBottom: 20,
   },
   taskWrapper: {

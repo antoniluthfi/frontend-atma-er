@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { KeyboardAvoidingView } from "react-native";
+import { KeyboardAvoidingView, RefreshControl, ScrollView } from "react-native";
 import { useFocusEffect } from "@react-navigation/core";
 import {
   Avatar,
@@ -32,13 +32,15 @@ import LottieView from "lottie-react-native";
 
 const DetailGroup = ({ navigation, route }) => {
   const dispatch = useDispatch();
-  const alert = useSelector(state => state.alert);
+  const alert = useSelector((state) => state.alert);
   const { group_id, nama } = route.params;
   const {
     detailGroup,
     setDetailGroup,
     loadDetailGroup,
     setLoadDetailGroup,
+    refreshDetailGroup,
+    setRefreshDetailGroup,
     getDetailGroup,
     keyword,
     setKeyword,
@@ -105,14 +107,23 @@ const DetailGroup = ({ navigation, route }) => {
       payload: {
         type: "success",
         show: true,
-        message: `Berhasil download file, file tersimpan di ${file.filePath}`
-      }
+        message: `Berhasil download file, file tersimpan di ${file.filePath}`,
+      },
     });
   };
 
+  const onRefresh = useCallback(() => {
+    getDetailGroup(group_id, "refresh");
+
+    return () => {
+      setDetailGroup([]);
+      setRefreshDetailGroup(false);
+    };
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
-      getDetailGroup(group_id);
+      getDetailGroup(group_id, "loading");
 
       return () => {
         setDetailGroup([]);
@@ -126,20 +137,19 @@ const DetailGroup = ({ navigation, route }) => {
       <Header
         title={nama.length > 15 ? `${nama.substr(0, 15)}...` : nama}
         navigation={navigation}
-        refresh={true}
-        _refresh={async () => {
-          setDetailGroup([]);
-          setLoadDetailGroup(true);
-          await getDetailGroup(group_id);
-        }}
       />
 
       {alert.show && <Alert />}
 
-      <KeyboardAvoidingView
-        behavior="height"
-        enabled={true}
-        style={styles.container}
+      <ScrollView
+        contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshDetailGroup}
+            onRefresh={onRefresh}
+            colors={["crimson", "coral"]}
+          />
+        }
       >
         <Provider>
           <Portal>
@@ -180,23 +190,16 @@ const DetailGroup = ({ navigation, route }) => {
             {loadDetailGroup ? (
               <Loading />
             ) : (
-              <Basic navigation={navigation} detailGroup={detailGroup} />
+              <Basic
+                navigation={navigation}
+                detailGroup={detailGroup}
+                group_id={group_id}
+              />
             )}
 
             <FloatingButton
               navigation={navigation}
               actions={[
-                {
-                  icon: "plus",
-                  label: "Buat baru",
-                  onPress: () =>
-                    navigation.navigate("FormPeserta", {
-                      payload: null,
-                      method: "post",
-                      judul: "Tambah Peserta",
-                    }),
-                  small: false,
-                },
                 {
                   icon: "download",
                   label: "Unduh PDF",
@@ -207,15 +210,19 @@ const DetailGroup = ({ navigation, route }) => {
             />
           </Portal>
         </Provider>
-      </KeyboardAvoidingView>
+      </ScrollView>
     </NativeBaseProvider>
   );
 };
 
 export default DetailGroup;
 
-const Basic = ({ navigation, detailGroup }) => {
+const Basic = ({ navigation, detailGroup, group_id }) => {
   const user = useSelector((state) => state.user.data);
+  const currentGroup = user.user_group.filter(
+    (item) => parseInt(item.group_id) === parseInt(group_id)
+  )[0];
+
   const onRowDidOpen = (rowKey) => {
     console.log("This row opened", rowKey);
   };
@@ -286,6 +293,9 @@ const Basic = ({ navigation, detailGroup }) => {
         onPress={() => {
           navigation.navigate("DetailPeserta", {
             user: data.item.user,
+            group_id: group_id,
+            currentGroup: currentGroup,
+            currentUser: user,
           });
         }}
         _pressed={{
@@ -303,6 +313,8 @@ const Basic = ({ navigation, detailGroup }) => {
           onPress={() =>
             navigation.navigate("FormPeserta", {
               payload: data.item.user,
+              group_id: group_id,
+              hak_akses: data.item.hak_akses,
               method: "put",
               judul: "Update Peserta",
             })

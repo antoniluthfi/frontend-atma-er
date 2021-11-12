@@ -26,16 +26,6 @@ import {
 } from "@expo-google-fonts/raleway";
 import Header from "./Header";
 
-const inputValidationSchema = yup.object().shape({
-  name: yup.string().required("Nama nya masih kosong tuh, isi dulu yaa"),
-  nomorhp: yup.string().required("Nama nya masih kosong tuh, isi dulu yaa"),
-  email: yup.string().required("Email nya masih kosong tuh, isi dulu yaa"),
-  password: yup.string().required("Password nya diisi dulu yaa"),
-  c_password: yup
-    .string()
-    .required("Password nya jangan lupa dikonfirmasi yaa"),
-});
-
 const Login = ({ navigation }) => {
   const alert = useSelector((state) => state.alert);
   const { register } = AuthHelper(navigation);
@@ -95,51 +85,11 @@ const Login = ({ navigation }) => {
                           fontFamily: "Raleway_400Regular",
                         }}
                       >
-                        Foto Profil
-                      </Text>
-                    </FormControl.Label>
-                    <Input
-                      type="text"
-                      isDisabled
-                      onChangeText={handleChange("name")}
-                      onBlur={handleBlur("name")}
-                      value={values.name}
-                      placeholder="Foto Profil" // mx={4}
-                      _light={{
-                        placeholderTextColor: "blueGray.400",
-                      }}
-                      _dark={{
-                        placeholderTextColor: "blueGray.50",
-                      }}
-                      InputRightElement={
-                        <Ionicons
-                          name="image"
-                          size={30}
-                          style={{ marginRight: 8 }}
-                          onPress={() => {
-                            launchImageLibrary({}, (response) => {
-                              console.log(response);
-                            });
-                          }}
-                        />
-                      }
-                      style={{
-                        fontFamily: "Raleway_400Regular",
-                      }}
-                    />
-                  </FormControl>
-
-                  <FormControl isRequired style={{ marginVertical: 10 }}>
-                    <FormControl.Label>
-                      <Text
-                        style={{
-                          fontFamily: "Raleway_400Regular",
-                        }}
-                      >
                         Nama Lengkap
                       </Text>
                     </FormControl.Label>
                     <Input
+                      autoCapitalize="words"
                       type="text"
                       onChangeText={handleChange("name")}
                       onBlur={handleBlur("name")}
@@ -197,6 +147,7 @@ const Login = ({ navigation }) => {
                       </Text>
                     </FormControl.Label>
                     <Input
+                      autoCapitalize="none"
                       type="email"
                       keyboardType="email-address"
                       onChangeText={handleChange("email")}
@@ -226,6 +177,7 @@ const Login = ({ navigation }) => {
                       </Text>
                     </FormControl.Label>
                     <Input
+                      autoCapitalize="none"
                       type={type.type1}
                       onChangeText={handleChange("password")}
                       onBlur={handleBlur("password")}
@@ -270,6 +222,7 @@ const Login = ({ navigation }) => {
                       </Text>
                     </FormControl.Label>
                     <Input
+                      autoCapitalize="none"
                       type={type.type2}
                       onChangeText={handleChange("c_password")}
                       onBlur={handleBlur("c_password")}

@@ -2,16 +2,12 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector } from "react-redux";
 
-// navigator 
+// navigator
 import MainDrawerNavigator from "./MainDrawerNavigator";
 import ProfileStackNavigator from "./ProfileStackNavigator";
 
 // stack
 import AuthStack from "../stacks/AuthStack";
-import GroupStack from "../stacks/GroupStack";
-import KasStack from "../stacks/KasStack";
-import KehadiranStack from "../stacks/KehadiranStack";
-import MasterDataStack from "../stacks/MasterDataStack";
 
 const Stack = createNativeStackNavigator();
 
@@ -33,23 +29,19 @@ const MainStackNavigator = () => {
       })}
     >
       {validateUser && !tidakPunyaGrup && !grupBlmAccJoin ? (
-        <>
-          <Stack.Screen
-            name="MainDrawerNavigator"
-            component={MainDrawerNavigator}
-          />
-        </>
-      ) : tidakPunyaGrup || grupBlmAccJoin ? (
         <Stack.Screen
-          name="ProfileStackNavigator"
-          component={
-            <ProfileStackNavigator
-              validateUser={validateUser}
-              grupBlmAccJoin={grupBlmAccJoin}
-              tidakPunyaGrup={tidakPunyaGrup}
-            />
-          }
+          name="MainDrawerNavigator"
+          component={MainDrawerNavigator}
         />
+      ) : tidakPunyaGrup || grupBlmAccJoin ? (
+        <Stack.Screen name="ProfileStackNavigator">
+          {(props) => (
+            <ProfileStackNavigator
+              tidakPunyaGrup={tidakPunyaGrup}
+              grupBlmAccJoin={grupBlmAccJoin}
+            />
+          )}
+        </Stack.Screen>
       ) : (
         <Stack.Screen name="AuthStack" component={AuthStack} />
       )}

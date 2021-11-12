@@ -25,11 +25,6 @@ import Alert from "../../reusable/Alert";
 import { useSelector } from "react-redux";
 import Header from "./Header";
 
-const inputValidationSchema = yup.object().shape({
-  email: yup.string().required("Email nya masih kosong tuh, isi dulu yaa"),
-  password: yup.string().required("Password nya diisi dulu yaa"),
-});
-
 const Login = ({ navigation }) => {
   const alert = useSelector((state) => state.alert);
 
@@ -48,7 +43,11 @@ const Login = ({ navigation }) => {
 
       <Header />
 
-      <ScrollView>
+      <ScrollView
+        style={{
+          backgroundColor: "#e8eaed",
+        }}
+      >
         <Formik
           initialValues={{
             email: "",
@@ -85,6 +84,7 @@ const Login = ({ navigation }) => {
                       </Text>
                     </FormControl.Label>
                     <Input
+                      autoCapitalize="none"
                       type="email"
                       keyboardType="email-address"
                       onChangeText={handleChange("email")}
@@ -121,6 +121,7 @@ const Login = ({ navigation }) => {
                       </Text>
                     </FormControl.Label>
                     <Input
+                      autoCapitalize="none"
                       type={type}
                       onChangeText={handleChange("password")}
                       onBlur={handleBlur("password")}
@@ -199,7 +200,6 @@ const Login = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#e8eaed",
   },
   taskWrapper: {
     paddingBottom: 10,

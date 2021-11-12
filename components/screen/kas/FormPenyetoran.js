@@ -11,27 +11,25 @@ import {
   Text,
   ScrollView,
   Input,
-  Center,
-  Spinner,
 } from "native-base";
 import { useFocusEffect } from "@react-navigation/core";
+import { useSelector } from "react-redux";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Header from "../../reusable/Header";
-import KasHelper from "./KasHelper";
 
-const inputValidationSchema = yup.object().shape({
-  user_id: yup.string().required("Nama masih kosong tuh, isi dulu yaa"),
-  nominal: yup.string().required("Nominal nya diisi dulu yaa"),
-  keterangan: yup.string().required("Keterangan nya jangan lupa diisi dong"),
-});
+// component
+import Header from "../../reusable/Header";
+import Alert from "../../reusable/Alert";
+import KasHelper from "./KasHelper";
+import Loading from "../../reusable/Loading";
 
 const FormPenyetoran = ({ navigation, route }) => {
+  const alert = useSelector((state) => state.alert);
   const { dataUsers, setDataUsers, getDataUsers, setorKas, updateKas } =
     KasHelper(navigation);
 
   useFocusEffect(
     useCallback(() => {
-      getDataUsers();
+      getDataUsers(route.params.group_id);
 
       return () => {
         setDataUsers([]);
@@ -42,6 +40,8 @@ const FormPenyetoran = ({ navigation, route }) => {
   return (
     <NativeBaseProvider>
       <Header title="Penyetoran Kas" navigation={navigation} />
+      {alert.show && <Alert />}
+
       {dataUsers.length > 0 ? (
         <ScrollView style={styles.container} keyboardDismissMode="on-drag">
           <Formik
@@ -106,11 +106,11 @@ const FormPenyetoran = ({ navigation, route }) => {
                       }}
                       mt={1}
                     >
-                      {dataUsers.map((user, i) => (
+                      {dataUsers.map((item, i) => (
                         <Select.Item
                           key={i}
-                          label={user.name}
-                          value={user.id.toString()}
+                          label={item.user.name}
+                          value={item.user.id.toString()}
                         />
                       ))}
                     </Select>
@@ -169,10 +169,7 @@ const FormPenyetoran = ({ navigation, route }) => {
           </Formik>
         </ScrollView>
       ) : (
-        <Center flex={1}>
-          <Spinner size="lg" color="warning.500" />
-          <Text>Tunggu yaa ...</Text>
-        </Center>
+        <Loading />
       )}
     </NativeBaseProvider>
   );

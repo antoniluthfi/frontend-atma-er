@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/core";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Center, HStack, NativeBaseProvider, Spinner } from "native-base";
+import { HStack, NativeBaseProvider } from "native-base";
 import NumberFormat from "react-number-format";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -10,6 +10,7 @@ import KasHelper from "./KasHelper";
 
 import "moment/locale/id";
 import moment from "moment";
+import Loading from "../../reusable/Loading";
 
 const HostoryKasPerAnggota = ({ navigation, route }) => {
   const { event_id, user, total, bulan_ini } = route.params;
@@ -78,10 +79,7 @@ const HostoryKasPerAnggota = ({ navigation, route }) => {
 
           <View style={loadDetailPerUser && styles.listSection}>
             {loadDetailPerUser ? (
-              <Center flex={1}>
-                <Spinner size="lg" color="warning.500" />
-                <Text style={{ marginTop: 15 }}>Tunggu yaa ...</Text>
-              </Center>
+              <Loading />
             ) : detailPerUser.length > 0 ? (
               <>
                 <Text
@@ -102,7 +100,7 @@ const HostoryKasPerAnggota = ({ navigation, route }) => {
                       navigation.navigate("DetailHistory", {
                         id: detail.id,
                         user_id: detail.user_id,
-                        name: detail.users.name,
+                        name: detail.user.name,
                         event_kas_id: detail.event_kas_id,
                         event_name: detail.event_kas.nama,
                         jenis: detail.jenis,
@@ -133,7 +131,7 @@ const HostoryKasPerAnggota = ({ navigation, route }) => {
                             "dddd, Do MMMM YYYY"
                           )}
                         </Text>
-                        <Text>Penerima : {detail.users.name}</Text>
+                        <Text>Penerima : {detail.user.name}</Text>
                       </View>
                     </HStack>
                   </TouchableOpacity>
