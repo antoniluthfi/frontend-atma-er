@@ -1,21 +1,18 @@
 import React from "react";
+import { HStack, Text, ScrollView, View } from "native-base";
+import { useSelector, useDispatch } from "react-redux";
 import {
-  Avatar,
-  Box,
-  HStack,
-  Text,
-  ScrollView,
-  VStack,
-  View,
-} from "native-base";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { useSelector } from "react-redux";
-import { useFonts, Raleway_400Regular } from "@expo-google-fonts/raleway";
+  useFonts,
+  Raleway_400Regular,
+  Raleway_500Medium,
+} from "@expo-google-fonts/raleway";
+import { TouchableOpacity } from "react-native";
 
-const GroupList = () => {
+const GroupList = ({ refresh = null }) => {
   const user = useSelector((state) => state.user.data);
   const [fontsLoaded, error] = useFonts({
     Raleway_400Regular,
+    Raleway_500Medium,
   });
 
   return (
@@ -25,33 +22,35 @@ const GroupList = () => {
         style={{ marginLeft: 10, marginTop: 15, paddingBottom: 5 }}
       >
         <HStack space={user.user_group.length}>
-          {user.user_group.map((item, i) => (
-            <Box
-              key={i}
-              _text={{
-                fontSize: "md",
-                fontWeight: "medium",
-                color: "warmGray.50",
-                letterSpacing: "lg",
-              }}
+          {user.user_group.map((item) => (
+            <TouchableOpacity
+              key={item.group_id}
               style={{
-                width: 60,
-                marginHorizontal: 10,
+                width: "auto",
+                marginLeft: 5,
+                padding: 5,
+                borderRadius: 5,
+                backgroundColor: item.group_id === 1 ? "tomato" : "white",
+              }}
+              onPress={() => {
+                refresh();
               }}
             >
-              <VStack space={2} alignItems="center">
-                <Avatar color="white" bg={"warning.500"} size="lg">
-                  <Ionicons name="people" size={40} color="white" />
-                </Avatar>
-                <Text
-                  style={{ fontSize: 12, fontFamily: "Raleway_400Regular" }}
-                >
-                  {item.group.nama.length > 6
-                    ? `${item.group.nama.substr(0, 6)}...`
-                    : item.group.nama}
-                </Text>
-              </VStack>
-            </Box>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily:
+                    item.group_id === 1
+                      ? "Raleway_500Medium"
+                      : "Raleway_400Regular",
+                  color: item.group_id === 1 ? "white" : "black",
+                }}
+              >
+                {item.group.nama.length > 15
+                  ? `${item.group.nama.substr(0, 15)}...`
+                  : item.group.nama}
+              </Text>
+            </TouchableOpacity>
           ))}
         </HStack>
       </ScrollView>

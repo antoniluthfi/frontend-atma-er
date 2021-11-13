@@ -69,7 +69,7 @@ const GroupHelper = (navigation) => {
   };
 
   const postDataGroup = async (values) => {
-    if (formValidasi()) {
+    if (formValidasi(values)) {
       dispatch({
         type: "SET_LOADING",
         payload: true,
@@ -77,7 +77,7 @@ const GroupHelper = (navigation) => {
 
       await axios({
         method: "POST",
-        url: `${TEST_URL}/group/${user.data.id}`,
+        url: `${TEST_URL}/group`,
         data: values,
         headers: {
           Accept: "application/json",
@@ -90,7 +90,7 @@ const GroupHelper = (navigation) => {
             payload: {
               type: "success",
               show: true,
-              message: "Login berhasil",
+              message: response.data.message
             },
           });
         })
@@ -152,6 +152,7 @@ const GroupHelper = (navigation) => {
     setKeyword,
     getDataGroup,
     updateFotoProfil,
+    postDataGroup,
     filterData,
   };
 };

@@ -18,19 +18,21 @@ import RNHTMLtoPDF from "react-native-html-to-pdf";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import moment from "moment";
-import KasHelper from "./KasHelper";
-import Header from "../../reusable/Header";
 import NumberFormat from "react-number-format";
-import FloatingButton from "../../reusable/FloatingButton";
 import { Portal, Provider } from "react-native-paper";
-import Loading from "../../reusable/Loading";
-import GroupList from "../../reusable/GroupList";
 import LottieView from "lottie-react-native";
 import {
   useFonts,
   Raleway_400Regular,
   Raleway_500Medium,
 } from "@expo-google-fonts/raleway";
+
+// component
+import KasHelper from "./KasHelper";
+import Header from "../../reusable/Header";
+import FloatingButton from "../../reusable/FloatingButton";
+import Loading from "../../reusable/Loading";
+import GroupList from "../../reusable/GroupList";
 
 const ListKas = ({ navigation }) => {
   const {
@@ -173,7 +175,20 @@ const ListKas = ({ navigation }) => {
       >
         <Provider>
           <Portal>
-            <GroupList />
+            <GroupList
+              refresh={() => {
+                setLoadDataEvent(true);
+                setDataEvent([]);
+                setDetailKas([]);
+                setRincianEvent({
+                  pemasukan: 0,
+                  pengeluaran: 0,
+                  total: 0,
+                });
+
+                fetchData("loading");
+              }}
+            />
 
             <View style={styles.wrapper}>
               <View style={[styles.card, styles.items]}>

@@ -32,14 +32,14 @@ const KasHelper = (navigation) => {
     total: 0,
   });
 
-  const getListKas = async (state = "loading") => {
+  const getListKas = async (group_id, state = "loading") => {
     if (state === "refresh") {
       setRefreshDataEvent(true);
     }
 
     await axios({
       method: "GET",
-      url: `${TEST_URL}/event-kas/group/1`,
+      url: `${TEST_URL}/event-kas/group/${group_id}`,
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${user.token}`,

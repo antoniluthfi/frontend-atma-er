@@ -31,7 +31,8 @@ const FormGroup = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const alert = useSelector((state) => state.alert);
   const { judul, method, payload } = route.params;
-  const { updateFotoProfil } = DetailGroupHelper(navigation);
+  const { user, updateFotoProfil, postDataGroup } =
+    DetailGroupHelper(navigation);
 
   const [fontsLoaded, error] = useFonts({
     Raleway_400Regular,
@@ -57,11 +58,13 @@ const FormGroup = ({ navigation, route }) => {
         status: method === "put" ? payload.status : "",
       }}
       onSubmit={(values) => {
-        // if (method === "put") {
-        //   updateDetailGroup(values, payload.id);
-        // } else if (method === "post") {
-        //   postDetailGroup(values);
-        // }
+        values.user_id = user.data.id;
+
+        if (method === "put") {
+          // updateDetailGroup(values, payload.id);
+        } else if (method === "post") {
+          postDataGroup(values);
+        }
       }}
     >
       {({
@@ -131,12 +134,15 @@ const FormGroup = ({ navigation, route }) => {
                   marginLeft: 15,
                 }}
                 onPress={() => {
-                  launchImageLibrary({
-                    mediaType: "photo",
-                    quality: 1,  
-                  }, (response) => {
-                    console.log(response);
-                  })
+                  launchImageLibrary(
+                    {
+                      mediaType: "photo",
+                      quality: 1,
+                    },
+                    (response) => {
+                      console.log(response);
+                    }
+                  );
                 }}
               >
                 <Circle size={60} bg="primary.300">

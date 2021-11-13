@@ -4,13 +4,15 @@ import { registerRootComponent } from "expo";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { combineReducers, createStore } from "redux";
 import { Provider } from "react-redux";
+import { LogBox } from "react-native";
+import App from "./App";
+
+// reducer
 import { userReducer } from "./reducer/userReducer";
 import { loadingReducer } from "./reducer/loadingReducer";
 import { alertReducer } from "./reducer/alertReducer";
 import { selectReducer } from "./reducer/selectReducer";
 import { NavigationContainer } from "@react-navigation/native";
-import { LogBox } from "react-native";
-import App from "./App";
 
 LogBox.ignoreAllLogs();
 
