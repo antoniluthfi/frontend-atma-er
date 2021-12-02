@@ -6048,6 +6048,11 @@ react-native-html-to-pdf@^0.10.0:
   resolved "https://registry.yarnpkg.com/react-native-html-to-pdf/-/react-native-html-to-pdf-0.10.0.tgz#9d272a6d48378dfc7ae66c2cf99baf9cc5edf50a"
   integrity sha512-d7QWTXOAK0u/LX+qzIDFnNhHi/u0wYoo72p11xwq/REIt1iJo9cFoAyGTFL3PIrmAlXO7xYqG+gW5guGA/Y2/w==
 
+react-native-image-crop-picker@^0.37.2:
+  version "0.37.2"
+  resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.37.2.tgz#3aadc4ae4812c9975c49a294d9a17ffae057dbb4"
+  integrity sha512-YwZXW21Km8+3tSt0smTaLVgY4398c0/OJcpcH6EP0JDOt1BNNxl/R8m6qdvnwdXdIoa0CCnMVW6TL9IN5ia9OA==
+
 react-native-image-picker@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-4.1.1.tgz#f5b20c77b060e4a8cad4e76ae042e1e45b4743da"

@@ -173,7 +173,9 @@ const FormGroup = ({ navigation, route }) => {
                     paddingVertical: 10,
                   }}
                 >
-                  <ProfilePhoto />
+                  <ProfilePhoto
+                    foto_profil={method === "put" ? payload.foto_profil : null}
+                  />
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
                     <FormControl.Label>

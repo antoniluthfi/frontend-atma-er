@@ -8,7 +8,7 @@ import {
 } from "@expo-google-fonts/raleway";
 import { TouchableOpacity } from "react-native";
 
-const GroupList = ({ refresh = null }) => {
+const GroupList = ({ groupIndex, setGroupIndex, refresh = null }) => {
   const user = useSelector((state) => state.user.data);
   const [fontsLoaded, error] = useFonts({
     Raleway_400Regular,
@@ -30,20 +30,22 @@ const GroupList = ({ refresh = null }) => {
                 marginLeft: 5,
                 padding: 5,
                 borderRadius: 5,
-                backgroundColor: item.group_id === 1 ? "tomato" : "white",
+                backgroundColor:
+                  item.group_id === groupIndex ? "tomato" : "white",
               }}
               onPress={() => {
-                refresh();
+                setGroupIndex(item.group_id);
+                refresh(item.group_id);
               }}
             >
               <Text
                 style={{
                   fontSize: 12,
                   fontFamily:
-                    item.group_id === 1
+                    item.group_id === groupIndex
                       ? "Raleway_500Medium"
                       : "Raleway_400Regular",
-                  color: item.group_id === 1 ? "white" : "black",
+                  color: item.group_id === groupIndex ? "white" : "black",
                 }}
               >
                 {item.group.nama.length > 15

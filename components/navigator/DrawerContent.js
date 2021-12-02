@@ -2,10 +2,10 @@ import React from "react";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { StyleSheet } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { Heading, HStack, Text, View } from "native-base";
+import { Heading, HStack, Text, View, Image } from "native-base";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { TEST_URL } from "@env";
+import { TEST_URL, PUBLIC_URL } from "@env";
 
 const DrawerContent = ({ ...props }) => {
   const user = useSelector((state) => state.user);
@@ -66,7 +66,19 @@ const DrawerContent = ({ ...props }) => {
       <Heading style={{ backgroundColor: "tomato" }}>
         <HStack space={2}>
           <View>
-            <Ionicons name="person-circle" size={70} color="white" />
+            {user.data.foto_profil ? (
+              <Image
+                size={70}
+                resizeMode={"contain"}
+                borderRadius={100}
+                source={{
+                  uri: `${PUBLIC_URL}/${user.data.foto_profil}`,
+                }}
+                alt="Foto Profil"
+              />
+            ) : (
+              <Ionicons name="person-circle" size={70} color="white" />
+            )}
           </View>
           <View justifyContent="center">
             <Text style={{ fontWeight: "bold", color: "white" }}>

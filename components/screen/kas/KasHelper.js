@@ -356,6 +356,7 @@ const KasHelper = (navigation) => {
   };
 
   return {
+    user,
     dataEvent,
     setDataEvent,
     loadDataEvent,

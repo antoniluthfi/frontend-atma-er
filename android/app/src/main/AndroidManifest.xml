@@ -8,6 +8,8 @@
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+  <!-- React native crop picker -->
+  <uses-permission android:name="android.permission.CAMERA"/>
   <!-- END OPTIONAL PERMISSIONS -->
   <application
     android:name=".MainApplication"

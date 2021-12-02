@@ -1,20 +1,17 @@
+import { StatusBar } from "native-base";
 import React from "react";
-import {
-  Modal,
-  StyleSheet,
-  View,
-  Dimensions,
-} from "react-native";
+import { Modal, StyleSheet, View, Dimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
 const height = Dimensions.get("window").height;
 
-const CustomSelect = ({children}) => {
+const CustomSelect = ({ children }) => {
   const dispatch = useDispatch();
   const show = useSelector((state) => state.select.show);
 
   return (
-    <View style={styles.centeredView}>
+    <>
+      <StatusBar animated backgroundColor={show ? "rgb(74, 29, 22)" : "tomato"} />
       <Modal
         animationType="slide"
         transparent={true}
@@ -28,17 +25,20 @@ const CustomSelect = ({children}) => {
           });
         }}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            {children}
+        <View style={styles.container}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>{children}</View>
           </View>
         </View>
       </Modal>
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+  },
   modalView: {
     marginTop: height - 125,
     backgroundColor: "white",

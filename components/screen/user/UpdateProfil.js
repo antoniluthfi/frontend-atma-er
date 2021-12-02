@@ -20,6 +20,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useFonts, Raleway_400Regular } from "@expo-google-fonts/raleway";
 import { useSelector } from "react-redux";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import ImagePicker from "react-native-image-crop-picker";
 
 // component
 import Alert from "../../reusable/Alert";
@@ -29,9 +30,11 @@ import ProfilePhoto from "../../reusable/ProfilePhoto";
 import CustomSelect from "../../reusable/CustomSelect";
 
 const UpdateProfil = ({ navigation, route }) => {
+  const user = useSelector((state) => state.user.data);
   const alert = useSelector((state) => state.alert);
   const { judul, payload } = route.params;
-  const { updateUser } = UserHelper(navigation);
+  const { updateUser, updateFotoProfil, deleteFotoProfil } =
+    UserHelper(navigation);
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [tglLahir, setTglLahir] = useState(
@@ -76,23 +79,26 @@ const UpdateProfil = ({ navigation, route }) => {
 
           <CustomSelect>
             <HStack>
-              <TouchableOpacity>
-                <Circle size={60} bg="danger.500">
-                  <Ionicons name="trash-outline" size={40} />
-                </Circle>
-                <Center>
-                  <Text
-                    style={{
-                      fontFamily: "Raleway_400Regular",
-                    }}
-                  >
-                    Hapus
-                  </Text>
-                </Center>
-              </TouchableOpacity>
+              {user.foto_profil !== "" && (
+                <TouchableOpacity onPress={() => deleteFotoProfil(payload.id)}>
+                  <Circle size={60} bg="danger.500">
+                    <Ionicons name="trash-outline" size={40} />
+                  </Circle>
+                  <Center>
+                    <Text
+                      style={{
+                        fontFamily: "Raleway_400Regular",
+                      }}
+                    >
+                      Hapus
+                    </Text>
+                  </Center>
+                </TouchableOpacity>
+              )}
+
               <TouchableOpacity
                 style={{
-                  marginLeft: 15,
+                  marginLeft: user.foto_profil === "" ? 0 : 15,
                 }}
                 onPress={() =>
                   launchCamera(
@@ -103,9 +109,15 @@ const UpdateProfil = ({ navigation, route }) => {
                       saveToPhotos: true,
                     },
                     (response) => {
-                      // if (response.assets && response.assets.length > 0) {
-                      //   updateFotoProfil(response.assets[0], payload.id);
-                      // }
+                      if (response.assets && response.assets.length > 0) {
+                        ImagePicker.openCropper({
+                          path: response.assets[0].uri,
+                          width: 300,
+                          height: 300,
+                        }).then((image) => {
+                          updateFotoProfil(image, payload.id);
+                        });
+                      }
                     }
                   )
                 }
@@ -123,17 +135,29 @@ const UpdateProfil = ({ navigation, route }) => {
                   </Text>
                 </Center>
               </TouchableOpacity>
+
               <TouchableOpacity
                 style={{
                   marginLeft: 15,
                 }}
                 onPress={() => {
-                  launchImageLibrary({
-                    mediaType: "photo",
-                    quality: 1,  
-                  }, (response) => {
-                    console.log(response);
-                  })
+                  launchImageLibrary(
+                    {
+                      mediaType: "photo",
+                      quality: 1,
+                    },
+                    (response) => {
+                      if (response.assets && response.assets.length > 0) {
+                        ImagePicker.openCropper({
+                          path: response.assets[0].uri,
+                          width: 300,
+                          height: 300,
+                        }).then((image) => {
+                          updateFotoProfil(image, payload.id);
+                        });
+                      }
+                    }
+                  );
                 }}
               >
                 <Circle size={60} bg="primary.300">
@@ -159,8 +183,8 @@ const UpdateProfil = ({ navigation, route }) => {
                   style={{
                     paddingVertical: 10,
                   }}
-                >                  
-                  <ProfilePhoto />
+                >
+                  <ProfilePhoto foto_profil={user.foto_profil} />
 
                   <FormControl isRequired style={{ marginVertical: 10 }}>
                     <FormControl.Label>

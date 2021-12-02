@@ -1,17 +1,31 @@
 import React from "react";
 import { TouchableOpacity } from "react-native";
-import { Center, Circle, View } from "native-base";
+import { Center, Circle, Image, View } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { PUBLIC_URL } from "@env";
 
-const ProfilePhoto = () => {
+const ProfilePhoto = ({ foto_profil = null }) => {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.data);
 
   return (
     <View>
       <Center flex={1} px="3">
         <Circle size={175} bg="light.100">
-          <Ionicons name="people" size={150} />
+          {foto_profil ? (
+            <Image
+              size={175}
+              resizeMode={"contain"}
+              borderRadius={100}
+              source={{
+                uri: `${PUBLIC_URL}/${foto_profil}`,
+              }}
+              alt="Foto Profil"
+            />
+          ) : (
+            <Ionicons name="people" size={150} color="black" />
+          )}
         </Circle>
       </Center>
 
@@ -36,7 +50,7 @@ const ProfilePhoto = () => {
           }}
         >
           <Center>
-            <Ionicons name="camera" size={40} color="black" />
+            <Ionicons name="camera-outline" size={40} color="black" />
           </Center>
         </TouchableOpacity>
       </Center>

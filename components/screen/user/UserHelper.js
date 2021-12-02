@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { TEST_URL } from "@env";
+import { Platform } from "react-native";
 
 const UserHelper = (navigation) => {
   const dispatch = useDispatch();
@@ -83,8 +84,102 @@ const UserHelper = (navigation) => {
     }
   };
 
+  const updateFotoProfil = async (foto, id) => {
+    dispatch({
+      type: "SET_SHOW_SELECT",
+      payload: {
+        show: false,
+      },
+    });
+
+    dispatch({
+      type: "SET_LOADING",
+      payload: true,
+    });
+
+    let formData = new FormData();
+    formData.append("file", {
+      uri:
+        Platform.OS === "android"
+          ? foto.path
+          : foto.path.replace("file://", ""),
+      name: `${Date.now()}.jpg`,
+      type: foto.mime,
+    });
+
+    await axios({
+      method: "post",
+      url: `${TEST_URL}/user/photo/${id}`,
+      data: formData,
+      headers: {
+        Accept: "application/json",
+        ContentType: "multipart/form-data",
+        Authorization: `Bearer ${user.token}`,
+      },
+    })
+      .then((response) => {
+        dispatch({
+          type: "LOGIN",
+          payload: {
+            user: response.data.result,
+            token: user.token,
+          },
+        });
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+
+    dispatch({
+      type: "SET_LOADING",
+      payload: false,
+    });
+  };
+
+  const deleteFotoProfil = async (id) => {
+    dispatch({
+      type: "SET_SHOW_SELECT",
+      payload: {
+        show: false,
+      },
+    });
+
+    dispatch({
+      type: "SET_LOADING",
+      payload: true,
+    });
+
+    await axios({
+      method: "delete",
+      url: `${TEST_URL}/user/photo/${id}`,
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+    })
+      .then((response) => {
+        dispatch({
+          type: "LOGIN",
+          payload: {
+            user: response.data.result,
+            token: user.token,
+          },
+        });
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+
+    dispatch({
+      type: "SET_LOADING",
+      payload: false,
+    });
+  };
+
   return {
     updateUser,
+    updateFotoProfil,
+    deleteFotoProfil
   };
 };
 

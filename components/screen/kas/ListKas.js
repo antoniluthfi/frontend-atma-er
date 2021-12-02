@@ -36,6 +36,7 @@ import GroupList from "../../reusable/GroupList";
 
 const ListKas = ({ navigation }) => {
   const {
+    user,
     dataEvent,
     setDataEvent,
     loadDataEvent,
@@ -52,6 +53,9 @@ const ListKas = ({ navigation }) => {
     getListKas,
     filterKas,
   } = KasHelper(navigation);
+  const [groupIndex, setGroupIndex] = React.useState(
+    user.data.user_group[0].group_id
+  );
 
   const [fontsLoaded, error] = useFonts({
     Raleway_400Regular,
@@ -123,13 +127,14 @@ const ListKas = ({ navigation }) => {
     );
   };
 
-  const fetchData = async (state) => {
-    await getListKas(state);
+  const fetchData = async (group_id, state) => {
+    await getListKas(group_id, state);
     await getDetailKas(0, state);
   };
 
   const onRefresh = useCallback(() => {
-    fetchData("refresh");
+    console.log(groupIndex);
+    fetchData(groupIndex, "refresh");
 
     return () => {
       setDataEvent([]);
@@ -145,7 +150,8 @@ const ListKas = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      fetchData("loading");
+      setGroupIndex(user.data.user_group[0].group_id);
+      fetchData(user.data.user_group[0].group_id, "loading");
 
       return () => {
         setDataEvent([]);
@@ -176,7 +182,9 @@ const ListKas = ({ navigation }) => {
         <Provider>
           <Portal>
             <GroupList
-              refresh={() => {
+              groupIndex={groupIndex}
+              setGroupIndex={setGroupIndex}
+              refresh={(group_id) => {
                 setLoadDataEvent(true);
                 setDataEvent([]);
                 setDetailKas([]);
@@ -186,7 +194,7 @@ const ListKas = ({ navigation }) => {
                   total: 0,
                 });
 
-                fetchData("loading");
+                fetchData(group_id, "loading");
               }}
             />
 
