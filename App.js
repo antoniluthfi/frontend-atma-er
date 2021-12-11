@@ -13,7 +13,7 @@ const windowHeight = Dimensions.get("window").height;
 const App = () => {
   const loading = useSelector((state) => state.loading);
   const alert = useSelector((state) => state.alert);
-
+  
   return (
     <NativeBaseProvider>
       <StatusBar

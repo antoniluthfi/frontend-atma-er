@@ -32,7 +32,7 @@ const Header = () => {
               color: "white",
             }}
           >
-            Usman Sidomulyo
+            Atma E-Report
           </Text>
         </Heading>
       </Box>

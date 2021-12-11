@@ -6,6 +6,7 @@ import { combineReducers, createStore } from "redux";
 import { Provider } from "react-redux";
 import { LogBox } from "react-native";
 import codePush from "react-native-code-push";
+import SplashScreen from 'react-native-splash-screen';
 import App from "./App";
 
 // reducer
@@ -35,21 +36,68 @@ const theme = {
   },
 };
 
-const Index = () => {
-  return (
-    <Provider store={store}>
-      <PaperProvider theme={theme}>
-        <NavigationContainer>
-          <App />
-        </NavigationContainer>
-      </PaperProvider>
-    </Provider>
-  );
-};
+class Index extends React.Component {
+  codePushStatusDidChange(status) {
+    switch (status) {
+      case codePush.SyncStatus.UP_TO_DATE:
+        console.log("codepush is up to date");
+        break;
+      case codePush.SyncStatus.AWAITING_USER_ACTION:
+        console.log("awaiting user action");
+        break;
+      case codePush.SyncStatus.SYNC_IN_PROGRESS:
+        console.log("synch in progreess");
+        SplashScreen.hide();
+        break;
+      case codePush.SyncStatus.CHECKING_FOR_UPDATE:
+        console.log("Checking for updates.");
+        break;
+      case codePush.SyncStatus.DOWNLOADING_PACKAGE:
+        console.log("Downloading package.");
+        break;
+      case codePush.SyncStatus.INSTALLING_UPDATE:
+        console.log("Installing update.");
+        break;
+      case codePush.SyncStatus.UP_TO_DATE:
+        console.log("Up-to-date.");
+        break;
+      case codePush.SyncStatus.UPDATE_INSTALLED:
+        console.log("Update installed.");
+        break;
+    }
+  }
+
+  codePushDownloadDidProgress({ receivedBytes, totalBytes }) {
+    if (receivedBytes / totalBytes === 1.0) {
+      SplashScreen.hide();
+    }
+  }
+
+  componentDidMount() {
+    codePush.sync(
+      { updateDialog: true, installMode: codePush.InstallMode.IMMEDIATE },
+      this.codePushStatusDidChange(),
+      this.codePushDownloadDidProgress
+    );
+  }
+
+  render() {
+    return (
+      <Provider store={store}>
+        <PaperProvider theme={theme}>
+          <NavigationContainer>
+            <App />
+          </NavigationContainer>
+        </PaperProvider>
+      </Provider>
+    );
+  }
+}
 
 let codePushOptions = {
-  checkFrequency: codePush.CheckFrequency.ON_APP_START
-}
+  checkFrequency: codePush.CheckFrequency.ON_APP_START,
+  installMode: codePush.InstallMode.IMMEDIATE,
+};
 
 let indexScreen = codePush(codePushOptions)(Index);
 
