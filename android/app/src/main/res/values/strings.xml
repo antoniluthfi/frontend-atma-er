@@ -1,3 +1,24 @@
 <resources>
-    <string name="app_name">Usman Sidomulyo</string>
+    <string name="app_name">Atma E-Report</string>    
+    <string name="simple" translatable="false">Simple</string>
+    <string
+        name="effective"
+        translatable="false"
+    >Effective &amp; Affordable</string>
+    <string
+        name="better_service"
+        translatable="false"
+    >Better Service Quality</string>
+    <string
+        name="more_secure"
+        translatable="false"
+    >More Secure &amp; Reliable</string>
+
+    <string name="appCenterCrashes_whenToSendCrashes" moduleConfig="true" translatable="false">DO_NOT_ASK_JAVASCRIPT</string>
+    <string name="appCenterAnalytics_whenToEnableAnalytics" moduleConfig="true" translatable="false">ALWAYS_SEND</string>
+
+    <!-- production -->
+    <!-- <string moduleConfig="true" name="CodePushDeploymentKey">V88YKW1qBoUZGbQPPzwe1I24okGDgMo5cl7f_</string> -->
+    <!-- staging -->
+    <string moduleConfig="true" name="CodePushDeploymentKey">bGhQZDKrI4Thq1TeIZmib8Ri58TGjklbOesyi</string>
 </resources>

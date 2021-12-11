@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "usman-sidomulyo",
-    "slug": "usman-sidomulyo",
+    "name": "Atma E-Report",
+    "slug": "atma-e-report",
     "version": "1.0.0",
     "android": {
       "softwareKeyboardLayoutMode": "pan"
@@ -10,5 +10,5 @@
       "**/*"
     ]
   },
-  "name": "usman-sidomulyo"
+  "name": "Atma E-Report"
 }

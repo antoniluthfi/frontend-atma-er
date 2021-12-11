@@ -1,11 +1,15 @@
 {
   "main": "index.js",
+  "name": "AtmaER",
+  "version": "1.0.0",
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "web": "expo start --web",
     "start": "react-native start",
-    "codepush-create": "appcenter apps create -d AtmaER -o Android -p React-Native"
+    "codepush-create": "appcenter apps create -d AtmaER -o Android -p React-Native",
+    "codepush-deployment-list": "appcenter codepush deployment list -a antoni_luthfi3/AtmaER -k",
+    "codepush-staging": "appcenter codepush release-react -a antoni_luthfi3/AtmaER -d Staging"
   },
   "dependencies": {
     "@expo-google-fonts/raleway": "^0.2.0",
@@ -47,6 +51,7 @@
     "react-native-tab-view": "^3.1.1",
     "react-native-unimodules": "~0.14.5",
     "react-native-vector-icons": "^8.1.0",
+    "react-native-version-check": "^3.4.2",
     "react-native-view-shot": "^3.1.2",
     "react-native-web": "~0.13.12",
     "react-number-format": "^4.7.3",

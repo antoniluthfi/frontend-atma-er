@@ -1,4 +1,4 @@
-package com.usmansidomulyo.generated;
+package dev.atmaer.generated;
 
 import java.util.Arrays;
 import java.util.List;
