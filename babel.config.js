@@ -6,6 +6,20 @@ module.exports = function (api) {
       ["react-native-paper/babel"],
       ["react-native-reanimated/plugin"],
       [
+        "module-resolver",
+        {
+          root: ["."],
+          extensions: [".ts", ".tsx", ".jsx", ".js", ".json", ".svg", ".jpg"],
+          alias: {
+            "@assets": "./assets",
+            "@components": "./src/components",
+            "@config": "./src/config",
+            "@routes": "./src/routes",
+            "@reducer": "./src/reducer",
+          },
+        },
+      ],
+      [
         "module:react-native-dotenv",
         {
           moduleName: "@env",

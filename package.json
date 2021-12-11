@@ -4,7 +4,8 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "web": "expo start --web",
-    "start": "react-native start"
+    "start": "react-native start",
+    "codepush-create": "appcenter apps create -d AtmaER -o Android -p React-Native"
   },
   "dependencies": {
     "@expo-google-fonts/raleway": "^0.2.0",
@@ -14,6 +15,7 @@
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.1.0",
     "axios": "^0.21.1",
+    "babel-plugin-module-resolver": "^4.1.0",
     "expo": "~42.0.1",
     "expo-splash-screen": "~0.11.2",
     "expo-status-bar": "~1.0.4",
@@ -26,6 +28,7 @@
     "react-dom": "16.13.1",
     "react-native": "~0.63.4",
     "react-native-chart-kit": "^6.11.0",
+    "react-native-code-push": "^7.0.4",
     "react-native-dotenv": "^3.2.0",
     "react-native-gesture-handler": "~1.10.2",
     "react-native-html-to-pdf": "^0.10.0",

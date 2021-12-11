@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import LottieView from "lottie-react-native";
 
 // navigator
-import MainStackNavigator from "./components/navigator/MainStackNavigator";
+import MainStackNavigator from "@components/navigator/MainStackNavigator";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;

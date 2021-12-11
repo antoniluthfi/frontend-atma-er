@@ -8,10 +8,10 @@ import { LogBox } from "react-native";
 import App from "./App";
 
 // reducer
-import { userReducer } from "./reducer/userReducer";
-import { loadingReducer } from "./reducer/loadingReducer";
-import { alertReducer } from "./reducer/alertReducer";
-import { selectReducer } from "./reducer/selectReducer";
+import { userReducer } from "@reducer/userReducer";
+import { loadingReducer } from "@reducer/loadingReducer";
+import { alertReducer } from "@reducer/alertReducer";
+import { selectReducer } from "@reducer/selectReducer";
 import { NavigationContainer } from "@react-navigation/native";
 
 LogBox.ignoreAllLogs();
