@@ -55,6 +55,7 @@ const AuthHelper = (navigation) => {
         .catch((error) => {
           let message;
           const statusCode = error.response.status;
+          console.log(statusCode);
           if (statusCode >= 400 && statusCode < 500) {
             message = "Email tidak dapat ter-otorisasi, silahkan login lagi";
           } else if (statusCode >= 500) {

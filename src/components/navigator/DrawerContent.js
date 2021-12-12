@@ -6,10 +6,22 @@ import { Heading, HStack, Text, View, Image } from "native-base";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { TEST_URL, PUBLIC_URL } from "@config";
+import {
+  useFonts,
+  Raleway_400Regular,
+  Raleway_500Medium,
+} from "@expo-google-fonts/raleway";
+import codePush from "react-native-code-push";
 
 const DrawerContent = ({ ...props }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const [version, setVersion] = React.useState(0.1);
+
+  const [fontsLoaded, error] = useFonts({
+    Raleway_400Regular,
+    Raleway_500Medium,
+  });
 
   const logout = async () => {
     dispatch({
@@ -61,9 +73,26 @@ const DrawerContent = ({ ...props }) => {
     });
   };
 
+  React.useEffect(() => {
+    codePush.getUpdateMetadata().then((metadata) =>{
+      setVersion(metadata.appVersion);
+    });
+  }, []);
+
+  console.log(version);
   return (
-    <DrawerContentScrollView {...props}>
-      <Heading style={{ backgroundColor: "tomato" }}>
+    <DrawerContentScrollView
+      {...props}
+      contentContainerStyle={styles.drawerContent}
+    >
+      <Heading
+        style={{
+          backgroundColor: "tomato",
+          height: 80,
+          paddingTop: 5,
+          paddingLeft: 5,
+        }}
+      >
         <HStack space={2}>
           <View>
             {user.data.foto_profil ? (
@@ -81,10 +110,16 @@ const DrawerContent = ({ ...props }) => {
             )}
           </View>
           <View justifyContent="center">
-            <Text style={{ fontWeight: "bold", color: "white" }}>
+            <Text style={{ color: "white", fontFamily: "Raleway_500Medium" }}>
               {user.data.name}
             </Text>
-            <Text style={{ fontSize: 13, color: "white" }}>
+            <Text
+              style={{
+                fontSize: 13,
+                color: "white",
+                fontFamily: "Raleway_400Regular",
+              }}
+            >
               {user.data.email}
             </Text>
           </View>
@@ -98,8 +133,10 @@ const DrawerContent = ({ ...props }) => {
         onPress={() => {
           props.navigation.navigate("Home");
         }}
+        labelStyle={{
+          fontFamily: "Raleway_400Regular",
+        }}
       />
-
       <DrawerItem
         label="Profilku"
         icon={({ color, size }) => (
@@ -113,8 +150,10 @@ const DrawerContent = ({ ...props }) => {
             },
           });
         }}
+        labelStyle={{
+          fontFamily: "Raleway_400Regular",
+        }}
       />
-
       <DrawerItem
         label="Kehadiran"
         icon={({ color, size }) => (
@@ -125,8 +164,10 @@ const DrawerContent = ({ ...props }) => {
             screen: "Kehadiran",
           });
         }}
+        labelStyle={{
+          fontFamily: "Raleway_400Regular",
+        }}
       />
-
       <DrawerItem
         label="Kas"
         icon={({ color, size }) => (
@@ -135,8 +176,10 @@ const DrawerContent = ({ ...props }) => {
         onPress={() => {
           props.navigation.navigate("KasStack", { screen: "ListKas" });
         }}
+        labelStyle={{
+          fontFamily: "Raleway_400Regular",
+        }}
       />
-
       <DrawerItem
         label="Grup"
         icon={({ color, size }) => (
@@ -145,8 +188,10 @@ const DrawerContent = ({ ...props }) => {
         onPress={() => {
           props.navigation.navigate("GroupStack", { screen: "Group" });
         }}
+        labelStyle={{
+          fontFamily: "Raleway_400Regular",
+        }}
       />
-
       <DrawerItem
         label="Master Data"
         icon={({ color, size }) => (
@@ -157,15 +202,41 @@ const DrawerContent = ({ ...props }) => {
             screen: "MasterData",
           });
         }}
+        labelStyle={{
+          fontFamily: "Raleway_400Regular",
+        }}
       />
-
       <DrawerItem
         label="Logout"
         icon={({ color, size }) => (
           <Ionicons name="log-out" size={size} color={color} />
         )}
         onPress={logout}
+        labelStyle={{
+          fontFamily: "Raleway_400Regular",
+        }}
       />
+
+      <View style={styles.footer}>
+        <Text
+          style={{
+            fontFamily: "Raleway_500Medium",
+            fontSize: 15,
+            color: "white"
+          }}
+        >
+          Atma E-Report
+        </Text>
+        <Text
+          style={{
+            fontFamily: "Raleway_400Regular",
+            fontSize: 12,
+            color: "white"
+          }}
+        >
+          V{version}
+        </Text>
+      </View>
     </DrawerContentScrollView>
   );
 };
@@ -181,6 +252,20 @@ const styles = StyleSheet.create({
   },
   userInfoSection: {
     paddingLeft: 20,
+  },
+  bottomText: {
+    position: "absolute",
+    bottom: -10,
+  },
+  footer: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    height: 60,
+    backgroundColor: "tomato",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
