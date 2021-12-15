@@ -1,10 +1,11 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { TEST_URL } from "@config";
+import PushNotification from "react-native-push-notification";
 
 const AuthHelper = (navigation) => {
   const dispatch = useDispatch();
-  const user = useSelector(state => state.user);
+  const user = useSelector((state) => state.user);
 
   const login = async (values) => {
     let alert;
@@ -21,61 +22,68 @@ const AuthHelper = (navigation) => {
         },
       });
     } else {
-      dispatch({
-        type: "SET_LOADING",
-        payload: true,
-      });
-
-      await axios({
-        method: "post",
-        url: `${TEST_URL}/login`,
-        data: {
-          email: values.email,
-          password: values.password,
-        },
-        headers: {
-          Accept: "application/json",
-        },
-      })
-        .then((response) => {
+      PushNotification.configure({
+        // (optional) Called when Token is generated (iOS and Android)
+        onRegister: async function (data) {
           dispatch({
-            type: "LOGIN",
-            payload: response.data.success,
+            type: "SET_LOADING",
+            payload: true,
           });
 
-          dispatch({
-            type: "SET_SHOW_ALERT",
-            payload: {
-              type: "success",
-              show: true,
-              message: "Login berhasil",
+          await axios({
+            method: "post",
+            url: `${TEST_URL}/login`,
+            data: {
+              email: values.email,
+              password: values.password,
+              fcm_token: data.token,
             },
-          });
-        })
-        .catch((error) => {
-          let message;
-          const statusCode = error.response.status;
-          console.log(statusCode);
-          if (statusCode >= 400 && statusCode < 500) {
-            message = "Email tidak dapat ter-otorisasi, silahkan login lagi";
-          } else if (statusCode >= 500) {
-            message =
-              "Maaf server kami sedang mengalami gangguan, silahkan login lagi nanti";
-          }
+            headers: {
+              Accept: "application/json",
+            },
+          })
+            .then((response) => {
+              dispatch({
+                type: "LOGIN",
+                payload: response.data.success,
+              });
+
+              dispatch({
+                type: "SET_SHOW_ALERT",
+                payload: {
+                  type: "success",
+                  show: true,
+                  message: "Login berhasil",
+                },
+              });
+            })
+            .catch((error) => {
+              let message;
+              const statusCode = error.response.status;
+              console.log(statusCode);
+              if (statusCode >= 400 && statusCode < 500) {
+                message =
+                  "Email tidak dapat ter-otorisasi, silahkan login lagi";
+              } else if (statusCode >= 500) {
+                message =
+                  "Maaf server kami sedang mengalami gangguan, silahkan login lagi nanti";
+              }
+
+              dispatch({
+                type: "SET_SHOW_ALERT",
+                payload: {
+                  type: "failed",
+                  show: true,
+                  message: message,
+                },
+              });
+            });
 
           dispatch({
-            type: "SET_SHOW_ALERT",
-            payload: {
-              type: "failed",
-              show: true,
-              message: message,
-            },
+            type: "SET_LOADING",
+            payload: false,
           });
-        });
-
-      dispatch({
-        type: "SET_LOADING",
-        payload: false,
+        },
       });
     }
   };
@@ -93,7 +101,7 @@ const AuthHelper = (navigation) => {
     else if (values.password !== values.c_password)
       alert = "Password konfirmasi harus sama";
 
-    if(alert) {
+    if (alert) {
       dispatch({
         type: "SET_SHOW_ALERT",
         payload: {
@@ -143,7 +151,7 @@ const AuthHelper = (navigation) => {
             },
           });
         });
-  
+
       dispatch({
         type: "SET_LOADING",
         payload: false,
@@ -204,7 +212,7 @@ const AuthHelper = (navigation) => {
   return {
     login,
     register,
-    logout
+    logout,
   };
 };
 

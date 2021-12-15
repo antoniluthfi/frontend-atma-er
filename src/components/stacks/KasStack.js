@@ -2,6 +2,7 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ListKas from "../screen/kas/ListKas";
 import DetailKas from "../screen/kas/DetailKas";
+import DetailPerBulan from "../screen/kas/DetailPerBulan";
 import HistoryKasPerAnggota from "../screen/kas/HistoryKasPerAnggota";
 import DetailHistory from "../screen/kas/DetailHistory";
 import FormPenyetoran from "../screen/kas/FormPenyetoran";
@@ -19,6 +20,7 @@ const KasStack = () => {
     >
       <Stack.Screen name="ListKas" component={ListKas} />
       <Stack.Screen name="DetailKas" component={DetailKas} />
+      <Stack.Screen name="DetailPerBulan" component={DetailPerBulan} />
       <Stack.Screen name="FormPenyetoran" component={FormPenyetoran} />
       <Stack.Screen name="FormPengeluaran" component={FormPengeluaran} />
       <Stack.Screen

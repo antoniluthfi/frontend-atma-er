@@ -3,6 +3,7 @@ import { TouchableOpacity } from "react-native";
 import { Center, Circle, Image, View } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
+import FastImage from "react-native-fast-image";
 
 const ProfilePhoto = ({ foto_profil = null }) => {
   const dispatch = useDispatch();
@@ -13,13 +14,14 @@ const ProfilePhoto = ({ foto_profil = null }) => {
       <Center flex={1} px="3">
         <Circle size={175} bg="light.100">
           {foto_profil ? (
-            <Image
-              size={175}
-              resizeMode={"contain"}
-              borderRadius={100}
+            <FastImage
+              style={{ width: 175, height: 175, borderRadius: 100 }}
               source={{
                 uri: foto_profil,
+                priority: FastImage.priority.normal,
+                cache: FastImage.cacheControl.immutable,
               }}
+              resizeMode={FastImage.resizeMode.contain}
               alt="Foto Profil"
             />
           ) : (

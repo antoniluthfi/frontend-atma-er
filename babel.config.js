@@ -16,6 +16,8 @@ module.exports = function (api) {
             "@config": "./src/config",
             "@routes": "./src/routes",
             "@reducer": "./src/reducer",
+            "@firebase": "./src/firebase",
+            "@utils": "./src/utils",
           },
         },
       ],

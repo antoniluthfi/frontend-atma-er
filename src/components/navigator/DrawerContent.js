@@ -12,6 +12,7 @@ import {
   Raleway_500Medium,
 } from "@expo-google-fonts/raleway";
 import codePush from "react-native-code-push";
+import FastImage from "react-native-fast-image";
 
 const DrawerContent = ({ ...props }) => {
   const user = useSelector((state) => state.user);
@@ -74,12 +75,11 @@ const DrawerContent = ({ ...props }) => {
   };
 
   React.useEffect(() => {
-    codePush.getUpdateMetadata().then((metadata) =>{
-      setVersion(metadata.appVersion);
+    codePush.getUpdateMetadata().then((metadata) => {
+      setVersion(metadata?.appVersion);
     });
   }, []);
 
-  console.log(version);
   return (
     <DrawerContentScrollView
       {...props}
@@ -96,13 +96,14 @@ const DrawerContent = ({ ...props }) => {
         <HStack space={2}>
           <View>
             {user.data.foto_profil ? (
-              <Image
-                size={70}
-                resizeMode={"contain"}
-                borderRadius={100}
+              <FastImage
+                style={{ width: 70, height: 70, borderRadius: 100 }}
                 source={{
                   uri: `${PUBLIC_URL}/${user.data.foto_profil}`,
+                  priority: FastImage.priority.normal,
+                  cache: FastImage.cacheControl.immutable
                 }}
+                resizeMode={FastImage.resizeMode.contain}
                 alt="Foto Profil"
               />
             ) : (
@@ -222,7 +223,7 @@ const DrawerContent = ({ ...props }) => {
           style={{
             fontFamily: "Raleway_500Medium",
             fontSize: 15,
-            color: "white"
+            color: "white",
           }}
         >
           Atma E-Report
@@ -231,7 +232,7 @@ const DrawerContent = ({ ...props }) => {
           style={{
             fontFamily: "Raleway_400Regular",
             fontSize: 12,
-            color: "white"
+            color: "white",
           }}
         >
           V{version}

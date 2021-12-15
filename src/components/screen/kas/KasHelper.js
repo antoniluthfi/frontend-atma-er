@@ -21,6 +21,8 @@ const KasHelper = (navigation) => {
   const [loadLogPenyetoran, setLoadLogPenyetoran] = useState(true);
   const [logPengeluaran, setLogPengeluaran] = useState([]);
   const [loadLogPengeluaran, setLoadLogPengeluaran] = useState(true);
+  const [detailPerBulan, setDetailPerBulan] = useState({});
+  const [refreshDetailPerBulan, setRefreshDetailPerBulan] = useState(false);
   const [dataUsers, setDataUsers] = useState([]);
   const [dataArusKas, setDataArusKas] = useState([]);
   const [pemasukan, setPemasukan] = useState(0);
@@ -67,7 +69,7 @@ const KasHelper = (navigation) => {
   };
 
   const getDetailKas = async (id, state = "loading") => {
-    if(state === "refresh") {
+    if (state === "refresh") {
       setRefreshDetailKas(true);
     }
 
@@ -88,11 +90,11 @@ const KasHelper = (navigation) => {
         console.log(error.message);
       });
 
-      if(state === "refresh") {
-        setRefreshDetailKas(false);
-      } else {
-        setLoadDetailKas(false);
-      }  
+    if (state === "refresh") {
+      setRefreshDetailKas(false);
+    } else {
+      setLoadDetailKas(false);
+    }
   };
 
   const getDetailPerUser = async (id, user_id) => {
@@ -112,6 +114,31 @@ const KasHelper = (navigation) => {
       });
 
     setLoadDetailPerUser(false);
+  };
+
+  const getDetailPerBulan = async (event_id, month, year, state) => {
+    if (state === "refresh") {
+      setRefreshDetailPerBulan(true);
+    }
+
+    await axios({
+      method: "GET",
+      url: `${TEST_URL}/arus-kas/detail-per-month/${event_id}/${month}/${year}`,
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+    })
+      .then((response) => {
+        setDetailPerBulan(response.data.result);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+
+    if (state === "refresh") {
+      setRefreshDetailPerBulan(false);
+    }
   };
 
   const getDataUsers = async (group_id) => {
@@ -381,10 +408,14 @@ const KasHelper = (navigation) => {
     setLogPengeluaran,
     loadLogPengeluaran,
     setLoadLogPengeluaran,
+    detailPerBulan,
+    setDetailPerBulan,
     dataUsers,
     setDataUsers,
     dataArusKas,
     setDataArusKas,
+    refreshDetailPerBulan,
+    setRefreshDetailPerBulan,
     pemasukan,
     setPemasukan,
     pengeluaran,
@@ -404,6 +435,7 @@ const KasHelper = (navigation) => {
     hapusData,
     getLogKas,
     getArusKasBulanIni,
+    getDetailPerBulan,
   };
 };
 

@@ -6,7 +6,9 @@ import { combineReducers, createStore } from "redux";
 import { Provider } from "react-redux";
 import { LogBox } from "react-native";
 import codePush from "react-native-code-push";
-import SplashScreen from 'react-native-splash-screen';
+import SplashScreen from "react-native-splash-screen";
+import firebase from "@react-native-firebase/app";
+import { FIREBASE_CONFIG } from "@config";
 import App from "./App";
 
 // reducer
@@ -74,6 +76,12 @@ class Index extends React.Component {
   }
 
   componentDidMount() {
+    if (!firebase.apps.length) {
+      firebase.initializeApp(FIREBASE_CONFIG);
+    } else {
+      firebase.app();
+    }
+
     codePush.sync(
       { updateDialog: true, installMode: codePush.InstallMode.IMMEDIATE },
       this.codePushStatusDidChange(),

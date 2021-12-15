@@ -10,6 +10,7 @@ import { PUBLIC_URL } from "@config";
 // component
 import Header from "../../reusable/Header";
 import Alert from "../../reusable/Alert";
+import FastImage from "react-native-fast-image";
 
 const Profilku = ({ navigation, route }) => {
   const user = useSelector((state) => state.user.data);
@@ -28,13 +29,22 @@ const Profilku = ({ navigation, route }) => {
             // resizeMode="contain"
           />
           <View style={styles.bottomContainer}>
-            <Image
-              style={styles.profile}
+            <FastImage
+              style={{
+                height: 120,
+                width: 120,
+                borderRadius: 25,
+                bottom: "10%",
+              }}
               source={{
                 uri: route.params.foto_profil
                   ? `${PUBLIC_URL}/${route.params.foto_profil}`
                   : "https://pbs.twimg.com/profile_images/1309797238651060226/18cm6VhQ_400x400.jpg",
+                priority: FastImage.priority.normal,
+                cache: FastImage.cacheControl.immutable,
               }}
+              resizeMode={FastImage.resizeMode.contain}
+              alt="Foto Profil"
             />
             <Text style={styles.name}>{user.name}</Text>
             <Text style={{ color: "gray", bottom: "8%" }}>{user.email}</Text>

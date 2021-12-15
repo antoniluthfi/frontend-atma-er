@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import "moment/locale/id";
 import moment from "moment";
 import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
@@ -29,35 +29,26 @@ import {
   Raleway_500Medium,
 } from "@expo-google-fonts/raleway";
 import { translateMonth } from "@utils";
+import { Modalize } from "react-native-modalize";
 
 // component
 import Header from "../../reusable/Header";
 import Alert from "../../reusable/Alert";
-import FloatingButton from "../../reusable/FloatingButton";
 import KasHelper from "./KasHelper";
 import Loading from "../../reusable/Loading";
 
-const DetailKas = ({ navigation, route }) => {
+const DetailPerBulan = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const alert = useSelector((state) => state.alert);
-  const { title, id, group_id } = route.params;
+  const { month, event_id, year } = route.params;
   const {
-    detailKas,
-    setDetailKas,
-    loadDetailKas,
-    setLoadDetailKas,
-    refreshDetailKas,
-    setRefreshDetailKas,
-    dataArusKas,
-    setDataArusKas,
-    pemasukan,
-    setPemasukan,
-    pengeluaran,
-    setPengeluaran,
+    refreshDetailPerBulan,
+    setRefreshDetailPerBulan,
+    detailPerBulan,
+    setDetailPerBulan,
     keyword,
     setKeyword,
-    getDetailKas,
-    getArusKasBulanIni,
+    getDetailPerBulan,
     filterUser,
   } = KasHelper();
 
@@ -69,9 +60,9 @@ const DetailKas = ({ navigation, route }) => {
   const buatPdf = async () => {
     const options = {
       html: `
-        <div style="text-align: center;"><h3>Arus ${title} Usman Sidomulyo</h3></div>
-        <h5 style="padding: 0; margin: 0;">Total Pemasukan : Rp. ${pemasukan}</h5>
-        <h5 style="padding: 0; margin: 0;">Total Pemasukan : Rp. ${pengeluaran}</h5>
+        <div style="text-align: center;"><h3>Usman Sidomulyo</h3></div>
+        <h5 style="padding: 0; margin: 0;">Total Pemasukan : Rp. </h5>
+        <h5 style="padding: 0; margin: 0;">Total Pemasukan : Rp. </h5>
         <table style="border-collapse: collapse; width: 100%;">
           <thead>
             <tr style="background-color: #04aa6d; color: white;">
@@ -84,7 +75,7 @@ const DetailKas = ({ navigation, route }) => {
             </tr>
           </thead>
           <tbody>
-            ${dataArusKas.map(
+            ${detailPerBulan?.kas.map(
               (kas, i) => `
               <tr>
                 <td style="border: 1px solid #ddd; padding: 8px;">${i + 1}</td>
@@ -109,7 +100,7 @@ const DetailKas = ({ navigation, route }) => {
           </tbody>
         </table>
       `,
-      fileName: `Arus ${title} Usman Sidomulyo_${Date.now()}`,
+      fileName: `Usman Sidomulyo_${Date.now()}`,
       directory: "Download",
     };
 
@@ -125,20 +116,22 @@ const DetailKas = ({ navigation, route }) => {
     });
   };
 
+  const modalizeRef = useRef(null);
+
+  const onOpen = () => {
+    modalizeRef.current?.open();
+  };
+
   const fetchData = async (state) => {
-    await getDetailKas(id, state);
-    await getArusKasBulanIni(id);
+    await getDetailPerBulan(event_id, month, year, state);
   };
 
   const onRefresh = useCallback(() => {
     fetchData("refresh");
 
     return () => {
-      setDetailKas({});
-      setRefreshDetailKas(false);
-      setDataArusKas([]);
-      setPemasukan(0);
-      setPengeluaran(0);
+      setDetailPerBulan({});
+      setRefreshDetailPerBulan(false);
     };
   }, []);
 
@@ -147,26 +140,29 @@ const DetailKas = ({ navigation, route }) => {
       fetchData("loading");
 
       return () => {
-        setDetailKas({});
-        setLoadDetailKas(true);
-        setDataArusKas([]);
-        setPemasukan(0);
-        setPengeluaran(0);
+        setDetailPerBulan({});
+        setRefreshDetailPerBulan(false);
       };
     }, [])
   );
 
   return (
     <NativeBaseProvider>
-      <Header title={title} navigation={navigation} />
+      <Header
+        title={`${translateMonth(month)} ${year}`}
+        navigation={navigation}
+      />
       {alert.show && <Alert />}
 
       <ScrollView
         contentContainerStyle={styles.container}
         refreshControl={
           <RefreshControl
-            refreshing={refreshDetailKas}
-            onRefresh={onRefresh}
+            refreshing={refreshDetailPerBulan}
+            onRefresh={() => {
+              onRefresh();
+              modalizeRef.current?.close();
+            }}
             colors={["crimson", "coral"]}
           />
         }
@@ -179,15 +175,16 @@ const DetailKas = ({ navigation, route }) => {
                   <FontAwesome5 name="money-check" size={60} />
                 </View>
                 <View style={{ marginLeft: 15 }}>
-                  <Text
+                  {/* <Text
                     style={{
                       fontFamily: "Raleway_500Medium",
                     }}
                   >
+                    {console.log(detailPerBulan)}
                     Total Pemasukan :{" "}
                     <NumberFormat
                       value={
-                        loadDetailKas ? "0" : detailKas?.kas?.total_pemasukan
+                        detailPerBulan?.total_pemasukan
                       }
                       displayType={"text"}
                       thousandSeparator={true}
@@ -228,7 +225,7 @@ const DetailKas = ({ navigation, route }) => {
                         </Text>
                       )}
                     />
-                  </Text>
+                  </Text> */}
                   <Text
                     style={{
                       fontFamily: "Raleway_500Medium",
@@ -236,7 +233,7 @@ const DetailKas = ({ navigation, route }) => {
                   >
                     Total Kas :{" "}
                     <NumberFormat
-                      value={loadDetailKas ? "0" : detailKas?.kas?.total_kas}
+                      value={detailPerBulan?.total?.total}
                       displayType={"text"}
                       thousandSeparator={true}
                       prefix={"Rp. "}
@@ -253,7 +250,7 @@ const DetailKas = ({ navigation, route }) => {
                     />
                   </Text>
                   <Text style={{ fontFamily: "Raleway_400Regular" }}>
-                    {moment().format("dddd, Do MMMM YYYY")}
+                    Bulan {translateMonth(month)} {year}
                   </Text>
                 </View>
               </View>
@@ -286,7 +283,6 @@ const DetailKas = ({ navigation, route }) => {
                   value={keyword}
                   onChangeText={(text) => {
                     setKeyword(text);
-                    filterUser(text);
                   }}
                   style={{
                     fontFamily: "Raleway_400Regular",
@@ -316,55 +312,27 @@ const DetailKas = ({ navigation, route }) => {
               </View>
             </View>
 
-            {loadDetailKas ? (
-              <Loading />
+            {detailPerBulan?.kas ? (
+              <Basic
+                navigation={navigation}
+                kas={
+                  detailPerBulan?.kas?.filter((item) =>
+                    item.user.name.toLowerCase().match(keyword)
+                  ) || []
+                }
+                onOpen={onOpen}
+              />
             ) : (
-              <Basic navigation={navigation} kas={detailKas.bulan_ini} />
+              <Loading />
             )}
 
-            <FloatingButton
-              navigation={navigation}
-              id={id}
-              actions={[
-                {
-                  icon: "cash-plus",
-                  label: "Setor Kas",
-                  onPress: () =>
-                    navigation.navigate("FormPenyetoran", {
-                      method: "post",
-                      event_kas_id: id,
-                      group_id: group_id,
-                    }),
-                  small: false,
-                },
-                {
-                  icon: "cash-minus",
-                  label: "Buat Pengeluaran",
-                  onPress: () =>
-                    navigation.navigate("FormPengeluaran", {
-                      method: "post",
-                      event_kas_id: id,
-                      group_id: group_id,
-                    }),
-                  small: false,
-                },
-                {
-                  icon: "file",
-                  label: "History Kas",
-                  onPress: () =>
-                    navigation.navigate("HistoryKasKeseluruhan", {
-                      id: id,
-                    }),
-                  small: false,
-                },
-                {
-                  icon: "download",
-                  label: "Unduh PDF",
-                  onPress: buatPdf,
-                  small: false,
-                },
-              ]}
-            />
+            <Modalize
+              ref={modalizeRef}
+              modalTopOffset={200}
+              onPositionChange={(e) => console.log(e)}
+            >
+              <Text>...your content</Text>
+            </Modalize>
           </Portal>
         </Provider>
       </ScrollView>
@@ -372,7 +340,7 @@ const DetailKas = ({ navigation, route }) => {
   );
 };
 
-const Basic = ({ navigation, kas }) => {
+const Basic = ({ navigation, kas, onOpen }) => {
   const onRowDidOpen = (rowKey) => {
     console.log("This row opened", rowKey);
   };
@@ -397,7 +365,7 @@ const Basic = ({ navigation, kas }) => {
         <HStack width="100%" px={4}>
           <HStack space={2} alignItems="center">
             <Avatar color="white" bg={"warning.500"}>
-              <Ionicons name="calendar" size={30} color="white" />
+              <Ionicons name="wallet" size={30} color="white" />
             </Avatar>
             <VStack>
               <Text
@@ -405,11 +373,11 @@ const Basic = ({ navigation, kas }) => {
                   fontFamily: "Raleway_400Regular",
                 }}
               >
-                {translateMonth(item.month)} {item.year}
+                {item.user.name}
               </Text>
               <Text>
                 <NumberFormat
-                  value={item.total}
+                  value={item.nominal}
                   displayType={"text"}
                   thousandSeparator={true}
                   prefix={"Rp. "}
@@ -441,19 +409,7 @@ const Basic = ({ navigation, kas }) => {
         bg="info.500"
         justifyContent="center"
         onPress={() => {
-          console.log(data.item);
-          navigation.navigate("DetailPerBulan", {
-            event_id: data.item.event_kas_id,
-            month: data.item.month,
-            year: data.item.year
-          });
-
-          // navigation.navigate("HistoryKasPerAnggota", {
-          //   event_id: data.item.event_kas_id,
-          //   user: { id: data.item.user.id, name: data.item.user.name },
-          //   total: data.item.total,
-          //   bulan_ini: data.item.total,
-          // });
+          onOpen();
         }}
         _pressed={{
           opacity: 0.5,
@@ -532,4 +488,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetailKas;
+export default DetailPerBulan;

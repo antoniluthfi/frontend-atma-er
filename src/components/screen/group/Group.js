@@ -26,6 +26,7 @@ import Header from "../../reusable/Header";
 import Loading from "../../reusable/Loading";
 import FloatingButton from "../../reusable/FloatingButton";
 import GroupHelper from "./GroupHelper";
+import FastImage from "react-native-fast-image";
 
 const Group = ({ navigation }) => {
   const {
@@ -193,14 +194,15 @@ const Basic = ({ navigation, dataGroup, user }) => {
                 <Ionicons name="people" size={30} color="white" />
               </Avatar>
             ) : (
-              <Image
-                size={50}
-                resizeMode={"contain"}
-                borderRadius={100}
+              <FastImage
+                style={{ width: 50, height: 50, borderRadius: 100 }}
                 source={{
                   uri: `${PUBLIC_URL}/${item.foto_profil}`,
+                  priority: FastImage.priority.normal,
+                  cache: FastImage.cacheControl.immutable,
                 }}
-                alt="Foto Grup"
+                resizeMode={FastImage.resizeMode.contain}
+                alt="Foto Profil"
               />
             )}
             <VStack>

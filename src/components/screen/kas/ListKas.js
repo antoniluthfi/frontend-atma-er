@@ -133,7 +133,6 @@ const ListKas = ({ navigation }) => {
   };
 
   const onRefresh = useCallback(() => {
-    console.log(groupIndex);
     fetchData(groupIndex, "refresh");
 
     return () => {

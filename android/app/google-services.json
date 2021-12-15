@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1075437718199",
+    "project_id": "atmaer-97425",
+    "storage_bucket": "atmaer-97425.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1075437718199:android:be31eab2f6c58483639b32",
+        "android_client_info": {
+          "package_name": "dev.atmaer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1075437718199-fkqjm6up5ofmleoi0li7cej34ntg2mnf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCK21wRQWCimbPW9v-9E1rd9lf694TbHvo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1075437718199-fkqjm6up5ofmleoi0li7cej34ntg2mnf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
