@@ -8,7 +8,7 @@ import {
 } from "@expo-google-fonts/raleway";
 import { TouchableOpacity } from "react-native";
 
-const GroupList = ({ groupIndex, setGroupIndex, refresh = null }) => {
+const GroupList = ({ groupIndex, changeGroupIndex, refresh = null }) => {
   const user = useSelector((state) => state.user.data);
   const [fontsLoaded, error] = useFonts({
     Raleway_400Regular,
@@ -34,7 +34,7 @@ const GroupList = ({ groupIndex, setGroupIndex, refresh = null }) => {
                   item.group_id === groupIndex ? "tomato" : "white",
               }}
               onPress={() => {
-                setGroupIndex(item.group_id);
+                changeGroupIndex(item.group_id);
                 refresh(item.group_id);
               }}
             >

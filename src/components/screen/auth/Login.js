@@ -11,7 +11,6 @@ import {
   Text,
   View,
 } from "native-base";
-import * as yup from "yup";
 import { Formik } from "formik";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { StyleSheet } from "react-native";
@@ -20,15 +19,15 @@ import {
   Raleway_400Regular,
   Raleway_500Medium,
 } from "@expo-google-fonts/raleway";
-import AuthHelper from "./AuthHelper";
 import Alert from "../../reusable/Alert";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { userLogin } from "@stores/actions/authActions";
 import Header from "./Header";
 
 const Login = ({ navigation }) => {
   const alert = useSelector((state) => state.alert);
+  const dispatch = useDispatch();
 
-  const { login } = AuthHelper(navigation);
   const [type, setType] = useState("password");
   const [icon, setIcon] = useState("eye");
 
@@ -54,7 +53,7 @@ const Login = ({ navigation }) => {
             password: "",
           }}
           onSubmit={(values) => {
-            login(values);
+            dispatch(userLogin(values));
           }}
         >
           {({

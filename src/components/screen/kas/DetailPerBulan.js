@@ -1,7 +1,13 @@
 import React, { useCallback, useRef, useState } from "react";
 import "moment/locale/id";
 import moment from "moment";
-import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+  Dimensions,
+} from "react-native";
 import { useFocusEffect } from "@react-navigation/core";
 import {
   NativeBaseProvider,
@@ -16,7 +22,6 @@ import {
   IconButton,
 } from "native-base";
 import NumberFormat from "react-number-format";
-import { Portal, Provider } from "react-native-paper";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { useSelector, useDispatch } from "react-redux";
 import RNHTMLtoPDF from "react-native-html-to-pdf";
@@ -30,27 +35,25 @@ import {
 } from "@expo-google-fonts/raleway";
 import { translateMonth } from "@utils";
 import { Modalize } from "react-native-modalize";
+import { getDetailPerBulan } from "@stores/actions/kasActions";
 
 // component
-import Header from "../../reusable/Header";
-import Alert from "../../reusable/Alert";
-import KasHelper from "./KasHelper";
-import Loading from "../../reusable/Loading";
+import Header from "@components/reusable/Header";
+import Alert from "@components/reusable/Alert";
+import Loading from "@components/reusable/Loading";
+import { Portal, Provider } from "react-native-paper";
+import FloatingButton from "@components/reusable/FloatingButton";
+
+const window = Dimensions.get("window");
 
 const DetailPerBulan = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const alert = useSelector((state) => state.alert);
+  const detailPerBulan = useSelector((state) => state.kas.detail_per_bulan);
+  const process = useSelector((state) => state.loading);
+  const process2 = useSelector((state) => state);
   const { month, event_id, year } = route.params;
-  const {
-    refreshDetailPerBulan,
-    setRefreshDetailPerBulan,
-    detailPerBulan,
-    setDetailPerBulan,
-    keyword,
-    setKeyword,
-    getDetailPerBulan,
-    filterUser,
-  } = KasHelper();
+  const [keyword, setKeyword] = useState("");
 
   const [fontsLoaded, error] = useFonts({
     Raleway_400Regular,
@@ -61,8 +64,7 @@ const DetailPerBulan = ({ navigation, route }) => {
     const options = {
       html: `
         <div style="text-align: center;"><h3>Usman Sidomulyo</h3></div>
-        <h5 style="padding: 0; margin: 0;">Total Pemasukan : Rp. </h5>
-        <h5 style="padding: 0; margin: 0;">Total Pemasukan : Rp. </h5>
+        <h5 style="padding: 0; margin: 0;">Total Pemasukan : Rp. ${detailPerBulan?.total?.total}</h5>
         <table style="border-collapse: collapse; width: 100%;">
           <thead>
             <tr style="background-color: #04aa6d; color: white;">
@@ -80,13 +82,13 @@ const DetailPerBulan = ({ navigation, route }) => {
               <tr>
                 <td style="border: 1px solid #ddd; padding: 8px;">${i + 1}</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">${
-                  kas.users.name
+                  kas.user.name
                 }</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">${
                   parseInt(kas.jenis) ? "Masuk" : "Keluar"
                 }</td>
                 <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">Rp. ${
-                  kas.nominal
+                  kas.total
                 }</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">${
                   kas.keterangan ? kas.keterangan : "Tanpa keterangan"
@@ -123,26 +125,16 @@ const DetailPerBulan = ({ navigation, route }) => {
   };
 
   const fetchData = async (state) => {
-    await getDetailPerBulan(event_id, month, year, state);
+    await dispatch(getDetailPerBulan(event_id, month, year, state));
   };
 
   const onRefresh = useCallback(() => {
     fetchData("refresh");
-
-    return () => {
-      setDetailPerBulan({});
-      setRefreshDetailPerBulan(false);
-    };
   }, []);
 
   useFocusEffect(
     useCallback(() => {
       fetchData("loading");
-
-      return () => {
-        setDetailPerBulan({});
-        setRefreshDetailPerBulan(false);
-      };
     }, [])
   );
 
@@ -158,7 +150,7 @@ const DetailPerBulan = ({ navigation, route }) => {
         contentContainerStyle={styles.container}
         refreshControl={
           <RefreshControl
-            refreshing={refreshDetailPerBulan}
+            refreshing={process.refresh}
             onRefresh={() => {
               onRefresh();
               modalizeRef.current?.close();
@@ -175,57 +167,6 @@ const DetailPerBulan = ({ navigation, route }) => {
                   <FontAwesome5 name="money-check" size={60} />
                 </View>
                 <View style={{ marginLeft: 15 }}>
-                  {/* <Text
-                    style={{
-                      fontFamily: "Raleway_500Medium",
-                    }}
-                  >
-                    {console.log(detailPerBulan)}
-                    Total Pemasukan :{" "}
-                    <NumberFormat
-                      value={
-                        detailPerBulan?.total_pemasukan
-                      }
-                      displayType={"text"}
-                      thousandSeparator={true}
-                      prefix={"Rp. "}
-                      renderText={(value, props) => (
-                        <Text
-                          style={{
-                            color: "blue",
-                            fontFamily: "Raleway_400Regular",
-                          }}
-                        >
-                          {value}
-                        </Text>
-                      )}
-                    />
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: "Raleway_500Medium",
-                    }}
-                  >
-                    Total Pengeluaran :{" "}
-                    <NumberFormat
-                      value={
-                        loadDetailKas ? "0" : detailKas?.kas?.total_pengeluaran
-                      }
-                      displayType={"text"}
-                      thousandSeparator={true}
-                      prefix={"Rp. "}
-                      renderText={(value, props) => (
-                        <Text
-                          style={{
-                            color: "red",
-                            fontFamily: "Raleway_400Regular",
-                          }}
-                        >
-                          {value}
-                        </Text>
-                      )}
-                    />
-                  </Text> */}
                   <Text
                     style={{
                       fontFamily: "Raleway_500Medium",
@@ -311,31 +252,66 @@ const DetailPerBulan = ({ navigation, route }) => {
                 </Menu>
               </View>
             </View>
-
-            {detailPerBulan?.kas ? (
-              <Basic
-                navigation={navigation}
-                kas={
-                  detailPerBulan?.kas?.filter((item) =>
-                    item.user.name.toLowerCase().match(keyword)
-                  ) || []
-                }
-                onOpen={onOpen}
-              />
-            ) : (
-              <Loading />
-            )}
-
-            <Modalize
-              ref={modalizeRef}
-              modalTopOffset={200}
-              onPositionChange={(e) => console.log(e)}
-            >
-              <Text>...your content</Text>
-            </Modalize>
           </Portal>
         </Provider>
       </ScrollView>
+
+      <View style={styles.flatlistWrapper}>
+        {detailPerBulan?.kas ? (
+          <Basic
+            navigation={navigation}
+            kas={
+              detailPerBulan?.kas?.filter((item) =>
+                item.user.name.toLowerCase().match(keyword)
+              ) || []
+            }
+            onOpen={onOpen}
+          />
+        ) : (
+          <Loading />
+        )}
+      </View>
+
+      <Modalize
+        ref={modalizeRef}
+        modalTopOffset={200}
+        onPositionChange={(e) => console.log(e)}
+      >
+        <Text>...your content</Text>
+      </Modalize>
+
+      <FloatingButton
+        navigation={navigation}
+        id={event_id}
+        actions={[
+          {
+            icon: "cash-plus",
+            label: "Setor Kas",
+            onPress: () =>
+              navigation.navigate("FormPenyetoran", {
+                method: "post",
+                event_kas_id: event_id,
+                group_id: group_id,
+              }),
+            small: false,
+          },
+          {
+            icon: "file",
+            label: "History Kas",
+            onPress: () =>
+              navigation.navigate("HistoryKasKeseluruhan", {
+                id: event_id,
+              }),
+            small: false,
+          },
+          {
+            icon: "download",
+            label: "Unduh PDF",
+            onPress: buatPdf,
+            small: false,
+          },
+        ]}
+      />
     </NativeBaseProvider>
   );
 };
@@ -377,7 +353,7 @@ const Basic = ({ navigation, kas, onOpen }) => {
               </Text>
               <Text>
                 <NumberFormat
-                  value={item.nominal}
+                  value={item.total}
                   displayType={"text"}
                   thousandSeparator={true}
                   prefix={"Rp. "}
@@ -425,12 +401,10 @@ const Basic = ({ navigation, kas, onOpen }) => {
       {kas.length > 0 ? (
         <SwipeListView
           data={kas}
+          keyExtractor={(item, index) => index.toString()}
           renderItem={renderItem}
           renderHiddenItem={renderHiddenItem}
           rightOpenValue={-65}
-          previewRowKey={"0"}
-          previewOpenValue={-40}
-          previewOpenDelay={1000}
           onRowDidOpen={onRowDidOpen}
         />
       ) : (
@@ -462,6 +436,12 @@ const styles = StyleSheet.create({
     width: "95%",
     flexDirection: "row",
     flexWrap: "wrap",
+  },
+  flatlistWrapper: {
+    position: "absolute",
+    top: 280,
+    width: window.width,
+    height: window.height - 280,
   },
   card: {
     width: "100%",

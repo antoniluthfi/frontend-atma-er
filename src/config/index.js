@@ -1,5 +1,5 @@
-export const TEST_URL = "https://ecad-36-75-67-132.ngrok.io/api";
-export const PUBLIC_URL = "https://ecad-36-75-67-132.ngrok.io";
+export const TEST_URL = "https://38b4-2404-c0-8010-00-4c0-2c59.ngrok.io/api";
+export const PUBLIC_URL = "https://38b4-2404-c0-8010-00-4c0-2c59.ngrok.io";
 export const FIREBASE_SERVER_KEY = "AAAA-mUVSrc:APA91bGtIb6WQP2JtG-X6mgF2X-8_gIgoEUJEXq5k4ITUlDlZVM-sihycoHGwVtqrfvmYIrT4exzHMIE1M6NAmBObm_IF1vsdILDGyw_tv7y8a0p0YAUkKIJdieJYdMg0cbbRsHwR08Q";
 export const FIREBASE_CONFIG = {
     apiKey: "AIzaSyCh6Tp4k9j-IvF9YTEtCO2rMTOXj1gVFXw",

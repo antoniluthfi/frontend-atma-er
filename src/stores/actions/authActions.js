@@ -1,13 +1,83 @@
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
 import { TEST_URL } from "@config";
 import PushNotification from "react-native-push-notification";
+import { saveValueJSON, getValueJSON, removeValue } from "@utils";
 
-const AuthHelper = (navigation) => {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
+export const userRegister = (values, navigation) => {
+  return async (dispatch) => {
+    let alert;
+  
+    if (!values.name) alert = "Nama nya masih kosong tuh, isi dulu yaa";
+    else if (!values.nomorhp)
+      alert = "Nomor hp nya masih kosong tuh, isi dulu yaa";
+    else if (!values.email)
+      alert = "Nomor hp nya masih kosong tuh, isi dulu yaa";
+    else if (!values.password) alert = "Password nya diisi dulu yaa";
+    else if (!values.c_password) alert = "Password nya diisi dulu yaa";
+    else if (values.password !== values.c_password)
+      alert = "Password konfirmasi harus sama";
+  
+    if (alert) {
+      dispatch({
+        type: "SET_SHOW_ALERT",
+        payload: {
+          type: "failed",
+          show: true,
+          message: alert,
+        },
+      });
+    } else {
+      dispatch({
+        type: "SET_LOADING",
+        payload: true,
+      });
+  
+      await axios({
+        method: "post",
+        url: `${TEST_URL}/register`,
+        data: {
+          name: values.name,
+          nomorhp: values.nomorhp,
+          email: values.email,
+          password: values.password,
+          c_password: values.c_password,
+        },
+        headers: {
+          Accept: "application/json",
+        },
+      })
+        .then(() => {
+          navigation.navigate("Login");
+          dispatch({
+            type: "SET_SHOW_ALERT",
+            payload: {
+              type: "success",
+              show: true,
+              message: "Registrasi berhasil",
+            },
+          });
+        })
+        .catch((error) => {
+          dispatch({
+            type: "SET_SHOW_ALERT",
+            payload: {
+              type: "failed",
+              show: true,
+              message: error.message,
+            },
+          });
+        });
+  
+      dispatch({
+        type: "SET_LOADING",
+        payload: false,
+      });
+    }
+  }
+};
 
-  const login = async (values) => {
+export const userLogin = (values) => {
+  return async (dispatch) => {
     let alert;
     if (!values.email) alert = "Email harus diisi!";
     else if (!values.password) alert = "Password harus diisi!";
@@ -56,11 +126,12 @@ const AuthHelper = (navigation) => {
                   message: "Login berhasil",
                 },
               });
+
+              saveValueJSON("@data", response.data.success);
             })
             .catch((error) => {
               let message;
               const statusCode = error.response.status;
-              console.log(statusCode);
               if (statusCode >= 400 && statusCode < 500) {
                 message =
                   "Email tidak dapat ter-otorisasi, silahkan login lagi";
@@ -87,83 +158,16 @@ const AuthHelper = (navigation) => {
       });
     }
   };
+};
 
-  const register = async (values) => {
-    let alert;
-
-    if (!values.name) alert = "Nama nya masih kosong tuh, isi dulu yaa";
-    else if (!values.nomorhp)
-      alert = "Nomor hp nya masih kosong tuh, isi dulu yaa";
-    else if (!values.email)
-      alert = "Nomor hp nya masih kosong tuh, isi dulu yaa";
-    else if (!values.password) alert = "Password nya diisi dulu yaa";
-    else if (!values.c_password) alert = "Password nya diisi dulu yaa";
-    else if (values.password !== values.c_password)
-      alert = "Password konfirmasi harus sama";
-
-    if (alert) {
-      dispatch({
-        type: "SET_SHOW_ALERT",
-        payload: {
-          type: "failed",
-          show: true,
-          message: alert,
-        },
-      });
-    } else {
-      dispatch({
-        type: "SET_LOADING",
-        payload: true,
-      });
-
-      await axios({
-        method: "post",
-        url: `${TEST_URL}/register`,
-        data: {
-          name: values.name,
-          nomorhp: values.nomorhp,
-          email: values.email,
-          password: values.password,
-          c_password: values.c_password,
-        },
-        headers: {
-          Accept: "application/json",
-        },
-      })
-        .then((response) => {
-          navigation.navigate("Login");
-          dispatch({
-            type: "SET_SHOW_ALERT",
-            payload: {
-              type: "success",
-              show: true,
-              message: "Registrasi berhasil",
-            },
-          });
-        })
-        .catch((error) => {
-          dispatch({
-            type: "SET_SHOW_ALERT",
-            payload: {
-              type: "failed",
-              show: true,
-              message: error.message,
-            },
-          });
-        });
-
-      dispatch({
-        type: "SET_LOADING",
-        payload: false,
-      });
-    }
-  };
-
-  const logout = async () => {
+export const userLogout = () => {
+  return async (dispatch) => {
     dispatch({
       type: "SET_LOADING",
       payload: true,
     });
+
+    const data = await getValueJSON("@data");
 
     await axios({
       method: "POST",
@@ -171,7 +175,7 @@ const AuthHelper = (navigation) => {
       data: {},
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${user.token}`,
+        Authorization: `Bearer ${data.token}`,
       },
     })
       .then(() => {
@@ -191,8 +195,11 @@ const AuthHelper = (navigation) => {
             message: "Logout berhasil",
           },
         });
+
+        removeValue("@data");
       })
       .catch((err) => {
+        console.log(err);
         dispatch({
           type: "SET_SHOW_ALERT",
           payload: {
@@ -208,12 +215,4 @@ const AuthHelper = (navigation) => {
       payload: false,
     });
   };
-
-  return {
-    login,
-    register,
-    logout,
-  };
 };
-
-export default AuthHelper;

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import {
   NativeBaseProvider,
   Box,
@@ -11,7 +11,7 @@ import {
   VStack,
   ScrollView,
 } from "native-base";
-import { Alert, RefreshControl, StyleSheet } from "react-native";
+import { Alert, Dimensions, RefreshControl, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/core";
 import { SwipeListView } from "react-native-swipe-list-view";
 import RNHTMLtoPDF from "react-native-html-to-pdf";
@@ -26,35 +26,28 @@ import {
   Raleway_400Regular,
   Raleway_500Medium,
 } from "@expo-google-fonts/raleway";
+import { getListKas, getDetailKas } from "@stores/actions/kasActions";
 
 // component
-import KasHelper from "./KasHelper";
 import Header from "../../reusable/Header";
 import FloatingButton from "../../reusable/FloatingButton";
 import Loading from "../../reusable/Loading";
 import GroupList from "../../reusable/GroupList";
+import { useDispatch, useSelector } from "react-redux";
+
+const window = Dimensions.get("window");
 
 const ListKas = ({ navigation }) => {
-  const {
-    user,
-    dataEvent,
-    setDataEvent,
-    loadDataEvent,
-    setLoadDataEvent,
-    refreshDataEvent,
-    setRefreshDataEvent,
-    keyword,
-    setKeyword,
-    rincianEvent,
-    setRincianEvent,
-    detailKas,
-    setDetailKas,
-    getDetailKas,
-    getListKas,
-    filterKas,
-  } = KasHelper(navigation);
-  const [groupIndex, setGroupIndex] = React.useState(
-    user.data.user_group[0].group_id
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  const process = useSelector((state) => state.loading);
+  const listKas = useSelector((state) => state.kas.list_kas);
+  const detailKas = useSelector((state) => state.kas.detail_kas);
+  const idListKas = useSelector((state) => state.kas.id_list_kas);
+
+  const [keyword, setKeyword] = useState("");
+  const [groupIndex, setGroupIndex] = useState(
+    user.data?.user_group[0].group_id
   );
 
   const [fontsLoaded, error] = useFonts({
@@ -67,10 +60,10 @@ const ListKas = ({ navigation }) => {
       html: `
         <div style="text-align: center;"><h3>Arus Kas Usman Sidomulyo</h3></div>
         <h5 style="padding: 0; margin: 0;">Total Pemasukan : Rp. ${
-          rincianEvent.pemasukan
+          listKas.pemasukan
         }</h5>
         <h5 style="padding: 0; margin: 0;">Total Pemasukan : Rp. ${
-          rincianEvent.pengeluaran
+          listKas.pengeluaran
         }</h5>
         <table style="border-collapse: collapse; width: 100%;">
           <thead>
@@ -90,7 +83,7 @@ const ListKas = ({ navigation }) => {
             <tr>
               <td style="border: 1px solid #ddd; padding: 8px;">${i + 1}</td>
               <td style="border: 1px solid #ddd; padding: 8px;">${
-                kas.users.name
+                kas.user.name
               }</td>
               <td style="border: 1px solid #ddd; padding: 8px;">${
                 kas.event_kas.nama
@@ -127,25 +120,21 @@ const ListKas = ({ navigation }) => {
     );
   };
 
+  const changeGroupIndex = (index) => {
+    console.log(index);
+    setGroupIndex(index);
+  }
+
   const fetchData = async (group_id, state) => {
-    await getListKas(group_id, state);
-    await getDetailKas(0, state);
+    await dispatch(getListKas(group_id, idListKas, state));
+    await dispatch(getDetailKas(0, state));
   };
 
   const onRefresh = useCallback(() => {
+    console.log("refresh", groupIndex);
     fetchData(groupIndex, "refresh");
-
-    return () => {
-      setDataEvent([]);
-      setRefreshDataEvent(false);
-      setDetailKas([]);
-      setRincianEvent({
-        pemasukan: 0,
-        pengeluaran: 0,
-        total: 0,
-      });
-    };
   }, []);
+  console.log("umum", groupIndex);
 
   useFocusEffect(
     useCallback(() => {
@@ -153,14 +142,7 @@ const ListKas = ({ navigation }) => {
       fetchData(user.data.user_group[0].group_id, "loading");
 
       return () => {
-        setDataEvent([]);
-        setLoadDataEvent(true);
-        setDetailKas([]);
-        setRincianEvent({
-          pemasukan: 0,
-          pengeluaran: 0,
-          total: 0,
-        });
+        setGroupIndex(user.data?.user_group[0].group_id);
       };
     }, [])
   );
@@ -172,7 +154,7 @@ const ListKas = ({ navigation }) => {
         contentContainerStyle={styles.container}
         refreshControl={
           <RefreshControl
-            refreshing={refreshDataEvent}
+            refreshing={process.refresh}
             onRefresh={onRefresh}
             colors={["crimson", "coral"]}
           />
@@ -182,17 +164,8 @@ const ListKas = ({ navigation }) => {
           <Portal>
             <GroupList
               groupIndex={groupIndex}
-              setGroupIndex={setGroupIndex}
+              changeGroupIndex={changeGroupIndex}
               refresh={(group_id) => {
-                setLoadDataEvent(true);
-                setDataEvent([]);
-                setDetailKas([]);
-                setRincianEvent({
-                  pemasukan: 0,
-                  pengeluaran: 0,
-                  total: 0,
-                });
-
                 fetchData(group_id, "loading");
               }}
             />
@@ -210,7 +183,7 @@ const ListKas = ({ navigation }) => {
                   >
                     Total Pemasukan :{" "}
                     <NumberFormat
-                      value={rincianEvent.pemasukan}
+                      value={listKas.pemasukan}
                       displayType={"text"}
                       thousandSeparator={true}
                       prefix={"Rp. "}
@@ -234,7 +207,7 @@ const ListKas = ({ navigation }) => {
                   >
                     Total Pengeluaran :
                     <NumberFormat
-                      value={rincianEvent.pengeluaran}
+                      value={listKas.pengeluaran}
                       displayType={"text"}
                       thousandSeparator={true}
                       prefix={"Rp. "}
@@ -258,7 +231,7 @@ const ListKas = ({ navigation }) => {
                   >
                     Total Kas :{" "}
                     <NumberFormat
-                      value={rincianEvent.total}
+                      value={listKas.total}
                       displayType={"text"}
                       thousandSeparator={true}
                       prefix={"Rp. "}
@@ -312,7 +285,6 @@ const ListKas = ({ navigation }) => {
                   value={keyword}
                   onChangeText={(text) => {
                     setKeyword(text);
-                    filterKas(text);
                   }}
                   style={{
                     fontFamily: "Raleway_400Regular",
@@ -320,27 +292,29 @@ const ListKas = ({ navigation }) => {
                 />
               </View>
             </View>
-
-            {loadDataEvent ? (
-              <Loading />
-            ) : (
-              <Basic navigation={navigation} dataEvent={dataEvent} />
-            )}
-
-            <FloatingButton
-              navigation={navigation}
-              actions={[
-                {
-                  icon: "download",
-                  label: "Unduh PDF",
-                  onPress: buatPdf,
-                  small: false,
-                },
-              ]}
-            />
           </Portal>
         </Provider>
       </ScrollView>
+
+      <View style={styles.flatlistWrapper}>
+        {process.mini_loading ? (
+          <Loading />
+        ) : (
+          <Basic navigation={navigation} dataEvent={listKas?.data} />
+        )}
+      </View>
+
+      <FloatingButton
+        navigation={navigation}
+        actions={[
+          {
+            icon: "download",
+            label: "Unduh PDF",
+            onPress: buatPdf,
+            small: false,
+          },
+        ]}
+      />
     </NativeBaseProvider>
   );
 };
@@ -430,31 +404,28 @@ const Basic = ({ navigation, dataEvent }) => {
 
   return (
     <Box bg="white" safeArea flex={1}>
-      {dataEvent.length > 0 ? (
-        <SwipeListView
-          data={dataEvent}
-          renderItem={renderItem}
-          renderHiddenItem={renderHiddenItem}
-          rightOpenValue={-65}
-          previewRowKey={"0"}
-          previewOpenValue={-40}
-          previewOpenDelay={1000}
-          onRowDidOpen={onRowDidOpen}
-        />
-      ) : (
-        <ScrollView>
-          <LottieView
-            source={require("@assets/data-not-found.json")}
-            style={{
-              marginBottom: 50,
-              width: "100%",
-              height: 400,
-            }}
-            autoPlay
-            loop
-          />
-        </ScrollView>
-      )}
+      <SwipeListView
+        data={dataEvent}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderItem}
+        renderHiddenItem={renderHiddenItem}
+        rightOpenValue={-65}
+        onRowDidOpen={onRowDidOpen}
+        ListEmptyComponent={
+          <ScrollView>
+            <LottieView
+              source={require("@assets/data-not-found.json")}
+              style={{
+                marginBottom: 50,
+                width: "100%",
+                height: 400,
+              }}
+              autoPlay
+              loop
+            />
+          </ScrollView>
+        }
+      />
     </Box>
   );
 };
@@ -470,6 +441,12 @@ const styles = StyleSheet.create({
     width: "95%",
     flexDirection: "row",
     flexWrap: "wrap",
+  },
+  flatlistWrapper: {
+    position: "absolute",
+    top: 350,
+    width: window.width,
+    height: window.height - 350,
   },
   card: {
     width: "100%",

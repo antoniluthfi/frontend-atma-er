@@ -5,11 +5,11 @@ import { DrawerActions } from "@react-navigation/routers";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useFonts, Raleway_400Regular } from "@expo-google-fonts/raleway";
 import { useRoute } from "@react-navigation/core";
-import AuthHelper from "../screen/auth/AuthHelper";
+import { userLogout } from "@stores/actions/authActions";
+import { useDispatch } from "react-redux";
 
 const Header = ({ title, navigation, logoutIcon = false, menu = true }) => {
-  const { logout } = AuthHelper(navigation);
-
+  const dispatch = useDispatch();
   const route = useRoute();
   const [fontsLoaded, error] = useFonts({
     Raleway_400Regular,
@@ -59,7 +59,7 @@ const Header = ({ title, navigation, logoutIcon = false, menu = true }) => {
                     bg: "warning.600",
                   }}
                   onPress={() => {
-                    logout();
+                    dispatch(userLogout());
                   }}
                 />
               )}

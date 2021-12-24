@@ -11,24 +11,23 @@ import {
   Text,
   View,
 } from "native-base";
-import * as yup from "yup";
 import { Formik } from "formik";
 import { StyleSheet } from "react-native";
 import { launchImageLibrary } from "react-native-image-picker";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import AuthHelper from "./AuthHelper";
 import Alert from "../../reusable/Alert";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   useFonts,
   Raleway_400Regular,
   Raleway_500Medium,
 } from "@expo-google-fonts/raleway";
+import { userRegister } from "@stores/actions/authActions";
 import Header from "./Header";
 
 const Login = ({ navigation }) => {
+  const dispatch = useDispatch();
   const alert = useSelector((state) => state.alert);
-  const { register } = AuthHelper(navigation);
   const [type, setType] = useState({
     type1: "password",
     type2: "password",
@@ -59,7 +58,7 @@ const Login = ({ navigation }) => {
             c_password: "",
           }}
           onSubmit={(values) => {
-            register(values);
+            dispatch(userRegister(values, navigation));
           }}
         >
           {({

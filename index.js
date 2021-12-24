@@ -2,7 +2,8 @@ import React from "react";
 import "react-native-gesture-handler";
 import { registerRootComponent } from "expo";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
-import { combineReducers, createStore } from "redux";
+import { applyMiddleware, combineReducers, createStore } from "redux";
+import thunk from "redux-thunk";
 import { Provider } from "react-redux";
 import { LogBox } from "react-native";
 import codePush from "react-native-code-push";
@@ -12,10 +13,11 @@ import { FIREBASE_CONFIG } from "@config";
 import App from "./App";
 
 // reducer
-import { userReducer } from "@reducer/userReducer";
-import { loadingReducer } from "@reducer/loadingReducer";
-import { alertReducer } from "@reducer/alertReducer";
-import { selectReducer } from "@reducer/selectReducer";
+import { userReducer } from "@stores/reducer/userReducer";
+import { loadingReducer } from "@stores/reducer/loadingReducer";
+import { alertReducer } from "@stores/reducer/alertReducer";
+import { selectReducer } from "@stores/reducer/selectReducer";
+import { kasReducer } from "@stores/reducer/kasReducer";
 import { NavigationContainer } from "@react-navigation/native";
 
 LogBox.ignoreAllLogs();
@@ -25,9 +27,10 @@ const rootReducer = combineReducers({
   loading: loadingReducer,
   alert: alertReducer,
   select: selectReducer,
+  kas: kasReducer,
 });
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 const theme = {
   ...DefaultTheme,

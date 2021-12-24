@@ -1,7 +1,13 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import "moment/locale/id";
 import moment from "moment";
-import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+  Dimensions,
+} from "react-native";
 import { useFocusEffect } from "@react-navigation/core";
 import {
   NativeBaseProvider,
@@ -29,37 +35,25 @@ import {
   Raleway_500Medium,
 } from "@expo-google-fonts/raleway";
 import { translateMonth } from "@utils";
+import { getDetailKas, getArusKasBulanIni } from "@stores/actions/kasActions";
 
 // component
 import Header from "../../reusable/Header";
 import Alert from "../../reusable/Alert";
 import FloatingButton from "../../reusable/FloatingButton";
-import KasHelper from "./KasHelper";
 import Loading from "../../reusable/Loading";
+
+const window = Dimensions.get("window");
 
 const DetailKas = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const alert = useSelector((state) => state.alert);
+  const process = useSelector((state) => state.loading);
+  const detailKas = useSelector((state) => state.kas.detail_kas);
+  const arusKas = useSelector((state) => state.kas.arus_kas);
   const { title, id, group_id } = route.params;
-  const {
-    detailKas,
-    setDetailKas,
-    loadDetailKas,
-    setLoadDetailKas,
-    refreshDetailKas,
-    setRefreshDetailKas,
-    dataArusKas,
-    setDataArusKas,
-    pemasukan,
-    setPemasukan,
-    pengeluaran,
-    setPengeluaran,
-    keyword,
-    setKeyword,
-    getDetailKas,
-    getArusKasBulanIni,
-    filterUser,
-  } = KasHelper();
+
+  const [keyword, setKeyword] = useState("");
 
   const [fontsLoaded, error] = useFonts({
     Raleway_400Regular,
@@ -70,8 +64,12 @@ const DetailKas = ({ navigation, route }) => {
     const options = {
       html: `
         <div style="text-align: center;"><h3>Arus ${title} Usman Sidomulyo</h3></div>
-        <h5 style="padding: 0; margin: 0;">Total Pemasukan : Rp. ${pemasukan}</h5>
-        <h5 style="padding: 0; margin: 0;">Total Pemasukan : Rp. ${pengeluaran}</h5>
+        <h5 style="padding: 0; margin: 0;">Total Pemasukan : Rp. ${
+          arusKas?.pemasukan
+        }</h5>
+        <h5 style="padding: 0; margin: 0;">Total Pemasukan : Rp. ${
+          arusKas?.pengeluaran
+        }</h5>
         <table style="border-collapse: collapse; width: 100%;">
           <thead>
             <tr style="background-color: #04aa6d; color: white;">
@@ -84,12 +82,13 @@ const DetailKas = ({ navigation, route }) => {
             </tr>
           </thead>
           <tbody>
-            ${dataArusKas.map(
+            ${arusKas?.data.map(
               (kas, i) => `
+              ${console.log(arusKas?.data)}
               <tr>
                 <td style="border: 1px solid #ddd; padding: 8px;">${i + 1}</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">${
-                  kas.users.name
+                  kas.user.name
                 }</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">${
                   parseInt(kas.jenis) ? "Masuk" : "Keluar"
@@ -126,33 +125,17 @@ const DetailKas = ({ navigation, route }) => {
   };
 
   const fetchData = async (state) => {
-    await getDetailKas(id, state);
-    await getArusKasBulanIni(id);
+    await dispatch(getDetailKas(id, state));
+    await dispatch(getArusKasBulanIni(id));
   };
 
   const onRefresh = useCallback(() => {
     fetchData("refresh");
-
-    return () => {
-      setDetailKas({});
-      setRefreshDetailKas(false);
-      setDataArusKas([]);
-      setPemasukan(0);
-      setPengeluaran(0);
-    };
   }, []);
 
   useFocusEffect(
     useCallback(() => {
       fetchData("loading");
-
-      return () => {
-        setDetailKas({});
-        setLoadDetailKas(true);
-        setDataArusKas([]);
-        setPemasukan(0);
-        setPengeluaran(0);
-      };
     }, [])
   );
 
@@ -165,7 +148,7 @@ const DetailKas = ({ navigation, route }) => {
         contentContainerStyle={styles.container}
         refreshControl={
           <RefreshControl
-            refreshing={refreshDetailKas}
+            refreshing={process.refresh}
             onRefresh={onRefresh}
             colors={["crimson", "coral"]}
           />
@@ -186,9 +169,7 @@ const DetailKas = ({ navigation, route }) => {
                   >
                     Total Pemasukan :{" "}
                     <NumberFormat
-                      value={
-                        loadDetailKas ? "0" : detailKas?.kas?.total_pemasukan
-                      }
+                      value={detailKas?.kas?.total_pemasukan || "0"}
                       displayType={"text"}
                       thousandSeparator={true}
                       prefix={"Rp. "}
@@ -211,9 +192,7 @@ const DetailKas = ({ navigation, route }) => {
                   >
                     Total Pengeluaran :{" "}
                     <NumberFormat
-                      value={
-                        loadDetailKas ? "0" : detailKas?.kas?.total_pengeluaran
-                      }
+                      value={detailKas?.kas?.total_pengeluaran || "0"}
                       displayType={"text"}
                       thousandSeparator={true}
                       prefix={"Rp. "}
@@ -236,7 +215,7 @@ const DetailKas = ({ navigation, route }) => {
                   >
                     Total Kas :{" "}
                     <NumberFormat
-                      value={loadDetailKas ? "0" : detailKas?.kas?.total_kas}
+                      value={detailKas?.kas?.total_kas || "0"}
                       displayType={"text"}
                       thousandSeparator={true}
                       prefix={"Rp. "}
@@ -286,7 +265,6 @@ const DetailKas = ({ navigation, route }) => {
                   value={keyword}
                   onChangeText={(text) => {
                     setKeyword(text);
-                    filterUser(text);
                   }}
                   style={{
                     fontFamily: "Raleway_400Regular",
@@ -315,59 +293,69 @@ const DetailKas = ({ navigation, route }) => {
                 </Menu>
               </View>
             </View>
-
-            {loadDetailKas ? (
-              <Loading />
-            ) : (
-              <Basic navigation={navigation} kas={detailKas.bulan_ini} />
-            )}
-
-            <FloatingButton
-              navigation={navigation}
-              id={id}
-              actions={[
-                {
-                  icon: "cash-plus",
-                  label: "Setor Kas",
-                  onPress: () =>
-                    navigation.navigate("FormPenyetoran", {
-                      method: "post",
-                      event_kas_id: id,
-                      group_id: group_id,
-                    }),
-                  small: false,
-                },
-                {
-                  icon: "cash-minus",
-                  label: "Buat Pengeluaran",
-                  onPress: () =>
-                    navigation.navigate("FormPengeluaran", {
-                      method: "post",
-                      event_kas_id: id,
-                      group_id: group_id,
-                    }),
-                  small: false,
-                },
-                {
-                  icon: "file",
-                  label: "History Kas",
-                  onPress: () =>
-                    navigation.navigate("HistoryKasKeseluruhan", {
-                      id: id,
-                    }),
-                  small: false,
-                },
-                {
-                  icon: "download",
-                  label: "Unduh PDF",
-                  onPress: buatPdf,
-                  small: false,
-                },
-              ]}
-            />
           </Portal>
         </Provider>
       </ScrollView>
+
+      <View style={styles.flatlistWrapper}>
+        {!detailKas?.bulan_ini ? (
+          <Loading />
+        ) : (
+          <Basic
+            navigation={navigation}
+            kas={
+              detailKas?.bulan_ini?.filter((item) => {
+                const text = `${translateMonth(item.month)} ${item.year}`;
+                return text.match(keyword);
+              }) || []
+            }
+          />
+        )}
+      </View>
+
+      <FloatingButton
+        navigation={navigation}
+        id={id}
+        actions={[
+          {
+            icon: "cash-plus",
+            label: "Setor Kas",
+            onPress: () =>
+              navigation.navigate("FormPenyetoran", {
+                method: "post",
+                event_kas_id: id,
+                group_id: group_id,
+              }),
+            small: false,
+          },
+          {
+            icon: "cash-minus",
+            label: "Buat Pengeluaran",
+            onPress: () =>
+              navigation.navigate("FormPengeluaran", {
+                method: "post",
+                event_kas_id: id,
+                group_id: group_id,
+              }),
+            small: false,
+          },
+          {
+            icon: "file",
+            label: "History Kas",
+            onPress: () =>
+              navigation.navigate("HistoryKasKeseluruhan", {
+                id: id,
+              }),
+            small: false,
+          },
+          {
+            icon: "download",
+            label: "Unduh PDF",
+            onPress: buatPdf,
+            small: false,
+          },
+        ]}
+      />
     </NativeBaseProvider>
   );
 };
@@ -441,19 +429,11 @@ const Basic = ({ navigation, kas }) => {
         bg="info.500"
         justifyContent="center"
         onPress={() => {
-          console.log(data.item);
           navigation.navigate("DetailPerBulan", {
             event_id: data.item.event_kas_id,
             month: data.item.month,
-            year: data.item.year
+            year: data.item.year,
           });
-
-          // navigation.navigate("HistoryKasPerAnggota", {
-          //   event_id: data.item.event_kas_id,
-          //   user: { id: data.item.user.id, name: data.item.user.name },
-          //   total: data.item.total,
-          //   bulan_ini: data.item.total,
-          // });
         }}
         _pressed={{
           opacity: 0.5,
@@ -466,31 +446,28 @@ const Basic = ({ navigation, kas }) => {
 
   return (
     <Box bg="white" safeArea flex={1}>
-      {kas.length > 0 ? (
-        <SwipeListView
-          data={kas}
-          renderItem={renderItem}
-          renderHiddenItem={renderHiddenItem}
-          rightOpenValue={-65}
-          previewRowKey={"0"}
-          previewOpenValue={-40}
-          previewOpenDelay={1000}
-          onRowDidOpen={onRowDidOpen}
-        />
-      ) : (
-        <ScrollView>
-          <LottieView
-            source={require("@assets/data-not-found.json")}
-            style={{
-              marginBottom: 50,
-              width: "100%",
-              height: 400,
-            }}
-            autoPlay
-            loop
-          />
-        </ScrollView>
-      )}
+      <SwipeListView
+        data={kas}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderItem}
+        renderHiddenItem={renderHiddenItem}
+        rightOpenValue={-65}
+        onRowDidOpen={onRowDidOpen}
+        ListEmptyComponent={
+          <ScrollView>
+            <LottieView
+              source={require("@assets/data-not-found.json")}
+              style={{
+                marginBottom: 50,
+                width: "100%",
+                height: 400,
+              }}
+              autoPlay
+              loop
+            />
+          </ScrollView>
+        }
+      />
     </Box>
   );
 };
@@ -506,6 +483,12 @@ const styles = StyleSheet.create({
     width: "95%",
     flexDirection: "row",
     flexWrap: "wrap",
+  },
+  flatlistWrapper: {
+    position: "absolute",
+    top: 300,
+    width: window.width,
+    height: window.height - 300,
   },
   card: {
     width: "100%",

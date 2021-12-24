@@ -11,7 +11,7 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const App = () => {
-  const loading = useSelector((state) => state.loading);
+  const loading = useSelector((state) => state.loading.loading);
   const alert = useSelector((state) => state.alert);
 
   return (

@@ -4,8 +4,7 @@ import { StyleSheet } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Heading, HStack, Text, View, Image } from "native-base";
 import { useSelector, useDispatch } from "react-redux";
-import axios from "axios";
-import { TEST_URL, PUBLIC_URL } from "@config";
+import { PUBLIC_URL } from "@config";
 import {
   useFonts,
   Raleway_400Regular,
@@ -13,6 +12,7 @@ import {
 } from "@expo-google-fonts/raleway";
 import codePush from "react-native-code-push";
 import FastImage from "react-native-fast-image";
+import { userLogout } from "@stores/actions/authActions";
 
 const DrawerContent = ({ ...props }) => {
   const user = useSelector((state) => state.user);
@@ -23,56 +23,6 @@ const DrawerContent = ({ ...props }) => {
     Raleway_400Regular,
     Raleway_500Medium,
   });
-
-  const logout = async () => {
-    dispatch({
-      type: "SET_LOADING",
-      payload: true,
-    });
-
-    await axios({
-      method: "POST",
-      url: `${TEST_URL}/logout`,
-      data: {},
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${user.token}`,
-      },
-    })
-      .then(() => {
-        dispatch({
-          type: "LOGIN",
-          payload: {
-            data: null,
-            token: null,
-          },
-        });
-
-        dispatch({
-          type: "SET_SHOW_ALERT",
-          payload: {
-            type: "success",
-            show: true,
-            message: "Logout berhasil",
-          },
-        });
-      })
-      .catch((err) => {
-        dispatch({
-          type: "SET_SHOW_ALERT",
-          payload: {
-            type: "failed",
-            show: true,
-            message: "Logout gagal, silahkan coba lagi!",
-          },
-        });
-      });
-
-    dispatch({
-      type: "SET_LOADING",
-      payload: false,
-    });
-  };
 
   React.useEffect(() => {
     codePush.getUpdateMetadata().then((metadata) => {
@@ -212,7 +162,7 @@ const DrawerContent = ({ ...props }) => {
         icon={({ color, size }) => (
           <Ionicons name="log-out" size={size} color={color} />
         )}
-        onPress={logout}
+        onPress={() => dispatch(userLogout())}
         labelStyle={{
           fontFamily: "Raleway_400Regular",
         }}
